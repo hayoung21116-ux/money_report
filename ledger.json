@@ -1,0 +1,3493 @@
+{
+  "accounts": [
+    {
+      "id": "3779d881-4578-404e-a6fc-3d938bd89cbd",
+      "name": "새마을금고(민규)",
+      "type": "현금",
+      "color": "#53a6f9",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\새마을금고.png",
+      "transactions": [
+        {
+          "id": "4660e334-1567-4e8b-a0f7-4a71d2a17ad8",
+          "account_id": "3779d881-4578-404e-a6fc-3d938bd89cbd",
+          "type": "income",
+          "amount": 50935553.0,
+          "category": "저축",
+          "memo": "PS",
+          "date": "2025-01-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1e3d15a9-cf4e-45ed-9991-5711b61b9a02",
+          "account_id": "3779d881-4578-404e-a6fc-3d938bd89cbd",
+          "type": "expense",
+          "amount": 935553.0,
+          "category": "이동",
+          "memo": "새마을금고 -> IBK",
+          "date": "2025-02-06T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+      "name": "NH_CMA_04(하영)",
+      "type": "현금",
+      "color": "#b1ec0e",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\나무증권.png",
+      "transactions": [
+        {
+          "id": "986f6528-adc6-4d27-a76c-0378b41dd752",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 654632.0,
+          "category": "저축",
+          "memo": "4월(하영)",
+          "date": "2025-03-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "2f40ff00-1f87-4268-a42e-5b6ad0ae0e62",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 2356222.0,
+          "category": "저축",
+          "memo": "4월(민규)",
+          "date": "2025-03-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "2ce82ab8-b6ca-4cea-8bbb-3a2e11358bbd",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 1025.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-03-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "27592d2e-a458-4884-8874-d1203e357927",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 1458715.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-04-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f32dfe0b-2ef3-482c-9d35-9b69f048d716",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 5441.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-04-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "815a554f-8fbf-4ef4-8f94-2995380d98b7",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 634260.0,
+          "category": "저축",
+          "memo": "6월(하영)",
+          "date": "2025-05-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "67b833e1-3d91-4574-b37a-e5796373e6d8",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 110946.0,
+          "category": "저축",
+          "memo": "6월(민규)",
+          "date": "2025-05-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "0c6b1ded-848a-488f-a863-c68fa48f6839",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 8137.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-05-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ff4a7766-6b8e-41c1-9d20-d868bf973ef9",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 252660.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-06-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "7fe13608-5295-452f-8516-e0ce563f8c8d",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 847845.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-06-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "becb0317-6336-452a-9ca6-1be21c07c051",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 7606.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-06-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ab1e814f-17dc-4369-b279-0363485608ed",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 6302.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-07-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "bcc1e26c-fe94-4639-9f33-48cb01d6dfdd",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "비트코인",
+          "date": "2025-07-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "a726d7c7-70bb-4e0f-a429-c0aa6832dce1",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 3891.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-08-04T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1d1e7fb4-0f15-4b76-a182-7c400ad2b033",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 2092445.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-08-04T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "dc69d3bf-3491-4c67-b50e-08f148826bb9",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 764060.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-08-04T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f84bad07-3645-4a15-95a9-7d3c1bd4c36e",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 6370.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-08-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "30d9174b-3521-43e5-8663-1f4c7ff11dfd",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "expense",
+          "amount": 2000000.0,
+          "category": "지출",
+          "memo": "결혼비용",
+          "date": "2025-08-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "07ca93cd-3a00-4e7a-85d6-a9064bbcee69",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "투자",
+          "memo": "비트코인",
+          "date": "2025-08-21T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "e9d2652f-bf07-4862-b34f-1dab8de37ab5",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 975340.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-08-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "c4190523-dfa7-40c8-bf2e-679e2cec1485",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "지출",
+          "memo": "결혼비용",
+          "date": "2025-08-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "4d902b8f-4619-4791-9647-8a43d2ecf07d",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "지출",
+          "memo": "결혼비용",
+          "date": "2025-09-05T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "c9b5871a-4eb9-430a-8abb-e18d66e8fea2",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "지출",
+          "memo": "결혼비용",
+          "date": "2025-09-12T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "d83cfd5b-4510-424e-a828-8b2d71cb5a05",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "비트코인",
+          "date": "2025-09-12T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "1bec9dd5-bb7a-48d3-b380-c202244be8b9",
+      "name": "비트코인(하영)",
+      "type": "투자",
+      "color": "#1ba6a1",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\비트코인.png",
+      "transactions": [
+        {
+          "id": "5be4bddb-3eb9-4b98-822e-e7a4275cf3bd",
+          "account_id": "1bec9dd5-bb7a-48d3-b380-c202244be8b9",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "NH_04에서 이동",
+          "date": "2025-07-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "2cae1b9a-2b12-499d-80e6-9ae3cec9cfc0",
+          "account_id": "1bec9dd5-bb7a-48d3-b380-c202244be8b9",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-05-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6e4c3807-c815-47bd-8b79-4d152ac23b35",
+          "account_id": "1bec9dd5-bb7a-48d3-b380-c202244be8b9",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-05-12T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "e6174dd2-27d6-4ee4-927b-4fb35836a44d",
+          "account_id": "1bec9dd5-bb7a-48d3-b380-c202244be8b9",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-04-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "34ab93a8-80b5-4b75-97fc-9b9ec9a56706",
+          "account_id": "1bec9dd5-bb7a-48d3-b380-c202244be8b9",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-03-05T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "9b681089-3ee8-4af0-bdb0-bd30d9221249",
+          "account_id": "1bec9dd5-bb7a-48d3-b380-c202244be8b9",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "NH_04에서 이동",
+          "date": "2025-08-21T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "8e78b6cd-ad37-4ec0-bccc-27e1311d13ce",
+          "account_id": "1bec9dd5-bb7a-48d3-b380-c202244be8b9",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "NH_04에서 이동",
+          "date": "2025-09-12T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 5637794.0,
+      "cash_holding": 1212328.0,
+      "evaluated_amount": 6326711.0,
+      "last_valuation_date": "2025-09-12"
+    },
+    {
+      "id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+      "name": "NH_합가(하영)",
+      "type": "현금",
+      "color": "#fce807",
+      "opening_balance": 0.0,
+      "status": "dead",
+      "image_path": "",
+      "transactions": [
+        {
+          "id": "3b53632d-327b-43c9-b622-8c5f50508d06",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 90375274.0,
+          "category": "이동",
+          "memo": "결혼전(민규)",
+          "date": "2024-10-09T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "45739251-d47e-4aba-8bc9-6223e087fd91",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 1792995.0,
+          "category": "지출",
+          "memo": "",
+          "date": "2024-10-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "a7863de8-8321-4cc3-a0b1-801dfd16cd62",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 457510.0,
+          "category": "지출",
+          "memo": "",
+          "date": "2024-10-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "72bcb85f-5086-4667-9814-e83e5df7312e",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 8749527.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2024-11-02T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "51dcf2ca-e5ed-4db3-92a3-fec862fde1ff",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 20000000.0,
+          "category": "투자",
+          "memo": "장위_가계약금",
+          "date": "2024-11-22T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "31252f82-48d8-40e0-b925-6931d3745280",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 2114800.0,
+          "category": "지출",
+          "memo": "",
+          "date": "2024-11-22T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "b927c4f2-6717-41c7-8bf8-51b7c792a679",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 130000000.0,
+          "category": "투자",
+          "memo": "장위_중도금",
+          "date": "2024-11-29T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "5a7bc13f-f0b0-4821-9dee-b8968f64939b",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 120748.0,
+          "category": "지출",
+          "memo": "",
+          "date": "2024-11-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "24be8f04-72cb-4503-b3af-e5f62262ef82",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 4545260.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2024-12-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f6cf20dd-c0c7-4d27-96dc-2acf536d0d5c",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 1114000.0,
+          "category": "저축",
+          "memo": "냉장고_정산",
+          "date": "2024-12-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1995182e-bc23-4f63-a55a-8258a79c7152",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 20000000.0,
+          "category": "지출",
+          "memo": "결혼준비비용",
+          "date": "2024-12-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "22c686b8-d8db-485f-b799-c7723837c513",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 330150.0,
+          "category": "지출",
+          "memo": "",
+          "date": "2024-12-16T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "8546b8fe-defe-47ce-83e4-191fa4a9408c",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 633370.0,
+          "category": "지출",
+          "memo": "",
+          "date": "2024-12-16T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "a442fb6f-9d81-45c6-93fa-fa4df118b1c2",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 2000000.0,
+          "category": "저축",
+          "memo": "케이뱅크선입금",
+          "date": "2024-12-16T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "76dd708f-9163-4c48-a165-3b5c8989ab19",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 20101.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2024-12-16T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1a94f1d4-6fe6-4fdd-984c-2ad7e7e06068",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 2182720.0,
+          "category": "지출",
+          "memo": "",
+          "date": "2024-12-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "0cf73908-a503-43c0-9e91-fc26036ff32c",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 22365.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2024-12-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "92e61c18-d58c-45ee-baf3-617d0eb5bc63",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 5645004.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-01-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "b35f43ec-59b6-4c0c-9900-4f09ed5016b5",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 18154.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-01-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "4ebcb92f-0855-4808-81ef-d7c737cb7e11",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 115893479.0,
+          "category": "이동",
+          "memo": "결혼전(하영)",
+          "date": "2024-10-09T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "5edddc84-7120-41af-8a3a-abffd393ab77",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 5262.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-01-14T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "310c327e-c2b8-45c0-aba4-86cd836afc32",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 37948318.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-01-14T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "aec92722-9da1-4c59-be38-860ca9290474",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 100594.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-01-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "b3aba3cc-330f-4394-81b9-5b6ff3181037",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 2000000.0,
+          "category": "지출",
+          "memo": "케이뱅크 선입금 무효",
+          "date": "2025-01-14T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "72e96954-9f34-49ff-8943-c8c403a228c8",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "income",
+          "amount": 10117100.0,
+          "category": "저축",
+          "memo": "PS_일부",
+          "date": "2025-01-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "c996e0a8-095d-4890-9d4e-709de248fd7b",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 48500000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-02-06T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "efe30eeb-7cf8-41e3-a4d6-5cd38721fd6e",
+          "account_id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
+          "type": "expense",
+          "amount": 48422145.0,
+          "category": "이동",
+          "memo": "NH_합가 -> IBK",
+          "date": "2025-02-06T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "67800193-e37c-4afa-88e1-88ebfcc41287",
+      "name": "부동산",
+      "type": "투자",
+      "color": "#cf770b",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\부동산.jpg",
+      "transactions": [
+        {
+          "id": "4e01dab8-81b9-45d2-a00c-c3e480da521a",
+          "account_id": "67800193-e37c-4afa-88e1-88ebfcc41287",
+          "type": "income",
+          "amount": 20000000.0,
+          "category": "이동",
+          "memo": "장위_가계약금",
+          "date": "2024-11-22T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f6c91eb3-69cb-4de8-a4fc-049dcfe20e02",
+          "account_id": "67800193-e37c-4afa-88e1-88ebfcc41287",
+          "type": "income",
+          "amount": 130000000.0,
+          "category": "이동",
+          "memo": "장위_중도금",
+          "date": "2024-11-29T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "30c4d48f-9e7f-4f15-944f-2cea86fd0ebb",
+          "account_id": "67800193-e37c-4afa-88e1-88ebfcc41287",
+          "type": "income",
+          "amount": 54524000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-01-14T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "7ec63253-fb9d-4657-95c6-df261fb4ee43",
+          "account_id": "67800193-e37c-4afa-88e1-88ebfcc41287",
+          "type": "income",
+          "amount": 4575000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-01-14T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 209099000.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 209099000.0,
+      "last_valuation_date": "2025-08-27"
+    },
+    {
+      "id": "e027a444-28f6-4ffd-bcdb-424b7e58c233",
+      "name": "사내대출(민규)",
+      "type": "현금",
+      "color": "#9ca3fe",
+      "opening_balance": 0.0,
+      "status": "dead",
+      "image_path": "",
+      "transactions": [
+        {
+          "id": "4d566f1d-a18f-4325-9953-f21532822ebd",
+          "account_id": "e027a444-28f6-4ffd-bcdb-424b7e58c233",
+          "type": "income",
+          "amount": 96943580.0,
+          "category": "대출",
+          "memo": "사내대출",
+          "date": "2024-12-16T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "fdc1eda3-e9c3-493f-80ed-349c4b2ac4a5",
+          "account_id": "e027a444-28f6-4ffd-bcdb-424b7e58c233",
+          "type": "expense",
+          "amount": 54524000.0,
+          "category": "투자",
+          "memo": "장위_잔금1",
+          "date": "2025-01-14T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "5e8febd9-414a-4f9c-a50c-4f3260fdc650",
+          "account_id": "e027a444-28f6-4ffd-bcdb-424b7e58c233",
+          "type": "expense",
+          "amount": 4575000.0,
+          "category": "투자",
+          "memo": "장위_잔금2",
+          "date": "2025-01-14T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f22bd90e-7dce-4330-a1da-2ce4e5637d5b",
+          "account_id": "e027a444-28f6-4ffd-bcdb-424b7e58c233",
+          "type": "income",
+          "amount": 103738.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-01-14T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "4f1d8c6e-aaf2-407b-aa41-6784be8c1f25",
+          "account_id": "e027a444-28f6-4ffd-bcdb-424b7e58c233",
+          "type": "expense",
+          "amount": 37948318.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-01-14T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+      "name": "ok저축(하영)",
+      "type": "현금",
+      "color": "#e54906",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\ok저축은행.png",
+      "transactions": [
+        {
+          "id": "3a54f824-ab60-458c-87b4-6a3c20ffdadc",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 48500000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-02-06T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "134a8b6c-a157-427b-a4c9-096f0967f31d",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 3000000.0,
+          "category": "이동",
+          "memo": "카카오뱅크 적금",
+          "date": "2025-02-16T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1544c920-e41a-4c11-9a18-a0dac47f5afb",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 148169.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-03-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "869726ab-c82c-4c28-b605-5d2024c2ca52",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 2269195.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-03-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "7d2b7da7-07d0-4443-9c1f-8c5835dbef5b",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 1500000.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-03-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "8214326f-e8f9-463e-a111-d44f6ad0ca99",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 49077.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-03-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "088bf51c-9b46-4fa7-aa1b-e21f47106aa5",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 32570.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-04-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "96f50173-5748-41dd-895d-51038bb13206",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 19873.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-05-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "548c173e-2c25-4a4e-a2cc-19e792794680",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 24841.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-06-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "b872f6e1-0ebb-42dc-b850-22a1393ba649",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 17037.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-07-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "c7129010-3788-4c65-af1b-0b3dc670e427",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 12644.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-08-17T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+      "name": "IBK(하영)",
+      "type": "현금",
+      "color": "#004b9e",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\IBK기업은행.png",
+      "transactions": [
+        {
+          "id": "f9fde742-223d-428c-a1de-43e46a7b5ecc",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "income",
+          "amount": 48422145.0,
+          "category": "이동",
+          "memo": "NH_합가 -> IBK",
+          "date": "2025-02-06T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "252867c5-f2e0-4ca2-950f-4e291bc64b50",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "income",
+          "amount": 935553.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-02-06T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "447798ef-442e-409a-aafd-a7427ce2cd02",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "expense",
+          "amount": 500000.0,
+          "category": "지출",
+          "memo": "",
+          "date": "2025-02-16T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f8c38423-0238-44fb-b9f0-6a37d15a81f3",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "income",
+          "amount": 770430.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-03-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6c205f5e-d9d2-4cb7-8ece-6b8ca7f4f82c",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-03-05T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "537e5100-9611-4247-9b81-0450197a6631",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "income",
+          "amount": 126670.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-03-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "8f4eff16-3e78-4ff0-adfe-44a5c4790994",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-04-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "7f7298e1-8e93-4397-87e7-666e78bd7f4e",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "비트코인",
+          "date": "2025-05-12T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "4cc422fd-38b1-48a1-9872-2ca1b24ef76b",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-05-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "acac3e81-6e8c-42d9-bdf9-ea6d9f586cb6",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "비트코인",
+          "date": "2025-05-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "cc50edce-cdf7-4b5c-a3f2-00bda3d0cde9",
+          "account_id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
+          "type": "income",
+          "amount": 286015.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-06-30T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "5ba03a67-65e7-4b13-8ef6-251df6dc6292",
+      "name": "카카오뱅크_적금(하영)",
+      "type": "현금",
+      "color": "#fce16f",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\카카오뱅크.png",
+      "transactions": [
+        {
+          "id": "62d1c14c-cb22-405a-985a-0d98cf2baa25",
+          "account_id": "5ba03a67-65e7-4b13-8ef6-251df6dc6292",
+          "type": "income",
+          "amount": 3000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-02-16T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1d4caa5a-dafa-4458-812d-1ac4224ac025",
+          "account_id": "5ba03a67-65e7-4b13-8ef6-251df6dc6292",
+          "type": "income",
+          "amount": 3000000.0,
+          "category": "저축",
+          "memo": "4월저축",
+          "date": "2025-03-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1f8a2a4a-9a7e-434a-958b-b44e97ff96f9",
+          "account_id": "5ba03a67-65e7-4b13-8ef6-251df6dc6292",
+          "type": "income",
+          "amount": 3000000.0,
+          "category": "저축",
+          "memo": "5월저축",
+          "date": "2025-04-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "8a08374f-8dda-4418-8f91-f74638c05f10",
+          "account_id": "5ba03a67-65e7-4b13-8ef6-251df6dc6292",
+          "type": "income",
+          "amount": 3000000.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-05-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "e5deb506-3c27-4275-8534-2a47c18ba1b5",
+          "account_id": "5ba03a67-65e7-4b13-8ef6-251df6dc6292",
+          "type": "income",
+          "amount": 3000000.0,
+          "category": "저축",
+          "memo": "7월저축",
+          "date": "2025-06-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "847861b7-aaf6-4e0d-8135-4f2c90109852",
+          "account_id": "5ba03a67-65e7-4b13-8ef6-251df6dc6292",
+          "type": "income",
+          "amount": 3000000.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-08-04T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "afc5ffba-0967-450e-a2a1-16ebd7a36119",
+          "account_id": "5ba03a67-65e7-4b13-8ef6-251df6dc6292",
+          "type": "income",
+          "amount": 3000000.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-08-30T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+      "name": "결혼준비",
+      "type": "소비",
+      "color": "#000000",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "",
+      "transactions": [
+        {
+          "id": "8b4692a9-a6c0-480e-bcce-96103e523736",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "income",
+          "amount": 20000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2024-12-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "a655e71e-a9f8-4f23-a96d-ac039be59eeb",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 130100.0,
+          "category": "지출",
+          "memo": "혼수-모드니그릇",
+          "date": "2025-01-13T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1fa64f87-d0e2-4e47-a8e7-a2cc1dd01936",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "income",
+          "amount": 667375.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2024-10-09T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "41113c7d-8664-47c4-a0f2-5f149e8aabc7",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "income",
+          "amount": 1766800.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2024-11-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "e73970e2-c73f-445c-97c9-f3976521e341",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 78700.0,
+          "category": "지출",
+          "memo": "혼수-암막커튼",
+          "date": "2024-10-10T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "537c4ff7-950c-44af-b613-8fd748bf8f9e",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 407810.0,
+          "category": "지출",
+          "memo": "혼수-후라이팬냄비",
+          "date": "2024-10-21T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "8c0f1823-6124-4432-bb2e-046dff8e9a18",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 180865.0,
+          "category": "지출",
+          "memo": "혼수-식탁",
+          "date": "2024-10-23T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "9dea8126-b18e-4383-af4d-5ba05bd8b2f5",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 150000.0,
+          "category": "지출",
+          "memo": "혼수-중고책장",
+          "date": "2024-11-13T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1cec6401-b0ae-4a5a-8489-9f0fd9d63621",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 188900.0,
+          "category": "지출",
+          "memo": "혼수-민규컴퓨터책상",
+          "date": "2024-11-02T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "cdcedccc-246c-484c-8253-23120bc15307",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 98000.0,
+          "category": "지출",
+          "memo": "혼수-하영컴퓨터책상",
+          "date": "2024-11-02T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "d50e51e2-1664-49f9-b825-0a30c890928e",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 1329900.0,
+          "category": "지출",
+          "memo": "혼수-냉장고",
+          "date": "2024-11-02T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6d555fe1-4bac-42ca-bbf0-92e2485ea3ff",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 99200.0,
+          "category": "지출",
+          "memo": "혼수-식탁의자",
+          "date": "2024-12-02T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "7ba66b30-3708-4791-8fed-e1c4fa868ce9",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 72600.0,
+          "category": "지출",
+          "memo": "혼수-냉장고아이스메이커",
+          "date": "2024-12-02T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "5514fae8-51ec-4061-b1c5-16e2a8d906da",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 598400.0,
+          "category": "지출",
+          "memo": "혼수-쇼파",
+          "date": "2024-12-17T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "66ec6384-bc41-4c82-9405-2ec665b26a97",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 1500000.0,
+          "category": "지출",
+          "memo": "혼수-하영컴퓨터",
+          "date": "2024-12-21T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "fa988965-0656-4944-bfec-cd38cd818607",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 56900.0,
+          "category": "지출",
+          "memo": "혼수-옷방철제선반",
+          "date": "2024-12-22T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "bda301e2-946c-435c-9c2e-ee883d9cf66a",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 38000.0,
+          "category": "지출",
+          "memo": "혼수-안방패브릭포스터",
+          "date": "2024-12-22T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "32b8f6f6-2cc4-40a1-93e8-c27ea575bd95",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 35000.0,
+          "category": "지출",
+          "memo": "혼수-거실의자배송비",
+          "date": "2024-12-22T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ca8fd05f-d769-46bd-8f38-f70c0eca35b5",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 45000.0,
+          "category": "지출",
+          "memo": "혼수-쇼파배송비",
+          "date": "2024-12-22T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "0922eccb-d04e-4d13-954b-7b16ed6a0b5d",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 1173.0,
+          "category": "지출",
+          "memo": "양재집 가스비+이자",
+          "date": "2024-12-10T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "44775051-f7b7-4fbb-92aa-b72aeb4bced0",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 55900.0,
+          "category": "지출",
+          "memo": "혼수-러그",
+          "date": "2024-12-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "2edbf30e-9237-40f9-89b8-97d5121aef88",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 87200.0,
+          "category": "지출",
+          "memo": "혼수-거실벽가리개선반",
+          "date": "2024-12-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "20f315a1-b5fc-4604-aa58-a5b3b464c302",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 42500.0,
+          "category": "지출",
+          "memo": "혼수-타공판",
+          "date": "2024-12-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6df7fd80-2eae-4fab-b575-8086d48e922f",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 219000.0,
+          "category": "지출",
+          "memo": "혼수-하영모니터",
+          "date": "2024-12-29T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "16e728ac-e8f3-4c2c-9dce-5bf7d3dff0b9",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 114000.0,
+          "category": "지출",
+          "memo": "혼수-하영모니터암2개",
+          "date": "2024-12-29T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "80180dcc-40bc-4a53-8b6b-0970731cd798",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 180000.0,
+          "category": "지출",
+          "memo": "혼수-민규CPU",
+          "date": "2025-01-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f45ebba5-6f12-4000-bb06-400d85b08c5b",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 160000.0,
+          "category": "지출",
+          "memo": "드레스투어",
+          "date": "2025-02-15T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "2ae6bf55-d4ca-4af0-a4d6-82442faeb27d",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 57500.0,
+          "category": "지출",
+          "memo": "드레스투어-주차,카페",
+          "date": "2025-02-15T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "b94194b0-ed9c-4dd1-9c3c-1aa13202a26c",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 58500.0,
+          "category": "지출",
+          "memo": "드레스투어:저녁",
+          "date": "2025-02-15T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "0a61ecb7-a6fd-4a86-b1c0-64fcc8ac21d7",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 37900.0,
+          "category": "지출",
+          "memo": "촬영:웨딩누브라",
+          "date": "2025-02-18T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "9786286f-6cec-40d4-8033-617445643765",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 1272000.0,
+          "category": "지출",
+          "memo": "다이렉트-중도금",
+          "date": "2025-02-24T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "0bf66a3e-eba1-45a7-97a2-88a8bdc9b675",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 2430203.0,
+          "category": "지출",
+          "memo": "신혼여행-항공권",
+          "date": "2025-03-02T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ec85a385-74fa-4f40-8846-7a99bc3e55a7",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 300000.0,
+          "category": "지출",
+          "memo": "신혼여행:팜투어예약금",
+          "date": "2025-03-02T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "0c53edd2-30c5-43c2-8b5a-5a6a7682f8dd",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 200000.0,
+          "category": "지출",
+          "memo": "본식-스냅예약금",
+          "date": "2025-03-03T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "d59ab9b2-d713-4cc0-86a4-d76dbccbc4ca",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "본식-DVD예약금",
+          "date": "2025-03-04T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1be3eac5-5cc5-4e21-aa2d-2af8a18be168",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "income",
+          "amount": 3153.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-03-15T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "26b898fb-b1da-4be0-a8b6-10ad35fd03c6",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 250000.0,
+          "category": "지출",
+          "memo": "촬영-헬퍼이모비",
+          "date": "2025-03-19T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1b884f0d-ae92-459a-9032-66e58bc1808b",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 190000.0,
+          "category": "지출",
+          "memo": "촬영-헤어변형잔금",
+          "date": "2025-03-21T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "343849ea-4200-4df2-878e-96cc9b70783c",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 430000.0,
+          "category": "지출",
+          "memo": "촬영-원본비용",
+          "date": "2025-03-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "aa1e9ce8-0518-46d9-a872-294cfb1381af",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "촬영-소픔비용",
+          "date": "2025-03-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "d9c09a28-610b-43fb-9204-7839236ca312",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 20000.0,
+          "category": "지출",
+          "memo": "촬영-양재꽃시장",
+          "date": "2025-03-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "9409b608-1a55-4684-b079-731a554482f6",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 18000.0,
+          "category": "지출",
+          "memo": "촬영-에밀리주차",
+          "date": "2025-03-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "7872487b-da68-4e3c-b292-c2d1ca504a63",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 29900.0,
+          "category": "지출",
+          "memo": "촬영-경나감사선물",
+          "date": "2025-03-26T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "edefea4a-adab-4b64-b613-29904eacdfce",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 13340.0,
+          "category": "지출",
+          "memo": "촬영-빌리언즈테일러퀵",
+          "date": "2025-03-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "c5c77964-9b9d-4c03-823f-2e9d82bd39fa",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 80000.0,
+          "category": "지출",
+          "memo": "촬영-혼주메이크업예약금",
+          "date": "2025-04-10T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "e2c2cb55-5ee1-455e-b294-1679fc4d5b3d",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 2000000.0,
+          "category": "지출",
+          "memo": "**신혼여행-잔금환전1",
+          "date": "2025-04-17T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ef413b4c-a0e8-42ae-b513-34a3421d1648",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 88000.0,
+          "category": "지출",
+          "memo": "촬영-에밀리앨범추가금",
+          "date": "2025-04-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "73ea8094-4efe-406f-bbd2-6d675e085e81",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 2000000.0,
+          "category": "지출",
+          "memo": "**신혼여행-잔금환전2",
+          "date": "2025-05-03T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "7b8d17b3-614b-429a-96e9-030a416e9d20",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 50000.0,
+          "category": "지출",
+          "memo": "청첩장-사진보정",
+          "date": "2025-05-18T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6eff9c1f-f322-4f71-9c6e-f73e76cec119",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 9900.0,
+          "category": "지출",
+          "memo": "청첩장-모바일",
+          "date": "2025-05-26T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "30a0c83a-a47b-458c-b499-0b1074fca389",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 25270.0,
+          "category": "지출",
+          "memo": "청첩장-종이",
+          "date": "2025-05-26T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ba7f99ca-96e6-4c73-a7ae-a202c8664c7c",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 15000.0,
+          "category": "지출",
+          "memo": "청첩장-사진보정2",
+          "date": "2025-05-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "02525353-e0f3-43b0-82fd-2c47d9d92903",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 48300.0,
+          "category": "지출",
+          "memo": "청첩장-봉투&스티커",
+          "date": "2025-05-29T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "211345d8-19ac-4296-87b4-7afd5c07e630",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 300000.0,
+          "category": "지출",
+          "memo": "혼주-민규어머님한복",
+          "date": "2025-06-08T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6cf7782e-c3a0-4ce4-a0c9-f08416bea18c",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 11000.0,
+          "category": "지출",
+          "memo": "청첩장-글씨크기수정스티커",
+          "date": "2025-06-17T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "cbe684e4-893c-47d8-9dc7-ca7b14389223",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 63500.0,
+          "category": "지출",
+          "memo": "청모-(하영)선희",
+          "date": "2025-06-22T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "dddbc247-bc5c-4e5f-949b-9ff9a4c65941",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 198400.0,
+          "category": "지출",
+          "memo": "청모-(민규)강서고",
+          "date": "2025-06-24T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "2ef978b3-b8d1-4e79-ba38-6b485aa60ce7",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 550000.0,
+          "category": "지출",
+          "memo": "혼주-엄마한복",
+          "date": "2025-06-24T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "657fb802-cc4e-4776-8f6f-27c6f31887f7",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 235000.0,
+          "category": "지출",
+          "memo": "청모-(민규)짜우",
+          "date": "2025-06-26T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "e82a9e06-0c00-4e52-9c6e-dc5bb7b1353a",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 427000.0,
+          "category": "지출",
+          "memo": "청모-(하영)SVP",
+          "date": "2025-06-26T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "e00b805e-c0f2-4efe-ae5f-f00170281026",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 191333.0,
+          "category": "지출",
+          "memo": "청모-(하영)병욱을랑",
+          "date": "2025-06-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "36ca0249-7baa-4df5-bb48-c824a79854e1",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "income",
+          "amount": 1978.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-06-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "51e8600b-8508-44fd-a085-70aef12c5e26",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 132000.0,
+          "category": "지출",
+          "memo": "데모헤어",
+          "date": "2025-07-04T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "0c201478-3a2d-456b-87b3-8c99d1e41f2c",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 5000.0,
+          "category": "지출",
+          "memo": "데모헤어-발렛",
+          "date": "2025-07-04T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "04b21b5a-2cde-48ad-baf4-520a65963c96",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 151950.0,
+          "category": "지출",
+          "memo": "청모-(하영)승욱민석대연",
+          "date": "2025-07-09T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "9c7f465b-d204-4391-9f08-105039b687c6",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 3100.0,
+          "category": "지출",
+          "memo": "촬영-에밀리앨범착불비",
+          "date": "2024-07-11T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "144d11b5-1ec4-48c5-a275-171381d7bedc",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 388500.0,
+          "category": "지출",
+          "memo": "청모-(민규)청주동기",
+          "date": "2025-07-12T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "b834bfe0-385e-41ae-a0e3-ef8e5eb0d24d",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 139504.0,
+          "category": "지출",
+          "memo": "청모-(민규)순재혜준",
+          "date": "2025-07-05T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "9151591e-db2f-4e53-b85e-4d4d555cc3f4",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 243000.0,
+          "category": "지출",
+          "memo": "청모-(하영)라브",
+          "date": "2025-07-05T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "cea62c60-3e08-473d-8a46-6d3bb2808cdf",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 101300.0,
+          "category": "지출",
+          "memo": "청모-(하영)솔김윤박",
+          "date": "2025-07-06T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "88896e02-1d12-4b21-900a-de60b2eec6d1",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 60000.0,
+          "category": "지출",
+          "memo": "청모-(민규)용범정현",
+          "date": "2025-07-06T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "4b933071-01cc-4ce2-97a0-d6cfc20629ef",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 61900.0,
+          "category": "지출",
+          "memo": "청모-(하영)송하",
+          "date": "2025-07-10T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f7ccd2a6-b150-4bbe-a84e-26e8150968e7",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 96590.0,
+          "category": "지출",
+          "memo": "청모-(민규)지효",
+          "date": "2025-07-12T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "28a062a2-fad1-476e-ad89-70b4f5ae3131",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 67000.0,
+          "category": "지출",
+          "memo": "청모-(하영)태현",
+          "date": "2025-07-12T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "9d1c718a-dcbe-463c-81af-46b99ddc4538",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 214000.0,
+          "category": "지출",
+          "memo": "청모-(하영)정빈재준대연찬미",
+          "date": "2025-07-18T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "3c58526f-b59f-42ab-852e-d0f713f9366f",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 150000.0,
+          "category": "지출",
+          "memo": "미용-하영안면비대칭",
+          "date": "2025-07-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "0eba97e9-5131-4f60-ae26-87aa3b45a0fc",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 368971.0,
+          "category": "지출",
+          "memo": "신혼여행-싱가폴숙소2박",
+          "date": "2025-07-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "c6698a3e-c1c8-477a-baed-32486e0a84ac",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 970000.0,
+          "category": "지출",
+          "memo": "임정빈감사선물",
+          "date": "2025-07-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "003a81ce-12e8-42b2-82b9-93730090ca46",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 30000.0,
+          "category": "지출",
+          "memo": "미용-쥬베룩상담비용",
+          "date": "2025-07-26T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "d3bf74ef-e1f6-45d6-957d-f3d43b442314",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "미용-승모근보톡스",
+          "date": "2025-07-24T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "b36a5a8c-c9a7-435c-a7f1-f235b9107bd8",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 10900.0,
+          "category": "지출",
+          "memo": "크몽",
+          "date": "2025-07-23T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "11acec57-37ea-49a4-bf49-bb2d46e9892b",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 780000.0,
+          "category": "지출",
+          "memo": "혼주-아빠예복",
+          "date": "2025-07-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "75a0c5a5-d7c2-4f9d-a052-cb84b98ed31a",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 64000.0,
+          "category": "지출",
+          "memo": "청모-(민규)예은",
+          "date": "2025-07-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "4aecabe9-6550-4a5e-a755-6d3e7e9ee0a0",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "income",
+          "amount": 5000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-08-04T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "a5873a78-c652-4de3-91cf-6bd9e2d9a9e4",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 1700000.0,
+          "category": "지출",
+          "memo": "혼주-어머님한복비용제외",
+          "date": "2025-08-04T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "cbcf98d2-f10a-40fc-bb45-8b684c0e7e9a",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 110120.0,
+          "category": "지출",
+          "memo": "청모-(민규)형준및군대동기",
+          "date": "2025-07-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6add0bca-d5b8-4c60-af0a-70a15b8d23b9",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 175000.0,
+          "category": "지출",
+          "memo": "청모-(민규)현우오빠",
+          "date": "2025-07-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "fbc80489-25a5-4467-b14f-0937736b0da0",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 126800.0,
+          "category": "지출",
+          "memo": "청모-(민규)의헌",
+          "date": "2025-07-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "01fc0b0b-f8a2-4f24-99fd-30d82916cb16",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 46400.0,
+          "category": "지출",
+          "memo": "청모-(민규)가희",
+          "date": "2025-07-29T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ae276516-5cda-47c4-b5c1-8cb55611f465",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 164800.0,
+          "category": "지출",
+          "memo": "청모-(민규)효진정인",
+          "date": "2025-08-02T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "30209e39-0531-4ded-96b3-796544223d57",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 164500.0,
+          "category": "지출",
+          "memo": "청모-(민규)승민군대동기",
+          "date": "2025-08-03T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "67607419-3fae-4df2-89d5-fc8b2e27e281",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 304000.0,
+          "category": "지출",
+          "memo": "(하영)외삼촌외숙모선물",
+          "date": "2025-08-04T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f6841b57-8296-4172-ba7b-43d138290a91",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 28050.0,
+          "category": "지출",
+          "memo": "청모-(하영)지원,웅 남은금액",
+          "date": "2025-08-10T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "2d31b231-4900-4eaf-82f3-7caa10a3250f",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 550000.0,
+          "category": "지출",
+          "memo": "혼주-엄마한복잔금",
+          "date": "2025-08-19T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "b19b8541-af32-4b1f-a962-77f2a0af1154",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 194140.0,
+          "category": "지출",
+          "memo": "본식-2부드레스",
+          "date": "2025-08-19T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "613d2925-f267-45c4-9026-87993cacb501",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 203000.0,
+          "category": "지출",
+          "memo": "청모-(민규)청주IM동기",
+          "date": "2025-08-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "d49dbbe9-8854-4cfb-a851-37d1314d14d2",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 218000.0,
+          "category": "지출",
+          "memo": "다이렉트 잔금",
+          "date": "2025-08-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "26010d1d-dd2c-4ac4-be58-369445eb5d07",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 45000.0,
+          "category": "지출",
+          "memo": "다이렉트 포인트 차감 후 부케",
+          "date": "2025-08-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "cae94a40-9bb8-4a6b-a50c-6d52a1981de4",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 226000.0,
+          "category": "지출",
+          "memo": "청모-(민규)연우상수",
+          "date": "2025-08-08T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "96da8bb0-a990-462f-a510-77f53e17b83e",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 83900.0,
+          "category": "지출",
+          "memo": "청모-(하영)지원웅",
+          "date": "2025-08-09T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "a4025819-68f5-4a23-8645-1879895ec9ee",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 115000.0,
+          "category": "지출",
+          "memo": "청모-(하영)종현",
+          "date": "2025-07-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "4eef375f-374e-4104-bb5c-93000d75a4e2",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 221000.0,
+          "category": "지출",
+          "memo": "청모-(민규)기계과",
+          "date": "2025-08-17T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "c171aa22-e7df-46ab-83b3-5401c94642cd",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 146450.0,
+          "category": "지출",
+          "memo": "청모-(민규)청주취업동아리",
+          "date": "2025-08-19T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6d5e6467-1280-4547-a342-7dec03e8532c",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 138000.0,
+          "category": "지출",
+          "memo": "청모-(민규)이천cmp",
+          "date": "2025-08-13T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ebf92dc2-9da2-4864-8c0b-46e5ba983443",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 118000.0,
+          "category": "지출",
+          "memo": "청모-(하영)영은",
+          "date": "2025-08-06T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6957bf83-98bc-4fad-a1dd-e26603ad734d",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 30000.0,
+          "category": "지출",
+          "memo": "혼주-엄마피부과상담비",
+          "date": "2025-08-07T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "88b08a9a-e95d-4521-b814-96811cf14255",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 100800.0,
+          "category": "지출",
+          "memo": "청모-(하영)가현",
+          "date": "2025-08-11T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "dea5c84d-150b-4c5e-950f-76cdcfabb7a9",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 202000.0,
+          "category": "지출",
+          "memo": "청모-(하영)교수님지훈님",
+          "date": "2025-08-13T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ab3333b6-c42a-447a-93d6-74249cd4bd7b",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "income",
+          "amount": 2000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-08-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "d83e1dd7-29bd-4ed1-aab9-18e14d0e9b1b",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 230800.0,
+          "category": "지출",
+          "memo": "청모-(하영)하트반",
+          "date": "2025-08-17T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "29f44938-8005-4ea5-934b-8230fe5f6200",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 0.0,
+          "category": "지출",
+          "memo": "현재까지: 29,434,175원",
+          "date": "2025-08-21T00:0:00Z",
+          "item": ""
+        },
+        {
+          "id": "e8566fc6-ee80-4a90-9621-0decaff31a75",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 311000.0,
+          "category": "지출",
+          "memo": "청모-(하영)정인외4명",
+          "date": "2025-08-22T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f91dc852-9723-4a47-9031-bc8dfcc108bb",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 162500.0,
+          "category": "지출",
+          "memo": "청모-(민규)관필, 대환",
+          "date": "2025-08-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "71b6456a-17d9-4b5d-9c13-eee0bb3d5607",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 36900.0,
+          "category": "지출",
+          "memo": "청모-(하영)집주인아저씨",
+          "date": "2025-08-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "62d610dd-b4cd-429f-98a8-2b6e99f91f5c",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 246300.0,
+          "category": "지출",
+          "memo": "청모-(하영)NNAD",
+          "date": "2025-08-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "8148b029-6371-465f-8559-f9f811de11cd",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 680200.0,
+          "category": "지출",
+          "memo": "청모-(민규)외삼촌",
+          "date": "2025-08-23T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "c89d7ab4-debf-46d8-8b96-b3501d6989a9",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 90000.0,
+          "category": "지출",
+          "memo": "혼주-엄마아빠남은돈",
+          "date": "2025-08-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f2e0ba71-1db0-4555-b60e-3ccef8c260d1",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 106400.0,
+          "category": "지출",
+          "memo": "청모-(하영)인서,유환",
+          "date": "2025-08-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "52727300-e612-4aaf-ae77-e6206740649c",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-08-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "5046b13a-1310-4399-b6a9-2a49b4b0a14c",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 212500.0,
+          "category": "지출",
+          "memo": "청모-(민규)차눅,학균",
+          "date": "2025-08-21T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "975607a9-8170-434b-9479-7150fb8c3445",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 205000.0,
+          "category": "지출",
+          "memo": "청모-(민규)SN2번",
+          "date": "2025-08-26T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "dbff073e-f468-4d7d-b4df-82ed032d544e",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 195000.0,
+          "category": "지출",
+          "memo": "본식-(하영)혼주메이크업",
+          "date": "2025-08-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "a5a28271-c28a-4203-89ae-c36082c72ff0",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 230000.0,
+          "category": "지출",
+          "memo": "본식 - 스냅(러브어바웃) 잔금",
+          "date": "2025-09-02T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f4c95b6c-db28-46d1-9c0e-e55b60878514",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 297000.0,
+          "category": "지출",
+          "memo": "본식 - DVD(스냅스타) 잔금",
+          "date": "2025-09-03T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "a6f6e8b4-73c2-425b-9342-dd9d074ba764",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-09-05T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "5b5b155b-5882-40a5-b402-c72c28e92996",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 600000.0,
+          "category": "지출",
+          "memo": "미용-에스테틱선결제",
+          "date": "2025-09-05T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "fba12a02-522d-4eea-896e-8f8ef6a3eef5",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 36000.0,
+          "category": "지출",
+          "memo": "미용-(하영) 네일",
+          "date": "2025-09-11T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "10fa83c4-3fd0-4424-b933-8128f5465953",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 67000.0,
+          "category": "지출",
+          "memo": "청모-(민규)은기님",
+          "date": "2025-09-08T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "e7237797-2797-4681-96c7-945393f15d04",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-09-12T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "8cc83904-b9d6-488f-8093-a3e8a3da4376",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 124500.0,
+          "category": "지출",
+          "memo": "청모-(민규)청주cmp",
+          "date": "2025-08-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "5d182b38-363e-44d8-93f0-0a5e977deeda",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 104300.0,
+          "category": "지출",
+          "memo": "청모-(민규)서랑혜림",
+          "date": "2025-08-29T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "3ef6abfb-c5c6-467f-b6fb-dbd2ee02b03d",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 68350.0,
+          "category": "지출",
+          "memo": "청모-(민규)m15",
+          "date": "2025-08-27T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "eeae4ea5-2a40-4c49-87fc-187cd601ed21",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 130600.0,
+          "category": "지출",
+          "memo": "청모-(민규)도훈현지",
+          "date": "2025-08-29T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "58ef6d2a-d9bd-4915-8363-326779c5ac96",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 76400.0,
+          "category": "지출",
+          "memo": "청모-(민규)승훈예별",
+          "date": "2025-09-03T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "f7738a9c-fcd4-44b0-8a3e-0189b31dd7dc",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 301100.0,
+          "category": "지출",
+          "memo": "답례품",
+          "date": "2025-09-07T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "4315d678-b20f-4cbf-a22e-191b7c5f71d1",
+          "account_id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
+          "type": "expense",
+          "amount": 0.0,
+          "category": "지출",
+          "memo": "현재까지: 32,434,175원",
+          "date": "2025-09-13T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+      "name": "비상금",
+      "type": "소비",
+      "color": "#000000",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "",
+      "transactions": [
+        {
+          "id": "74a3b1d6-81e1-444d-8e6c-38c895e6c2ed",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 340000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)은지누나생일아크네",
+          "date": "2024-10-12T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "9c4d718a-1e84-4cbb-a5bd-a87429d3fa40",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 300000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)태훈님축의",
+          "date": "2024-10-12T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "225cb066-d767-474c-a9f0-f4afcc842c34",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 48000.0,
+          "category": "지출",
+          "memo": "경조사-(하영)큰엄마꽃",
+          "date": "2024-10-19T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "b3e1cd45-f3c8-4d47-af3e-6a00cd56a849",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 52400.0,
+          "category": "지출",
+          "memo": "경조사-(하영)지아선물",
+          "date": "2024-10-19T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "d89571f0-f53b-45d1-be6f-5f9c8613d3dd",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 200000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)대환님축의",
+          "date": "2024-10-25T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "ec6cb884-0939-4257-9fbd-c970fa36487e",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)신호님축의",
+          "date": "2024-10-26T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "cbab025e-cb12-4a0c-9db0-54c2bb13c6b8",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 906810.0,
+          "category": "지출",
+          "memo": "여행-(하영)푸꾸옥항공권숙소",
+          "date": "2024-10-29T00:00:00Z",
+          "item": "여행"
+        },
+        {
+          "id": "379f7f2a-f30e-4a6a-bc42-208dad136c93",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 50000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)의송님축의",
+          "date": "2024-11-02T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "d8e5fe23-9d18-4102-bfa2-ee0048afbc6c",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 50000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)정학선배님축의",
+          "date": "2024-11-04T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "9d895bb3-c132-41e0-b574-c9cbcd732b7f",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 300000.0,
+          "category": "지출",
+          "memo": "경조사-(하영)상혁생일",
+          "date": "2024-11-18T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "a836aea0-029f-4eed-bd1c-df9487383b44",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 150000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)태훈형님축의",
+          "date": "2024-11-30T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "53ecb716-af47-4476-90d7-be04745f2646",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 118286.0,
+          "category": "지출",
+          "memo": "경조사-(민규)매형생일",
+          "date": "2024-11-30T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "4ba14000-8035-4295-a4e2-96ef5bd43ba9",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 50000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)호정님축의",
+          "date": "2024-11-30T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "20abce49-008c-4d72-8790-ed21ff4c4104",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 200000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)재천형님축의",
+          "date": "2024-12-07T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "3e93ba82-529d-45a6-b128-cdba536618ea",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 200000.0,
+          "category": "저축",
+          "memo": "어머님이 보내주신 민규 생일 용돈",
+          "date": "2024-12-08T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "15ab9ccf-845e-4ec9-bbc2-91409cdc22e3",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 2865496.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2024-12-07T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "635736b5-5bf5-404b-80de-e8b6f5747425",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 200000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)지효님축의",
+          "date": "2024-12-14T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "6bdff6f0-4223-4d6e-b855-0073e30a7ded",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 107770.0,
+          "category": "지출",
+          "memo": "기타-자동차세",
+          "date": "2024-12-15T00:00:00Z",
+          "item": "기타"
+        },
+        {
+          "id": "eafbeb62-17b0-445f-995f-eaafb18b1f5b",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 77000.0,
+          "category": "지출",
+          "memo": "기타-엔진오일",
+          "date": "2024-12-16T00:00:00Z",
+          "item": "기타"
+        },
+        {
+          "id": "04a657d2-e963-450c-80e8-0210dec9a3ef",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 248600.0,
+          "category": "지출",
+          "memo": "기타-고향사랑, 아저씨선물",
+          "date": "2024-12-16T00:00:00Z",
+          "item": "기타"
+        },
+        {
+          "id": "00f262fd-2267-4d81-95f2-62ecb1bc1d36",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 150000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)재원님축의",
+          "date": "2024-12-21T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "3142d12f-581c-4baf-90cb-104d728053a1",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 640000.0,
+          "category": "지출",
+          "memo": "결혼-민규예복잔금",
+          "date": "2024-12-21T00:00:00Z",
+          "item": "기타"
+        },
+        {
+          "id": "0e49818f-4d63-44a7-936a-0da21e888bd8",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 528220.0,
+          "category": "지출",
+          "memo": "기타-옷 쇼핑",
+          "date": "2024-12-25T00:00:00Z",
+          "item": "기타"
+        },
+        {
+          "id": "83220af2-802e-455d-ba1f-16447cb21897",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 240000.0,
+          "category": "지출",
+          "memo": "기타-하영테니스라켓",
+          "date": "2024-12-25T00:00:00Z",
+          "item": "기타"
+        },
+        {
+          "id": "63713910-6685-400d-96e4-c196d6176cf4",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 624500.0,
+          "category": "지출",
+          "memo": "병원-(민규)무릎",
+          "date": "2024-12-25T00:00:00Z",
+          "item": "병원"
+        },
+        {
+          "id": "17251dd1-1f78-4715-838f-9742b192ad8c",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 2616090.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2024-12-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "d60d2bb4-0245-4f18-bb80-bd05d6f5ffa8",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 13000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-01-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "bb99f6e0-59e1-4a60-b773-d335598f0e9e",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 200000.0,
+          "category": "지출",
+          "memo": "경조사-(하영)영은축의",
+          "date": "2025-01-13T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "9701a5be-fee6-43cf-9459-68649a80f7c8",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 50000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)지연TL님축의",
+          "date": "2025-01-13T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "7d25c344-bcc1-4add-a335-83fb193065a1",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 286000.0,
+          "category": "지출",
+          "memo": "경조사-설 선물",
+          "date": "2025-01-20T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "0ea91e4d-965e-4daf-a9b6-c45bda09a160",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "지출",
+          "memo": "경조사-설 양가 부모님 용돈",
+          "date": "2025-01-31T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "51a74e86-c7ee-49d9-856f-2d7abb253eb8",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 419542.0,
+          "category": "지출",
+          "memo": "여행-(하영)푸꾸옥정산",
+          "date": "2025-01-27T00:00:00Z",
+          "item": "여행"
+        },
+        {
+          "id": "48eacf4a-973b-4d40-b37a-61a8802c5eb6",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 169000.0,
+          "category": "지출",
+          "memo": "**병원-(민규)독감이비인후과",
+          "date": "2025-01-19T00:00:00Z",
+          "item": "병원"
+        },
+        {
+          "id": "1100fca6-fdba-47c6-a7bf-376ba2f56fb1",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 868000.0,
+          "category": "지출",
+          "memo": "자기개발-전인구강의",
+          "date": "2025-01-13T00:00:00Z",
+          "item": "기타"
+        },
+        {
+          "id": "1c172c4a-d9d2-4f6d-8b2d-5b38a4f6a211",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 150000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)윤섭님축의",
+          "date": "2025-02-08T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "f8080b49-adf3-48ce-b601-da2d95063fa6",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 200000.0,
+          "category": "지출",
+          "memo": "경조사-(하영)태현축의",
+          "date": "2025-02-09T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "b82b4341-22e8-4014-9c13-7a0a7f20ebc4",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 50000.0,
+          "category": "지출",
+          "memo": "경조사-(하영)수환오빠축의",
+          "date": "2025-02-09T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "ebe7a7cc-107f-4739-a47d-6468683680df",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 105600.0,
+          "category": "지출",
+          "memo": "경조사-(민규)동운님집들이선물",
+          "date": "2025-02-16T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "0207cd8b-aac8-4d5e-86f6-e4eea3b688d3",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 171000.0,
+          "category": "지출",
+          "memo": "기타-자동차 점검 및 부품 교체",
+          "date": "2025-02-18T00:00:00Z",
+          "item": "기타"
+        },
+        {
+          "id": "721ab962-0d02-4759-86e0-8c52b1d99aab",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 91400.0,
+          "category": "지출",
+          "memo": "병원-(민규)목통증",
+          "date": "2025-02-16T00:00:00Z",
+          "item": "병원"
+        },
+        {
+          "id": "348f2631-d97e-4e50-a165-c84c5c216cc4",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 1900000.0,
+          "category": "지출",
+          "memo": "병원-(민규)라식 수술",
+          "date": "2025-02-15T00:00:00Z",
+          "item": "병원"
+        },
+        {
+          "id": "d01ee2d8-9e7d-4133-a9c3-4a25b9a77120",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 500000.0,
+          "category": "저축",
+          "memo": "병원-(민규)무릎MRI<환급완료>",
+          "date": "2025-02-16T00:00:00Z",
+          "item": "병원"
+        },
+        {
+          "id": "6335caa5-e346-4328-a816-a427bf315b43",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 1020.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-02-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "a6e4d1fc-fc73-46a3-a9c7-57bd9d401644",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 300000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)어머님생신",
+          "date": "2025-03-18T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "60bab62b-1cb4-4c76-8495-23341001ad61",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 110700.0,
+          "category": "지출",
+          "memo": "**병원-(하영)이빨깨짐",
+          "date": "2025-03-16T00:00:00Z",
+          "item": "병원"
+        },
+        {
+          "id": "cdb9570d-436a-4aaf-8785-6e268890c91f",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 271180.0,
+          "category": "지출",
+          "memo": "병원-(공동)산전검사<환급완료>",
+          "date": "2025-03-16T00:00:00Z",
+          "item": "병원"
+        },
+        {
+          "id": "90099002-77ef-48c5-875c-716aea11c0e9",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 1739009.0,
+          "category": "지출",
+          "memo": "여행-(민규)세부",
+          "date": "2025-03-16T00:00:00Z",
+          "item": "여행"
+        },
+        {
+          "id": "4ab780e6-b45d-474d-8a7b-f33fa9d04edb",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 16409.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-03-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "99582361-fbe3-4adf-a281-8754d7122c8f",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 180000.0,
+          "category": "저축",
+          "memo": "병원-(공동)산전검사환급",
+          "date": "2025-04-15T00:00:00Z",
+          "item": "병원"
+        },
+        {
+          "id": "298ac6ed-6311-48da-94ff-e7dba4757fd5",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 500000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)태형님축의",
+          "date": "2025-04-20T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "33d83404-7c6d-42a6-81f5-e3446221f42e",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 200000.0,
+          "category": "저축",
+          "memo": "보충",
+          "date": "2025-04-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "942f8fdf-f4e5-4329-94e5-fa6a1b36ef51",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 194278.0,
+          "category": "지출",
+          "memo": "비는돈",
+          "date": "2025-04-28T00:00:00Z",
+          "item": "기타"
+        },
+        {
+          "id": "da011ea5-b337-45b1-88cd-d6eb2775c5ee",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 13883.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-04-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "176b891a-bf04-423e-955e-5ffa05c2b9de",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 400000.0,
+          "category": "지출",
+          "memo": "경조사-(하영)아름축의",
+          "date": "2025-04-29T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "a3245b2e-6c8b-4a9f-ae2a-db0f3e0f414c",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 200000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)가정의달용돈",
+          "date": "2025-05-06T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "2009b258-799a-4b25-bc3b-3b7f69e6e4dc",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "경조사-(하영)롤다언니축의",
+          "date": "2025-05-06T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "11a64fc8-f839-473b-be85-ba72f418abbb",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 300000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)문석님축의",
+          "date": "2025-05-21T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "a4ae562a-bbdd-4831-9590-96fbc84f1b37",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 200000.0,
+          "category": "지출",
+          "memo": "경조사-(하영)가정의달용돈",
+          "date": "2025-05-21T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "0942f2b4-a1e5-4ac4-be66-593f4725b566",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 310000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)큰누나생일",
+          "date": "2025-05-31T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "2bf1c185-141d-4da2-a1d1-eeacd155d188",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 606520.0,
+          "category": "지출",
+          "memo": "기타-자동차보험갱신",
+          "date": "2025-05-18T00:00:00Z",
+          "item": "기타"
+        },
+        {
+          "id": "01d2dc7f-4f9b-4fec-8636-48145b62ef3b",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 25000.0,
+          "category": "저축",
+          "memo": "병원-(민규)목통증<환급완료>",
+          "date": "2025-04-28T00:00:00Z",
+          "item": "병원"
+        },
+        {
+          "id": "734bb95b-af67-4499-b21d-cebd5196dd85",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "병원-(공동)풍진항체",
+          "date": "2025-05-09T00:00:00Z",
+          "item": "병원"
+        },
+        {
+          "id": "587427a0-55a1-4856-a91f-e57bac04960a",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 200000.0,
+          "category": "저축",
+          "memo": "보충",
+          "date": "2025-04-28T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "14834804-874e-4d11-9ff2-d9e05eca2370",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 134000.0,
+          "category": "지출",
+          "memo": "기타-린클남은비용",
+          "date": "2025-08-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "7b6c6a4c-b531-4f10-8721-ca03737003be",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)다정님축의",
+          "date": "2025-06-14T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "063910f6-1656-4e40-9679-cce6282c6696",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 108000.0,
+          "category": "지출",
+          "memo": "경조사-상훈오빠한우",
+          "date": "2025-06-21T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "27a753dc-aca8-4fba-9155-9b8a50ea62c0",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 400000.0,
+          "category": "지출",
+          "memo": "경조사-아빠 생일 용돈",
+          "date": "2025-06-21T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "a9b8c218-4622-4038-bcfa-4e687e523b4b",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 300000.0,
+          "category": "지출",
+          "memo": "경조사-아버님생신용돈",
+          "date": "2025-06-24T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "a6c89e58-0bc3-4fd6-a76c-094afb1d8148",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100530.0,
+          "category": "지출",
+          "memo": "기타-자동차세",
+          "date": "2025-06-24T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "b48ca002-fca8-4066-979d-2a727423ac81",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 125000.0,
+          "category": "지출",
+          "memo": "기타-자동차배터리교체",
+          "date": "2025-06-29T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "03cf00c2-3932-4ba2-bfb9-b4432e8bffd1",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)재우축의",
+          "date": "2025-07-20T00:00:00Z",
+          "item": "경조사"
+        },
+        {
+          "id": "a1606d6b-64e5-4940-aa56-5b00e398b373",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 762547.0,
+          "category": "지출",
+          "memo": "여행-(민규)후쿠오카",
+          "date": "2025-07-20T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "4cf4afff-4197-42a2-a5bd-23b9d5223ed6",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 300000.0,
+          "category": "저축",
+          "memo": "보충",
+          "date": "2025-06-30T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "d1012f98-faf3-4623-aab5-4b2fbc99f709",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 18171.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-08-21T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "97093bd3-e275-43fb-b281-11e3bb5c349a",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 1679.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-09-12T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "dc4134f0-cc87-48c8-a9af-4515fe4c79e5",
+      "name": "알트코인(민규)",
+      "type": "투자",
+      "color": "#5458e3",
+      "opening_balance": 60000000.0,
+      "status": "active",
+      "image_path": "images\\비트코인.png",
+      "transactions": [],
+      "purchase_amount": 0.0,
+      "cash_holding": 60000000.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": "2025-08-27"
+    },
+    {
+      "id": "29035363-8af7-4319-9af3-15b803d417b5",
+      "name": "주식_NH_01(하영)",
+      "type": "투자",
+      "color": "#66c962",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\나무증권.png",
+      "transactions": [
+        {
+          "id": "0c2c9e8b-3293-47f9-b973-974a8b72c7f9",
+          "account_id": "29035363-8af7-4319-9af3-15b803d417b5",
+          "type": "income",
+          "amount": 37793631.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-08-21T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "b66c2e22-452e-43f7-9c78-abcd57d0f663",
+          "account_id": "29035363-8af7-4319-9af3-15b803d417b5",
+          "type": "expense",
+          "amount": 2792048.0,
+          "category": "손익",
+          "memo": "",
+          "date": "2025-08-21T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ca98aee9-a341-40cb-9e53-840efe0b2b92",
+          "account_id": "29035363-8af7-4319-9af3-15b803d417b5",
+          "type": "income",
+          "amount": 14644526.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-08-21T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 37809900.0,
+      "cash_holding": 14648120.0,
+      "evaluated_amount": 34943339.0,
+      "last_valuation_date": "2025-08-27"
+    },
+    {
+      "id": "cf7a78ca-252e-4feb-8fa3-2b965b86e339",
+      "name": "개인연금_NH_02(하영)",
+      "type": "투자",
+      "color": "#97c7bd",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\나무증권.png",
+      "transactions": [],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "0b65d4db-f1d8-457f-8508-a2bab1199a97",
+      "name": "한투_CMA(민규)",
+      "type": "현금",
+      "color": "#812f33",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\한국투자증권.png",
+      "transactions": [
+        {
+          "id": "0b40841b-84a6-479c-94a5-beff9e92f8f3",
+          "account_id": "0b65d4db-f1d8-457f-8508-a2bab1199a97",
+          "type": "income",
+          "amount": 831490.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-08-25T00:00:00Z",
+          "item": ""
+        }
+      ],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "4a21fe35-f326-40ec-b4bd-cb42d03629e1",
+      "name": "주식_한투(민규)",
+      "type": "투자",
+      "color": "#744c2c",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "images\\한국투자증권.png",
+      "transactions": [],
+      "purchase_amount": 29220139.0,
+      "cash_holding": 1380620.0,
+      "evaluated_amount": 33893906.0,
+      "last_valuation_date": "2025-08-27"
+    }
+  ],
+  "salaries": [
+    {
+      "amount": 5839000.0,
+      "month": "2024-10",
+      "person": "민규"
+    },
+    {
+      "amount": 4029910.0,
+      "month": "2024-10",
+      "person": "하영"
+    },
+    {
+      "amount": 8442610.0,
+      "month": "2024-11",
+      "person": "민규"
+    },
+    {
+      "amount": 3993940.0,
+      "month": "2024-11",
+      "person": "하영"
+    },
+    {
+      "amount": 4744010.0,
+      "month": "2024-12",
+      "person": "민규"
+    },
+    {
+      "amount": 4103850.0,
+      "month": "2024-12",
+      "person": "하영"
+    },
+    {
+      "amount": 4594703.0,
+      "month": "2025-01",
+      "person": "민규"
+    },
+    {
+      "amount": 5249880.0,
+      "month": "2025-01",
+      "person": "하영"
+    },
+    {
+      "amount": 53215553.0,
+      "month": "2025-02",
+      "person": "민규"
+    },
+    {
+      "amount": 22917100.0,
+      "month": "2025-02",
+      "person": "하영"
+    },
+    {
+      "amount": 4369195.0,
+      "month": "2025-03",
+      "person": "민규"
+    },
+    {
+      "amount": 4070430.0,
+      "month": "2025-03",
+      "person": "하영"
+    },
+    {
+      "amount": 4456222.0,
+      "month": "2025-04",
+      "person": "민규"
+    },
+    {
+      "amount": 5454632.0,
+      "month": "2025-04",
+      "person": "하영"
+    },
+    {
+      "amount": 4147925.0,
+      "month": "2025-05",
+      "person": "민규"
+    },
+    {
+      "amount": 4235790.0,
+      "month": "2025-05",
+      "person": "하영"
+    },
+    {
+      "amount": 4210945.0,
+      "month": "2025-06",
+      "person": "민규"
+    },
+    {
+      "amount": 4434260.0,
+      "month": "2025-06",
+      "person": "하영"
+    },
+    {
+      "amount": 3947845.0,
+      "month": "2025-07",
+      "person": "민규"
+    },
+    {
+      "amount": 3852660.0,
+      "month": "2025-07",
+      "person": "하영"
+    },
+    {
+      "amount": 8892445.0,
+      "month": "2025-08",
+      "person": "민규"
+    },
+    {
+      "amount": 5664060.0,
+      "month": "2025-08",
+      "person": "하영"
+    },
+    {
+      "amount": 4275340.0,
+      "month": "2025-09",
+      "person": "하영"
+    },
+    {
+      "amount": 4194785.0,
+      "month": "2025-09",
+      "person": "민규"
+    }
+  ]
+}
