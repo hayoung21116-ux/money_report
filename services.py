@@ -5,16 +5,18 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from collections import defaultdict
 from pathlib import Path
+import uuid
 
 from domain import Account, Transaction, ValuationRecord, TradePair
-from PySide6.QtWidgets import QMessageBox
+# from services import gen_id # Removed import gen_id
+# from PySide6.QtWidgets import QMessageBox
 
 # ==== HELPER FUNCTIONS =====================================================
 
-def gen_id() -> str:
-    """Generate a unique ID using UUID v4"""
-    import uuid
-    return str(uuid.uuid4())
+# Removed gen_id() as it's now handled directly in domain.py
+# def gen_id() -> str:
+#     """Generate a unique ID using UUID v4"""
+#     return str(uuid.uuid4())
 
 def today_iso() -> str:
     """Get current date/time in ISO format"""
@@ -45,8 +47,8 @@ class LocalJSONDataSource:
         try:
             return json.loads(self.filepath.read_text(encoding="utf-8"))
         except Exception as e:
-            QMessageBox.warning(None, "Data Load Error", f"Failed to load data: {str(e)}")
-            return {"accounts": [], "salaries": []}
+            # Raise exception for UI layer to handle
+            raise IOError(f"Failed to load data from {self.filepath}: {e}") from e
 
     def save(self, data: dict) -> None:
         """Save data to JSON file"""
@@ -56,7 +58,8 @@ class LocalJSONDataSource:
                 encoding="utf-8"
             )
         except Exception as e:
-            QMessageBox.critical(None, "Save Error", f"Failed to save data: {str(e)}")
+            # Raise exception for UI layer to handle
+            raise IOError(f"Failed to save data to {self.filepath}: {e}") from e
 
 class RESTDataSource:
     """Stub for future REST API data source"""
@@ -132,8 +135,9 @@ class LedgerRepository:
                 image_path=acc_dict.get("image_path", ""), # Load image_path, default to empty string
                 purchase_amount=acc_dict.get("purchase_amount", 0.0), # Load new field
                 cash_holding=acc_dict.get("cash_holding", 0.0),     # Load new field
-                evaluated_amount=acc_dict.get("evaluated_amount", 0.0), # Load new field
-                last_valuation_date=acc_dict.get("last_valuation_date", ""), # Load new field
+                # Removed evaluated_amount and last_valuation_date as they are now derived from valuations
+                # evaluated_amount=acc_dict.get("evaluated_amount", 0.0), # Removed
+                # last_valuation_date=acc_dict.get("last_valuation_date", ""), # Removed
                 transactions=txns,
                 valuations=valuations
             )
@@ -192,19 +196,25 @@ class LedgerService:
         self.repo = repository
         
     def add_account(self, name: str, type_: Literal["현금", "투자", "소비"], 
-                   color: str, opening_balance: float, image_path: str = "") -> Account:
+                   color: str, opening_balance: float, image_path: str = "",
+                   purchase_amount: float = 0.0, cash_holding: float = 0.0) -> Account:
         """Add a new account"""
         if not name.strip():
             raise ValueError("계좌명을 입력하세요.")
         
         account = Account(
-            id=gen_id(),
+            id=uuid.uuid4().hex, # Changed to use uuid.uuid4()
             name=name,
             type=type_,
             color=color,
             opening_balance=opening_balance,
             status="active",
-            image_path=image_path
+            image_path=image_path,
+            purchase_amount=purchase_amount,
+            cash_holding=cash_holding
+            # Removed evaluated_amount and last_valuation_date as they are now derived from valuations
+            # evaluated_amount=evaluated_amount,
+            # last_valuation_date=last_valuation_date
         )
         self.repo.add_account(account)
         return account
@@ -241,7 +251,7 @@ class LedgerService:
             raise ValueError("거래 타입이 잘못되었습니다.")
         
         txn = Transaction(
-            id=gen_id(), 
+            id=uuid.uuid4().hex, # Changed to use uuid.uuid4()
             account_id=account_id, 
             type=type_,
             amount=amount, 
@@ -325,7 +335,7 @@ class LedgerService:
             raise ValueError("Valuation is only available for investment accounts")
         
         valuation = ValuationRecord(
-            id=gen_id(),
+            id=uuid.uuid4().hex, # Changed to use uuid.uuid4()
             account_id=account_id,
             evaluated_amount=amount,
             evaluation_date=date,
@@ -334,9 +344,10 @@ class LedgerService:
         )
         account.valuations.append(valuation)
         
-        # 호환성을 위해 기존 필드도 업데이트
-        account.evaluated_amount = amount
-        account.last_valuation_date = date[:10]  # YYYY-MM-DD 형식으로 저장
+        # Removed direct update to evaluated_amount and last_valuation_date
+        # These are now derived from the latest valuation in the Account properties
+        # account.evaluated_amount = amount
+        # account.last_valuation_date = date[:10]  # YYYY-MM-DD 형식으로 저장
         
         self.repo.update_account(account)
         return valuation
@@ -355,14 +366,15 @@ class LedgerService:
             raise ValueError("Account not found")
         
         account.valuations = [v for v in account.valuations if v.id != valuation_id]
-        # 삭제 후 최신 평가 기록으로 호환성 필드 업데이트
-        if account.valuations:
-            latest = account.latest_valuation
-            account.evaluated_amount = latest.evaluated_amount
-            account.last_valuation_date = latest.evaluation_date[:10]
-        else:
-            account.evaluated_amount = 0.0
-            account.last_valuation_date = ""
+        # Removed direct update to evaluated_amount and last_valuation_date
+        # These are now derived from the latest valuation in the Account properties
+        # if account.valuations:
+        #     latest = account.latest_valuation
+        #     account.evaluated_amount = latest.evaluated_amount
+        #     account.last_valuation_date = latest.evaluation_date[:10]
+        # else:
+        #     account.evaluated_amount = 0.0
+        #     account.last_valuation_date = ""
         
         self.repo.update_account(account)
     

@@ -1,24 +1,20 @@
-from __future__ import annotations
-import sys
 from pathlib import Path
 from typing import Literal, Optional
-from dataclasses import dataclass
 
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QScrollArea, QGridLayout, QDialog, QFormLayout, QLineEdit, QColorDialog, QComboBox,
     QDateEdit, QTextEdit, QMessageBox, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QFrame, QTabWidget, QToolTip, QSizePolicy
 )
 from PySide6.QtCharts import QLineSeries, QValueAxis, QDateTimeAxis, QScatterSeries
 from PySide6.QtCore import QRect, QRectF, Qt, QDate, QSize, Signal, QPointF, QDateTime, QMargins
-from PySide6.QtGui import QAction, QPalette, QColor, QPixmap, QPainter, QDoubleValidator, QCursor, QFont, QBrush, QPainterPath
-from PySide6.QtWidgets import QGraphicsSimpleTextItem, QGraphicsScene
-from PySide6.QtCharts import QChart, QChartView, QBarSet, QBarSeries, QBarCategoryAxis, QValueAxis, QStackedBarSeries
+from PySide6.QtGui import QPalette, QColor, QPixmap, QPainter, QDoubleValidator, QCursor, QFont, QBrush, QPainterPath
+from PySide6.QtCharts import QChart, QChartView
 
 from domain import Account, Transaction, ValuationRecord
-from services import format_currency, gen_id
-from datetime import datetime, timezone
+from services import format_currency
+import random
 
 # ==== UI COMPONENTS ========================================================
 
@@ -200,12 +196,13 @@ class AccountCard(QFrame):
             self.clicked.emit(self.account_id)
 
 class AccountDialog(QDialog):
-    """Dialog for creating new accounts"""
+    """Dialog for creating or editing accounts"""
     
-    def __init__(self):
+    def __init__(self, account: Account | None = None):
         super().__init__()
-        self.setWindowTitle("계좌 추가")
-        self.chosen_color = self.generate_random_color()
+        self.account = account
+        self.setWindowTitle("계좌 {}".format("수정" if account else "추가"))
+        self.chosen_color = account.color if account else self.generate_random_color()
         self.setup_ui()
 
     def setup_ui(self) -> None:
@@ -213,130 +210,44 @@ class AccountDialog(QDialog):
         layout = QFormLayout(self)
         
         # Account name field
-        self.name_edit = QLineEdit()
+        self.name_edit = QLineEdit(self.account.name if self.account else "")
         self.name_edit.setPlaceholderText("계좌명을 입력하세요")
         
         # Account type selector
         self.type_combo = QComboBox()
         self.type_combo.addItems(["현금", "투자", "소비"])
+        if self.account:
+            self.type_combo.setCurrentText(self.account.type)
         
-        # Initial balance field
-        self.balance_edit = QLineEdit()
+        # Initial balance field (only for new accounts)
+        self.balance_edit = QLineEdit(str(self.account.balance()) if self.account else "0")
         self.balance_edit.setPlaceholderText("0")
         self.balance_edit.setValidator(QDoubleValidator())
-        
-        # Color picker button
-        self.color_btn = QPushButton("색상 선택")
-        self.color_btn.clicked.connect(self.choose_color)
-        self.update_color_button()
-
-        # Image selector
-        self.image_combo = QComboBox()
-        self.image_combo.addItem("이미지 없음", "") # Default option for no image
-        images_dir = Path("images")
-        if images_dir.exists():
-            # Search for png, jpg, and jpeg files
-            image_files = []
-            for ext in ["*.png", "*.jpg", "*.jpeg"]:
-                image_files.extend(images_dir.glob(ext))
-            
-            for image_file in sorted(image_files):
-                self.image_combo.addItem(image_file.stem, str(image_file)) # Use filename as text, full path as data
-        
-        # Add fields to layout
-        layout.addRow("계좌명", self.name_edit)
-        layout.addRow("계좌 유형", self.type_combo)
-        layout.addRow("초기 잔액", self.balance_edit)
-        layout.addRow("색상", self.color_btn)
-        layout.addRow("이미지", self.image_combo)
-        
-        # OK button
-        btn_ok = QPushButton("추가")
-        btn_ok.clicked.connect(self.accept)
-        layout.addWidget(btn_ok)
-
-    def generate_random_color(self) -> str:
-        """Generate a random hex color code"""
-        import random
-        r = random.randint(0, 255)
-        g = random.randint(0, 255)
-        b = random.randint(0, 255)
-        return f"#{r:02x}{g:02x}{b:02x}"
-
-    def update_color_button(self) -> None:
-        """Update the color button to show the current color"""
-        self.color_btn.setStyleSheet(f"""
-            background-color: {self.chosen_color};
-            color: {'white' if QColor(self.chosen_color).lightness() < 128 else 'black'};
-        """)
-
-    def choose_color(self) -> None:
-        """Open color picker dialog and update chosen color"""
-        color = QColorDialog.getColor(QColor(self.chosen_color), self)
-        if color.isValid():
-            self.chosen_color = color.name()
-            self.update_color_button()
-
-    def get_data(self) -> tuple[str, str, str, float, str]:
-        """Get the entered account data from the dialog"""
-        try:
-            bal = float(self.balance_edit.text() or 0)
-        except ValueError:
-            raise ValueError("잔액이 숫자가 아닙니다.")
-        return (
-            self.name_edit.text().strip(),
-            self.type_combo.currentText(),
-            self.chosen_color,
-            bal,
-            self.image_combo.currentData() # Get the full path from the selected item's data
-        )
-
-class AccountEditDialog(QDialog):
-    """Dialog for editing existing accounts"""
-    
-    def __init__(self, account: Account):
-        super().__init__()
-        self.setWindowTitle("계좌 수정")
-        self.chosen_color = account.color
-        self.setup_ui(account)
-
-    def setup_ui(self, account: Account) -> None:
-        """Setup the dialog UI components"""
-        self.layout = QFormLayout(self)
-        
-        # Account name field
-        self.name_edit = QLineEdit(account.name)
-        
-        # Account type selector
-        self.type_combo = QComboBox()
-        self.type_combo.addItems(["현금", "투자"])
-        self.type_combo.setCurrentText(account.type)
-        
-        # Balance field
-        self.balance_edit = QLineEdit(str(account.balance()))
-        self.balance_edit.setValidator(QDoubleValidator())
+        if self.account: # Disable for existing accounts
+            self.balance_edit.setReadOnly(True)
+            self.balance_edit.setToolTip("기존 계좌의 잔액은 수정할 수 없습니다. 거래를 추가/수정해주세요.")
 
         # Investment specific fields
         self.investment_frame = QFrame()
         self.investment_layout = QFormLayout(self.investment_frame)
         
-        self.purchase_amount_edit = QLineEdit(str(account.purchase_amount))
-        self.purchase_amount_edit.setValidator(QDoubleValidator())
+        self.purchase_amount_edit = QLineEdit(str(self.account.purchase_amount) if self.account and self.account.type == "투자" else "")
         self.purchase_amount_edit.setPlaceholderText("총 매입 금액")
+        self.purchase_amount_edit.setValidator(QDoubleValidator())
 
-        self.cash_holding_edit = QLineEdit(str(account.cash_holding))
-        self.cash_holding_edit.setValidator(QDoubleValidator())
+        self.cash_holding_edit = QLineEdit(str(self.account.cash_holding) if self.account and self.account.type == "투자" else "")
         self.cash_holding_edit.setPlaceholderText("보유 현금")
+        self.cash_holding_edit.setValidator(QDoubleValidator())
 
-        self.evaluated_amount_edit = QLineEdit(str(account.evaluated_amount))
-        self.evaluated_amount_edit.setValidator(QDoubleValidator())
+        self.evaluated_amount_edit = QLineEdit(str(self.account.evaluated_amount) if self.account and self.account.type == "투자" else "")
         self.evaluated_amount_edit.setPlaceholderText("현재 평가 금액")
+        self.evaluated_amount_edit.setValidator(QDoubleValidator())
 
         self.valuation_date_edit = QDateEdit()
         self.valuation_date_edit.setCalendarPopup(True)
         self.valuation_date_edit.setDisplayFormat("yyyy-MM-dd")
-        if account.last_valuation_date:
-            self.valuation_date_edit.setDate(QDate.fromString(account.last_valuation_date, "yyyy-MM-dd"))
+        if self.account and self.account.last_valuation_date:
+            self.valuation_date_edit.setDate(QDate.fromString(self.account.last_valuation_date, "yyyy-MM-dd"))
         else:
             self.valuation_date_edit.setDate(QDate.currentDate())
         
@@ -348,7 +259,7 @@ class AccountEditDialog(QDialog):
         # Show/hide investment fields based on account type
         self.type_combo.currentTextChanged.connect(self.toggle_investment_fields)
         self.toggle_investment_fields(self.type_combo.currentText())
-        
+
         # Color picker button
         self.color_btn = QPushButton("색상 선택")
         self.color_btn.clicked.connect(self.choose_color)
@@ -359,7 +270,7 @@ class AccountEditDialog(QDialog):
         self.image_combo.addItem("이미지 없음", "") # Default option for no image
         images_dir = Path("images")
         if images_dir.exists():
-            current_image_path = Path(account.image_path) if account.image_path else None
+            current_image_path = Path(self.account.image_path) if self.account and self.account.image_path else None
             is_current_image_present = current_image_path and current_image_path.exists() and current_image_path.is_file()
             
             if is_current_image_present:
@@ -376,88 +287,104 @@ class AccountEditDialog(QDialog):
                     self.image_combo.addItem(image_file.stem, str(image_file))
         
         # Set the current image if it exists and was found
-        if account.image_path:
-            index = self.image_combo.findData(account.image_path)
+        if self.account and self.account.image_path:
+            index = self.image_combo.findData(self.account.image_path)
             if index != -1:
                 self.image_combo.setCurrentIndex(index)
             else:
                 # If image path is set but not found in the list, it might be an invalid path
                 # or an image not in the 'images' directory. Add it as a custom path.
-                self.image_combo.addItem(f"기타: {Path(account.image_path).name}", account.image_path)
+                self.image_combo.addItem(f"기타: {Path(self.account.image_path).name}", self.account.image_path)
                 self.image_combo.setCurrentIndex(self.image_combo.count() - 1)
         else:
             self.image_combo.setCurrentIndex(0) # "이미지 없음"
 
         # Add fields to layout
-        self.layout.addRow("계좌명", self.name_edit)
-        self.layout.addRow("계좌 유형", self.type_combo)
-        self.layout.addRow("잔액", self.balance_edit) # This will be hidden for investment accounts
-        self.layout.addRow(self.investment_frame) # Add investment fields frame
-        self.layout.addRow("색상", self.color_btn)
-        self.layout.addRow("이미지", self.image_combo)
+        layout.addRow("계좌명", self.name_edit)
+        layout.addRow("계좌 유형", self.type_combo)
+        layout.addRow("초기 잔액", self.balance_edit)
+        layout.addRow(self.investment_frame) # Add investment frame
+        layout.addRow("색상", self.color_btn)
+        layout.addRow("이미지", self.image_combo)
         
-        # Show/hide balance field based on account type
-        self.type_combo.currentTextChanged.connect(self.toggle_balance_field)
-        self.toggle_balance_field(self.type_combo.currentText())
-        
-        # Save button
-        btn_ok = QPushButton("저장")
+        # OK button
+        btn_ok = QPushButton("저장" if self.account else "추가")
         btn_ok.clicked.connect(self.accept)
-        self.layout.addWidget(btn_ok)
+        layout.addWidget(btn_ok)
 
-    def choose_color(self) -> None:
-        """Open color picker dialog and update chosen color"""
-        color = QColorDialog.getColor(QColor(self.chosen_color), self)
-        if color.isValid():
-            self.chosen_color = color.name()
-            self.update_color_button()
+    def toggle_investment_fields(self, account_type: str) -> None:
+        """Show/hide investment fields based on account type"""
+        is_investment = (account_type == "투자")
+        self.investment_frame.setVisible(is_investment)
+        # If not an investment account, clear the fields
+        if not is_investment:
+            self.purchase_amount_edit.clear()
+            self.cash_holding_edit.clear()
+            self.evaluated_amount_edit.clear()
+            self.valuation_date_edit.setDate(QDate.currentDate())
+
+    def generate_random_color(self) -> str:
+        """Generate a random hex color code"""
+        r = random.randint(0, 255)
+        g = random.randint(0, 255)
+        b = random.randint(0, 255)
+        return f"#{r:02x}{g:02x}{b:02x}"
 
     def update_color_button(self) -> None:
         """Update the color button to show the current color"""
+        from PySide6.QtGui import QColor # Moved import here
         self.color_btn.setStyleSheet(f"""
             background-color: {self.chosen_color};
             color: {'white' if QColor(self.chosen_color).lightness() < 128 else 'black'};
         """)
 
-    def toggle_investment_fields(self, account_type: str) -> None:
-        """Show or hide investment-specific fields based on account type"""
-        self.investment_frame.setVisible(account_type == "투자")
+    def choose_color(self) -> None:
+        """Open color picker dialog and update chosen color"""
+        from PySide6.QtWidgets import QColorDialog # Moved import here
+        color = QColorDialog.getColor(QColor(self.chosen_color), self)
+        if color.isValid():
+            self.chosen_color = color.name()
+            self.update_color_button()
 
-    def toggle_balance_field(self, account_type: str) -> None:
-        """Show or hide balance field based on account type"""
-        # Find the row index for the "잔액" field
-        balance_row_index = -1
-        for i in range(self.layout.rowCount()):
-            item = self.layout.itemAt(i, QFormLayout.LabelRole)
-            if item and item.widget() and item.widget().text() == "잔액":
-                balance_row_index = i
-                break
-        
-        if balance_row_index != -1:
-            self.layout.itemAt(balance_row_index, QFormLayout.LabelRole).widget().setVisible(account_type != "투자")
-            self.layout.itemAt(balance_row_index, QFormLayout.FieldRole).widget().setVisible(account_type != "투자")
+    def get_data(self) -> tuple[str, str, str, float, str, float, float, float, str]:
+        """Get the entered account data from the dialog"""
+        name = self.name_edit.text().strip()
+        type_ = self.type_combo.currentText()
+        color = self.chosen_color
+        image_path = self.image_combo.currentData()
 
-    def get_data(self) -> tuple[str, str, float, str, str, float, float, float, str]:
-        """Get the edited account data from the dialog"""
-        try:
-            balance = float(self.balance_edit.text())
-            purchase_amount = float(self.purchase_amount_edit.text() or 0.0)
-            cash_holding = float(self.cash_holding_edit.text() or 0.0)
-            evaluated_amount = float(self.evaluated_amount_edit.text() or 0.0)
-            valuation_date_str = self.valuation_date_edit.date().toString("yyyy-MM-dd")
-            return (
-                self.name_edit.text().strip(),
-                self.type_combo.currentText(),
-                balance,
-                self.chosen_color,
-                self.image_combo.currentData(), # Get the full path from the selected item's data
-                purchase_amount,
-                cash_holding,
-                evaluated_amount,
-                valuation_date_str
-            )
-        except ValueError:
-            raise ValueError("입력된 값 중 숫자가 아닌 것이 있습니다.")
+        balance = 0.0
+        if not self.account:
+            try:
+                balance = float(self.balance_edit.text() or 0)
+            except ValueError:
+                raise ValueError("잔액이 숫자가 아닙니다.")
+
+        purchase_amount = 0.0
+        cash_holding = 0.0
+        evaluated_amount = 0.0
+        valuation_date = ""
+
+        if type_ == "투자":
+            try:
+                purchase_amount = float(self.purchase_amount_edit.text() or 0)
+                cash_holding = float(self.cash_holding_edit.text() or 0)
+                evaluated_amount = float(self.evaluated_amount_edit.text() or 0)
+                valuation_date = self.valuation_date_edit.date().toString("yyyy-MM-dd")
+            except ValueError:
+                raise ValueError("투자 관련 금액은 숫자가 아닙니다.")
+
+        return (
+            name,
+            type_,
+            color,
+            balance, # Initial balance, only for new accounts
+            image_path,
+            purchase_amount,
+            cash_holding,
+            evaluated_amount,
+            valuation_date
+        )
 
 class TransactionDialog(QDialog):
     """Dialog for adding new transactions"""
@@ -712,18 +639,15 @@ class TransactionTableDialog(QDialog):
 
     def edit_account(self) -> None:
         """Open dialog to edit account details"""
-        dlg = AccountEditDialog(self.account)
+        dlg = AccountDialog(self.account)
         if dlg.exec() == QDialog.Accepted:
             try:
                 # Unpack all values, including new investment ones
-                new_name, new_type, new_balance, new_color, new_image_path, new_purchase_amount, new_cash_holding, new_evaluated_amount, new_valuation_date = dlg.get_data()
+                new_name, new_type, new_color, _, new_image_path, new_purchase_amount, new_cash_holding, new_evaluated_amount, new_valuation_date = dlg.get_data()
                 if not new_name:
                     QMessageBox.warning(self, "에러", "계좌명을 입력하세요.")
                     return
                 
-                # Calculate the difference to adjust opening_balance
-                balance_diff = new_balance - self.account.balance()
-                self.account.opening_balance += balance_diff
                 self.account.name = new_name
                 self.account.type = new_type
                 self.account.color = new_color
@@ -2342,18 +2266,15 @@ class ValuationChartDialog(QDialog):
                 
     def edit_account(self) -> None:
         """계좌 수정 다이얼로그 열기"""
-        dlg = AccountEditDialog(self.account)
+        dlg = AccountDialog(self.account)
         if dlg.exec() == QDialog.Accepted:
             try:
                 # Unpack all values, including new investment ones
-                new_name, new_type, new_balance, new_color, new_image_path, new_purchase_amount, new_cash_holding, new_evaluated_amount, new_valuation_date = dlg.get_data()
+                new_name, new_type, new_color, _, new_image_path, new_purchase_amount, new_cash_holding, new_evaluated_amount, new_valuation_date = dlg.get_data()
                 if not new_name:
                     QMessageBox.warning(self, "에러", "계좌명을 입력하세요.")
                     return
                 
-                # Calculate the difference to adjust opening_balance
-                balance_diff = new_balance - self.account.balance()
-                self.account.opening_balance += balance_diff
                 self.account.name = new_name
                 self.account.type = new_type
                 self.account.color = new_color
@@ -2367,10 +2288,8 @@ class ValuationChartDialog(QDialog):
                     self.account.last_valuation_date = new_valuation_date
                 
                 self.service.update_account(self.account)
-                self.setWindowTitle(f"{new_name} 자산 평가 추이")
-                self.update_chart()
-                self.setup_account_info(self.layout())
-                # Update parent UI if available
+                self.setWindowTitle(f"{new_name} 거래 내역")
+                self.refresh_table()
                 if hasattr(self.parent(), 'update_ui'):
                     self.parent().update_ui()
                     
