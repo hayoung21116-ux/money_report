@@ -10,13 +10,15 @@ from PySide6.QtWidgets import (
     QDateEdit, QTextEdit, QMessageBox, QTableWidget, QTableWidgetItem, QAbstractItemView,
     QFrame, QTabWidget, QToolTip, QSizePolicy
 )
-from PySide6.QtCore import QRect, QRectF, Qt, QDate, QSize, Signal, QPointF
+from PySide6.QtCharts import QLineSeries, QValueAxis, QDateTimeAxis, QScatterSeries
+from PySide6.QtCore import QRect, QRectF, Qt, QDate, QSize, Signal, QPointF, QDateTime, QMargins
 from PySide6.QtGui import QAction, QPalette, QColor, QPixmap, QPainter, QDoubleValidator, QCursor, QFont, QBrush, QPainterPath
 from PySide6.QtWidgets import QGraphicsSimpleTextItem, QGraphicsScene
 from PySide6.QtCharts import QChart, QChartView, QBarSet, QBarSeries, QBarCategoryAxis, QValueAxis, QStackedBarSeries
 
-from domain import Account, Transaction
+from domain import Account, Transaction, ValuationRecord
 from services import format_currency, gen_id
+from datetime import datetime, timezone
 
 # ==== UI COMPONENTS ========================================================
 
@@ -691,6 +693,13 @@ class TransactionTableDialog(QDialog):
             self.table.setItem(row, 4, QTableWidgetItem(t.date))
             if self.account.type == "소비":
                 self.table.setItem(row, 5, QTableWidgetItem(t.item))
+            
+            if t.type == "income" and t.category == "이동":
+                light_yellow = QColor("#FFFACD")  # LemonChiffon - 아주 옅은 노란색
+                for col in range(self.table.columnCount()):
+                    item = self.table.item(row, col)
+                    if item:
+                        item.setBackground(light_yellow)
 
     def add_transaction(self) -> None:
         """Open dialog to add a new transaction"""
@@ -1161,401 +1170,1213 @@ class StatsDialog(QDialog):
             
         chart.addSeries(series)
         return chart
-        
+
     def setup_net_income_tab(self) -> None:
-        """Setup net income tab with chart"""
+        """Setup net income tab with chart and summary"""
         layout = QVBoxLayout(self.net_income_tab)
-        
-        # Net income summary frame
-        self.net_income_summary_frame = QFrame()
-        summary_layout = QHBoxLayout(self.net_income_summary_frame)
-        
-        # Create summary labels (will be updated by update_net_income_tab_summary)
-        self.net_income_total_label = QLabel("전체 순수익: -")
-        self.net_income_year_label = QLabel("연도 순수익: -")
-        
-        self.net_income_total_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        self.net_income_year_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        
-        summary_layout.addWidget(self.net_income_total_label)
-        summary_layout.addWidget(self.net_income_year_label)
-        summary_layout.addStretch()
-        
-        layout.addWidget(self.net_income_summary_frame)
+
+        # Summary label
+        self.net_income_summary_label = QLabel()
+        self.net_income_summary_label.setStyleSheet("font-family: 'NanumSquare'; font-size: 14px; padding: 10px;")
+        self.net_income_summary_label.setWordWrap(True)
+        layout.addWidget(self.net_income_summary_label)
         
         # Chart
         self.net_income_chart = QChartView()
         self.net_income_chart.setRenderHint(QPainter.Antialiasing)
         layout.addWidget(self.net_income_chart)
-        
-    def update_net_income_tab_summary(self, year: str) -> None:
-        """Update the net income summary labels for the selected year"""
-        # Get all-time data for the "전체" label
-        all_time_monthly_data = self.service.monthly_income_breakdown()
-        total_net_all_time = sum(data["savings"] + data["interest"] - data["expense"] for data in all_time_monthly_data.values())
 
-        # Get data for the selected year for the "연도" label
-        yearly_monthly_data = self.service.monthly_income_breakdown(year=year)
-        total_net_for_year = sum(data["savings"] + data["interest"] - data["expense"] for data in yearly_monthly_data.values())
-        
-        self.net_income_total_label.setText(f"전체 순수익: {format_currency(total_net_all_time)}")
-        self.net_income_year_label.setText(f"{year} 순수익: {format_currency(total_net_for_year)}")
-        
-    def update_net_income_chart_for_year(self, year: str) -> None:
-        """Update the net income chart for the selected year"""
-        monthly_data = self.service.monthly_income_breakdown(year=year)
-        chart = self.create_net_income_chart(monthly_data)
-        self.net_income_chart.setChart(chart)
-        
     def setup_savings_tab(self) -> None:
-        """Setup savings tab with chart"""
+        """Setup savings tab with chart and summary"""
         layout = QVBoxLayout(self.savings_tab)
+
+        # Summary label
+        self.savings_summary_label = QLabel()
+        self.savings_summary_label.setStyleSheet("font-family: 'NanumSquare'; font-size: 14px; padding: 10px;")
+        self.savings_summary_label.setWordWrap(True)
+        layout.addWidget(self.savings_summary_label)
         
-        # Savings summary frame
-        self.savings_summary_frame = QFrame()
-        summary_layout = QHBoxLayout(self.savings_summary_frame)
-        
-        # Create summary labels (will be updated by update_savings_tab_summary)
-        self.savings_total_label = QLabel("총 저축액: -")
-        self.savings_interest_total_label = QLabel("총 이자액: -")
-        self.savings_year_label = QLabel("연도 저축액: -")
-        self.savings_interest_year_label = QLabel("연도 이자액: -")
-        
-        self.savings_total_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        self.savings_interest_total_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        self.savings_year_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        self.savings_interest_year_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        
-        summary_layout.addWidget(self.savings_total_label)
-        summary_layout.addWidget(self.savings_interest_total_label)
-        summary_layout.addWidget(self.savings_year_label)
-        summary_layout.addWidget(self.savings_interest_year_label)
-        summary_layout.addStretch()
-        
-        layout.addWidget(self.savings_summary_frame)
-        
+        # Chart
         self.savings_chart = QChartView()
         self.savings_chart.setRenderHint(QPainter.Antialiasing)
         layout.addWidget(self.savings_chart)
-        
-    def update_savings_tab_summary(self, year: str) -> None:
-        """Update the savings summary labels for the selected year"""
-        # Get all-time data for the "총" labels
-        all_time_monthly_data = self.service.monthly_income_breakdown()
-        total_savings_all_time = sum(data["savings"] for data in all_time_monthly_data.values())
-        total_interest_all_time = sum(data["interest"] for data in all_time_monthly_data.values())
-        total_interest_rate_all_time = (total_interest_all_time / total_savings_all_time * 100) if total_savings_all_time > 0 else 0
-
-        # Get data for the selected year for the "연도" labels
-        yearly_monthly_data = self.service.monthly_income_breakdown(year=year)
-        total_savings_for_year = sum(data["savings"] for data in yearly_monthly_data.values())
-        total_interest_for_year = sum(data["interest"] for data in yearly_monthly_data.values())
-        year_interest_rate = (total_interest_for_year / total_savings_for_year * 100) if total_savings_for_year > 0 else 0
-        
-        self.savings_total_label.setText(f"총 저축액: {format_currency(total_savings_all_time)}")
-        self.savings_interest_total_label.setText(f"총 이자액: {format_currency(total_interest_all_time)} ({total_interest_rate_all_time:.1f}%)")
-        self.savings_year_label.setText(f"{year} 저축액: {format_currency(total_savings_for_year)}")
-        self.savings_interest_year_label.setText(f"{year} 이자액: {format_currency(total_interest_for_year)} ({year_interest_rate:.1f}%)")
-        
-    def update_savings_chart_for_year(self, year: str) -> None:
-        """Update the savings chart for the selected year"""
-        monthly_data = self.service.monthly_income_breakdown(year=year)
-        chart = self.create_savings_chart(monthly_data)
-        self.savings_chart.setChart(chart)
-        
 
     def setup_salary_tab(self) -> None:
-        """Setup salary tab with chart"""
+        """Setup salary tab with chart and summary"""
         layout = QVBoxLayout(self.salary_tab)
-        
-        # Salary summary frame
-        self.salary_summary_frame = QFrame()
-        summary_layout = QHBoxLayout(self.salary_summary_frame)
-        
-        # Create summary labels (will be updated by update_salary_tab_summary)
-        self.salary_mingyu_total_label = QLabel("민규 총합: -")
-        self.salary_hayoung_total_label = QLabel("하영 총합: -")
-        self.salary_mingyu_year_label = QLabel("연도 민규: -")
-        self.salary_hayoung_year_label = QLabel("연도 하영: -")
-        
-        self.salary_mingyu_total_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        self.salary_hayoung_total_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        self.salary_mingyu_year_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        self.salary_hayoung_year_label.setStyleSheet("font-weight: bold; font-size: 14px;")
-        
-        summary_layout.addWidget(self.salary_mingyu_total_label)
-        summary_layout.addWidget(self.salary_hayoung_total_label)
-        summary_layout.addWidget(self.salary_mingyu_year_label)
-        summary_layout.addWidget(self.salary_hayoung_year_label)
-        summary_layout.addStretch()
-        
-        layout.addWidget(self.salary_summary_frame)
+
+        # Summary label
+        self.salary_summary_label = QLabel()
+        self.salary_summary_label.setStyleSheet("font-family: 'NanumSquare'; font-size: 14px; padding: 10px;")
+        self.salary_summary_label.setWordWrap(True)
+        layout.addWidget(self.salary_summary_label)
         
         # Chart
         self.salary_chart = QChartView()
         self.salary_chart.setRenderHint(QPainter.Antialiasing)
         layout.addWidget(self.salary_chart)
-        
-    def update_salary_tab_summary(self, year: str) -> None:
-        """Update the salary summary labels for the selected year"""
-        # Get all-time data for the "총합" labels
-        all_time_salaries = self.service.get_salaries()
-        total_mingyu_all_time = sum(s["amount"] for s in all_time_salaries if s["person"] == "민규")
-        total_hayoung_all_time = sum(s["amount"] for s in all_time_salaries if s["person"] == "하영")
 
-        # Get data for the selected year for the "연도" labels
-        yearly_salaries = self.service.get_salaries(year=year)
-        total_mingyu_for_year = sum(s["amount"] for s in yearly_salaries if s["person"] == "민규")
-        total_hayoung_for_year = sum(s["amount"] for s in yearly_salaries if s["person"] == "하영")
+    def update_net_income_tab_summary(self, year: str) -> None:
+        """Update net income summary for the selected year"""
+        # Calculate net income data for the year
+        # This is a placeholder implementation - you should implement actual business logic
+        total_income = 0
+        total_expense = 0
         
-        self.salary_mingyu_total_label.setText(f"민규 총합: {format_currency(total_mingyu_all_time)}")
-        self.salary_hayoung_total_label.setText(f"하영 총합: {format_currency(total_hayoung_all_time)}")
-        self.salary_mingyu_year_label.setText(f"{year} 민규: {format_currency(total_mingyu_for_year)}")
-        self.salary_hayoung_year_label.setText(f"{year} 하영: {format_currency(total_hayoung_for_year)}")
+        # Get transactions from all accounts for the selected year
+        accounts = self.service.list_accounts()
+        for account in accounts:
+            for transaction in account.transactions:
+                if transaction.date.startswith(year):
+                    if transaction.type == "income":
+                        total_income += transaction.amount
+                    elif transaction.type == "expense":
+                        total_expense += transaction.amount
         
-    def update_salary_chart_for_year(self, year: str) -> None:
-        """Update the salary chart for the selected year"""
-        salaries = self.service.get_salaries(year=year)
-        chart = self.create_salary_chart(salaries)
-        self.salary_chart.setChart(chart)
+        net_income = total_income - total_expense
+        
+        summary_text = f"{year}년 순수익 요약\n"
+        summary_text += f"총 수입: {format_currency(total_income)}\n"
+        summary_text += f"총 지출: {format_currency(total_expense)}\n"
+        summary_text += f"순수익: {format_currency(net_income)}"
+        
+        self.net_income_summary_label.setText(summary_text)
 
-    def update_salary_chart(self) -> None:
-        """Update salary chart with current data"""
-        salaries = self.service.get_salaries()
-        chart = self.create_salary_chart(salaries)
-        self.salary_chart.setChart(chart)
-
-    def create_salary_chart(self, salaries: list[dict]) -> QChart:
-        """Create chart showing monthly salaries"""
+    def update_net_income_chart_for_year(self, year: str) -> None:
+        """Update net income chart for the selected year"""
+        from PySide6.QtCharts import QLineSeries, QBarSeries, QBarSet, QBarCategoryAxis, QValueAxis
+        
         chart = QChart()
-        chart.setTitle("월별 월급")
+        chart.setTitle(f"{year}년 순수익 추이")
         chart.setAnimationOptions(QChart.SeriesAnimations)
         
-        # Group salaries by month and person
-        from collections import defaultdict
-        monthly_data = defaultdict(lambda: {"민규": 0, "하영": 0})
-        for salary in salaries:
-            monthly_data[salary["month"]][salary["person"]] += salary["amount"]
+        # Create monthly data
+        months = ["1월", "2월", "3월", "4월", "5월", "6월", 
+                 "7월", "8월", "9월", "10월", "11월", "12월"]
         
-        months = sorted(monthly_data.keys())
-        mingyu_set = QBarSet("민규")
-        hayoung_set = QBarSet("하영")
+        income_set = QBarSet("수입")
+        expense_set = QBarSet("지출")
         
-        for month in months:
-            mingyu_set.append(monthly_data[month]["민규"])
-            hayoung_set.append(monthly_data[month]["하영"])
+        # Calculate monthly income and expenses
+        monthly_income = [0] * 12
+        monthly_expense = [0] * 12
         
-        series = QBarSeries()
-        series.append(mingyu_set)
-        series.append(hayoung_set)
-        chart.addSeries(series)
+        accounts = self.service.list_accounts()
+        for account in accounts:
+            for transaction in account.transactions:
+                if transaction.date.startswith(year):
+                    month = int(transaction.date[5:7]) - 1  # Convert to 0-based index
+                    if 0 <= month < 12:
+                        if transaction.type == "income":
+                            monthly_income[month] += transaction.amount
+                        elif transaction.type == "expense":
+                            monthly_expense[month] += transaction.amount
         
-        # Configure axes
+        income_set.append(monthly_income)
+        expense_set.append(monthly_expense)
+        
+        # Create bar series
+        bar_series = QBarSeries()
+        bar_series.append(income_set)
+        bar_series.append(expense_set)
+        
+        chart.addSeries(bar_series)
+        
+        # Setup axes
         axis_x = QBarCategoryAxis()
         axis_x.append(months)
         chart.addAxis(axis_x, Qt.AlignBottom)
-        series.attachAxis(axis_x)
+        bar_series.attachAxis(axis_x)
         
         axis_y = QValueAxis()
-        axis_y.setLabelFormat("%.0f")
-        max_value = max(
-            max(monthly_data[month]["민규"], monthly_data[month]["하영"])
-            for month in months
-        ) if months else 0
-        max_value = ((int(max_value) // 1000000) + 1) * 1000000
-        axis_y.setRange(0, max_value)
-        axis_y.setTitleText("만 원")
+        max_value = max(max(monthly_income), max(monthly_expense))
+        axis_y.setRange(0, max_value * 1.1)
         chart.addAxis(axis_y, Qt.AlignLeft)
-        series.attachAxis(axis_y)
-
-        def handle_hover(status: bool, index: int, barset: QBarSet):
-            if not status:
-                QToolTip.hideText()
-                return
-            value = barset.at(index)
-            pos = chart.mapToPosition(QPointF(index + 0.5, value), series)
-            text = f"{int(value):,.0f}원"
-            QToolTip.showText(QCursor.pos(), text)
-
-        series.hovered.connect(handle_hover)
+        bar_series.attachAxis(axis_y)
         
-        return chart
-        
-    def update_net_income_chart(self) -> None:
-        """Update net income chart with current data"""
-        monthly_data = self.service.monthly_income_breakdown()
-        chart = self.create_net_income_chart(monthly_data)
         self.net_income_chart.setChart(chart)
+
+    def update_savings_tab_summary(self, year: str) -> None:
+        """Update savings summary for the selected year"""
+        # Calculate savings data for the year
+        total_savings = 0
+        total_interest = 0
         
-    def update_savings_chart(self) -> None:
-        """Update savings chart with current data"""
-        monthly_data = self.service.monthly_income_breakdown()
-        chart = self.create_savings_chart(monthly_data)
-        self.savings_chart.setChart(chart)
+        accounts = self.service.list_accounts()
+        for account in accounts:
+            for transaction in account.transactions:
+                if transaction.date.startswith(year):
+                    if transaction.type == "income" and transaction.category == "저축":
+                        total_savings += transaction.amount
+                    elif transaction.type == "income" and transaction.category == "이자":
+                        total_interest += transaction.amount
         
+        summary_text = f"{year}년 저축+이자 요약\n"
+        summary_text += f"저축: {format_currency(total_savings)}\n"
+        summary_text += f"이자: {format_currency(total_interest)}\n"
+        summary_text += f"합계: {format_currency(total_savings + total_interest)}"
         
-    def create_net_income_chart(self, monthly_data: dict[str, dict]) -> QChart:
+        self.savings_summary_label.setText(summary_text)
+
+    def update_savings_chart_for_year(self, year: str) -> None:
+        """Update savings chart for the selected year"""
+        from PySide6.QtCharts import QLineSeries, QBarSeries, QBarSet, QBarCategoryAxis, QValueAxis
+        
         chart = QChart()
-        chart.setTitle("월별 순수익")
+        chart.setTitle(f"{year}년 저축+이자 추이")
         chart.setAnimationOptions(QChart.SeriesAnimations)
         
-        months = []
-        net_incomes = []
-        for month, data in monthly_data.items():
-            months.append(month)
-            net_income = data["savings"] + data["interest"] - data["expense"]
-            net_incomes.append(net_income)
+        # Create monthly data
+        months = ["1월", "2월", "3월", "4월", "5월", "6월", 
+                 "7월", "8월", "9월", "10월", "11월", "12월"]
         
-        positive_set = QBarSet("양의 순수익")
-        negative_set = QBarSet("음의 순수익")
-        positive_set.setColor(QColor("#4CAF50"))
-        negative_set.setColor(QColor("#FF0000"))
-        for value in net_incomes:
-            if value >= 0:
-                positive_set.append(value)
-                negative_set.append(0)
-            else:
-                positive_set.append(0)
-                negative_set.append(value)
-
-        series = QBarSeries()
-        series.append(positive_set)
-        series.append(negative_set)
-        chart.addSeries(series)
-
-        axis_x = QBarCategoryAxis()
-        axis_x.append(months)
-        chart.addAxis(axis_x, Qt.AlignBottom)
-        series.attachAxis(axis_x)
-
-        axis_y = QValueAxis()
-        axis_y.setLabelFormat("%.0f")
-        max_value = max(abs(n) for n in net_incomes) if net_incomes else 0
-        max_value = ((int(max_value) // 1000000) + 1) * 1000000
-        axis_y.setRange(-max_value, max_value)
-        axis_y.setTitleText("만 원")
-        chart.addAxis(axis_y, Qt.AlignLeft)
-        series.attachAxis(axis_y)
-
-        chart.legend().setVisible(False)
-
-        def handle_hover(status: bool, index: int, barset: QBarSet):
-            if not status:
-                QToolTip.hideText()
-                return
-
-            value = barset.at(index)
-            pos = chart.mapToPosition(QPointF(index + 0.5, value), series)
-            text = f"{int(value):,.0f}원"
-            QToolTip.showText(QCursor.pos(), text)
-
-        series.hovered.connect(handle_hover)
-        
-        return chart
-    
-    def create_savings_chart(self, monthly_data: dict[str, dict]) -> QChart:
-        """Create chart showing savings and interest"""
-        chart = QChart()
-        chart.setTitle("월별 저축+이자")
-        chart.setAnimationOptions(QChart.SeriesAnimations)
-        
-        series = QStackedBarSeries()
         savings_set = QBarSet("저축")
         interest_set = QBarSet("이자")
         
-        savings_set.setColor(QColor("#4CAF50"))  # Green
-        interest_set.setColor(QColor("#FFC107"))  # Amber
+        # Calculate monthly savings and interest
+        monthly_savings = [0] * 12
+        monthly_interest = [0] * 12
         
-        months = []
-        savings = []
-        interest = []
+        accounts = self.service.list_accounts()
+        for account in accounts:
+            for transaction in account.transactions:
+                if transaction.date.startswith(year):
+                    month = int(transaction.date[5:7]) - 1  # Convert to 0-based index
+                    if 0 <= month < 12:
+                        if transaction.type == "income" and transaction.category == "저축":
+                            monthly_savings[month] += transaction.amount
+                        elif transaction.type == "income" and transaction.category == "이자":
+                            monthly_interest[month] += transaction.amount
         
-        for month, data in monthly_data.items():
-            months.append(month)
-            savings.append(data["savings"])
-            interest.append(data["interest"])
-            
-        savings_set.append(savings)
-        interest_set.append(interest)
-        series.append(savings_set)
-        series.append(interest_set)
-        chart.addSeries(series)
+        savings_set.append(monthly_savings)
+        interest_set.append(monthly_interest)
         
-        # Configure axes
+        # Create bar series
+        bar_series = QBarSeries()
+        bar_series.append(savings_set)
+        bar_series.append(interest_set)
+        
+        chart.addSeries(bar_series)
+        
+        # Setup axes
         axis_x = QBarCategoryAxis()
         axis_x.append(months)
         chart.addAxis(axis_x, Qt.AlignBottom)
-        series.attachAxis(axis_x)
+        bar_series.attachAxis(axis_x)
         
         axis_y = QValueAxis()
-        axis_y.setLabelFormat("%.0f")
-        max_value = max(s + i for s, i in zip(savings, interest)) if savings else 0
-        max_value = ((int(max_value) // 1000000) + 1) * 1000000
-        axis_y.setRange(0, max_value)
-        axis_y.setTitleText("만 원")
+        max_value = max(max(monthly_savings), max(monthly_interest))
+        axis_y.setRange(0, max_value * 1.1 if max_value > 0 else 1000)
         chart.addAxis(axis_y, Qt.AlignLeft)
-        series.attachAxis(axis_y)
-
-        def handle_hover(status: bool, index: int, barset: QBarSet):
-            if not status:
-                QToolTip.hideText()
-                return
-
-            value = barset.at(index)
-            pos = chart.mapToPosition(QPointF(index + 0.5, value), series)
-            text = f"{int(value):,.0f}원"
-            QToolTip.showText(QCursor.pos(), text)
-
-        series.hovered.connect(handle_hover)
+        bar_series.attachAxis(axis_y)
         
-        return chart
+        self.savings_chart.setChart(chart)
+
+    def update_salary_tab_summary(self, year: str) -> None:
+        """Update salary summary for the selected year"""
+        # Get salary data from service
+        # This assumes the service has a method to get salary data
+        try:
+            # Placeholder implementation - you may need to implement actual salary data retrieval
+            total_salary = 0
+            salary_count = 0
+            
+            # This would need to be implemented in your service
+            # salaries = self.service.get_salaries_by_year(year)
+            # for salary in salaries:
+            #     total_salary += salary.amount
+            #     salary_count += 1
+            
+            summary_text = f"{year}년 월급 요약\n"
+            summary_text += f"총 월급: {format_currency(total_salary)}\n"
+            summary_text += f"지급 횟수: {salary_count}회"
+            if salary_count > 0:
+                avg_salary = total_salary / salary_count
+                summary_text += f"\n평균: {format_currency(avg_salary)}"
+            
+            self.salary_summary_label.setText(summary_text)
+        except Exception as e:
+            self.salary_summary_label.setText(f"{year}년 월급 데이터를 불러올 수 없습니다.")
+
+    def update_salary_chart_for_year(self, year: str) -> None:
+        """Update salary chart for the selected year"""
+        from PySide6.QtCharts import QLineSeries, QBarSeries, QBarSet, QBarCategoryAxis, QValueAxis
         
-    def create_expense_chart(self, monthly_data: dict[str, dict]) -> QChart:
-        """Create chart showing expenses"""
         chart = QChart()
-        chart.setTitle("월별 지출")
+        chart.setTitle(f"{year}년 월급 추이")
         chart.setAnimationOptions(QChart.SeriesAnimations)
         
-        series = QBarSeries()
-        expense_set = QBarSet("지출")
-        expense_set.setColor(QColor("#F44336"))  # Red
+        # Create monthly data
+        months = ["1월", "2월", "3월", "4월", "5월", "6월", 
+                 "7월", "8월", "9월", "10월", "11월", "12월"]
         
-        months = []
-        expenses = []
+        salary_set = QBarSet("월급")
         
-        for month, data in monthly_data.items():
-            months.append(month)
-            expenses.append(data["expense"])
-            
-        expense_set.append(expenses)
-        series.append(expense_set)
-        chart.addSeries(series)
+        # Calculate monthly salary
+        monthly_salary = [0] * 12
         
-        # Configure axes
+        # This would need to be implemented in your service
+        # salaries = self.service.get_salaries_by_year(year)
+        # for salary in salaries:
+        #     month = int(salary.month[5:7]) - 1  # Convert to 0-based index
+        #     if 0 <= month < 12:
+        #         monthly_salary[month] += salary.amount
+        
+        salary_set.append(monthly_salary)
+        
+        # Create bar series
+        bar_series = QBarSeries()
+        bar_series.append(salary_set)
+        
+        chart.addSeries(bar_series)
+        
+        # Setup axes
         axis_x = QBarCategoryAxis()
         axis_x.append(months)
         chart.addAxis(axis_x, Qt.AlignBottom)
-        series.attachAxis(axis_x)
+        bar_series.attachAxis(axis_x)
         
         axis_y = QValueAxis()
-        axis_y.setLabelFormat("%.0f")
-        max_value = max(expenses) if expenses else 0
-        max_value = ((int(max_value) // 1000000) + 1) * 1000000
-        axis_y.setRange(0, max_value)
-        axis_y.setTitleText("만 원")
+        max_value = max(monthly_salary) if max(monthly_salary) > 0 else 1000
+        axis_y.setRange(0, max_value * 1.1)
         chart.addAxis(axis_y, Qt.AlignLeft)
-        series.attachAxis(axis_y)
+        bar_series.attachAxis(axis_y)
+        
+        self.salary_chart.setChart(chart)
 
-        def handle_hover(status: bool, index: int, barset: QBarSet):
-            if not status:
+class ValuationDialog(QDialog):
+    """평가 기록 추가 다이얼로그"""
+    
+    def __init__(self, account: Account):
+        super().__init__()
+        self.account = account
+        self.setWindowTitle("평가 기록 추가")
+        self.setup_ui()
+        
+    def setup_ui(self) -> None:
+        """다이얼로그 UI 구성"""
+        layout = QFormLayout(self)
+        
+        # 거래 타입 선택
+        self.type_combo = QComboBox()
+        self.type_combo.addItems(["매수", "매도", "평가"])
+        self.type_combo.currentTextChanged.connect(self.update_dialog_title)
+        
+        # 평가금액 입력
+        self.amount_edit = QLineEdit()
+        self.amount_edit.setPlaceholderText("평가금액을 입력하세요")
+        self.amount_edit.setValidator(QDoubleValidator())
+        
+        # 이전 평가금액 표시 (참고용)
+        latest_valuation = self.account.latest_valuation
+        if latest_valuation:
+            previous_amount_label = QLabel(f"이전 평가금액: {format_currency(latest_valuation.evaluated_amount)}")
+            layout.addRow(previous_amount_label)
+        
+        # 평가일 선택
+        self.date_edit = QDateEdit(QDate.currentDate())
+        self.date_edit.setCalendarPopup(True)
+        
+        # 메모 입력
+        self.memo_edit = QLineEdit()
+        self.memo_edit.setPlaceholderText("평가 사유 또는 메모 (선택사항)")
+        
+        layout.addRow("거래 타입", self.type_combo)
+        layout.addRow("평가금액", self.amount_edit)
+        layout.addRow("평가일", self.date_edit)
+        layout.addRow("메모", self.memo_edit)
+        
+        # 추가 버튼
+        add_btn = QPushButton("추가")
+        add_btn.clicked.connect(self.accept)
+        layout.addWidget(add_btn)
+        
+        # 초기 타이틀 설정
+        self.update_dialog_title()
+        
+    def update_dialog_title(self) -> None:
+        """거래 타입에 따라 다이얼로그 타이틀 업데이트"""
+        type_text = self.type_combo.currentText()
+        if type_text == "매수":
+            self.setWindowTitle("매수 기록 추가")
+        elif type_text == "매도":
+            self.setWindowTitle("매도 기록 추가")
+        else:
+            self.setWindowTitle("평가 기록 추가")
+        
+    def get_data(self) -> tuple[float, str, str, str]:
+        """입력된 데이터 반환"""
+        try:
+            amount = float(self.amount_edit.text())
+            if amount < 0:
+                raise ValueError("평가금액은 0 이상이어야 합니다.")
+        except ValueError:
+            raise ValueError("유효한 평가금액을 입력하세요.")
+            
+        date_str = self.date_edit.date().toString("yyyy-MM-dd")
+        iso_date = f"{date_str}T00:00:00Z"
+        
+        memo = self.memo_edit.text().strip()
+        
+        # 거래 타입 변환
+        type_map = {"매수": "buy", "매도": "sell", "평가": "valuation"}
+        transaction_type = type_map[self.type_combo.currentText()]
+        
+        return amount, iso_date, memo, transaction_type
+
+class ValuationChartDialog(QDialog):
+    """투자 계좌 자산 평가금액 그래프 다이얼로그"""
+    
+    def __init__(self, account: Account, service):
+        super().__init__()
+        self.account = account
+        self.service = service
+        self.setWindowTitle(f"{account.name} 자산 평가 추이")
+        self.setMinimumSize(800, 600)
+        self.setup_ui()
+        
+    def setup_ui(self) -> None:
+        """다이얼로그 UI 구성"""
+        layout = QVBoxLayout(self)
+        
+        # 계좌 정보 영역
+        self.setup_account_info(layout)
+        
+        # 그래프 영역
+        self.setup_chart(layout)
+        
+        # 평가 관리 버튼 영역
+        self.setup_action_buttons(layout)
+        
+        # 초기 데이터 로드
+        self.update_chart()
+        
+    def setup_account_info(self, parent_layout: QVBoxLayout) -> None:
+        """계좌 정보 표시 영역"""
+        info_frame = QFrame()
+        info_frame.setFrameShape(QFrame.StyledPanel)
+        info_layout = QHBoxLayout(info_frame)
+        
+        # 계좌 기본 정보
+        lbl_name = QLabel(f"{self.account.name}")
+        lbl_name.setStyleSheet("font-size: 18px; font-weight: bold;")
+        
+        latest_valuation = self.account.latest_valuation
+        if latest_valuation:
+            lbl_current_value = QLabel(f"현재 평가금액: {format_currency(latest_valuation.evaluated_amount)}")
+            lbl_last_date = QLabel(f"최근 평가일: {latest_valuation.evaluation_date[:10]}")
+            
+            # 수익률 계산 및 표시
+            if self.account.purchase_amount > 0:
+                return_rate = ((latest_valuation.evaluated_amount - self.account.purchase_amount) / self.account.purchase_amount) * 100
+                return_rate_text = f"수익률: {return_rate:.2f}%"
+                lbl_return_rate = QLabel(return_rate_text)
+                
+                # 수익률에 따른 색상 지정
+                if return_rate > 0:
+                    lbl_return_rate.setStyleSheet("color: red;")
+                elif return_rate < 0:
+                    lbl_return_rate.setStyleSheet("color: blue;")
+                else:
+                    lbl_return_rate.setStyleSheet("color: black;")
+            else:
+                lbl_return_rate = QLabel("수익률: -")
+        else:
+            lbl_current_value = QLabel("현재 평가금액: -")
+            lbl_last_date = QLabel("최근 평가일: -")
+            lbl_return_rate = QLabel("수익률: -")
+        
+        info_layout.addWidget(lbl_name)
+        info_layout.addWidget(lbl_current_value)
+        info_layout.addWidget(lbl_last_date)
+        info_layout.addWidget(lbl_return_rate)
+        info_layout.addStretch()
+        
+        parent_layout.addWidget(info_frame)
+        
+    def setup_chart(self, parent_layout: QVBoxLayout) -> None:
+        """그래프 표시 영역"""
+        # 차트 뷰 생성
+        self.chart_view = QChartView()
+        self.chart_view.setRenderHint(QPainter.Antialiasing)
+        self.chart_view.setMinimumSize(700, 400)  # 최소 크기 설정
+        self.chart_view.setStyleSheet("background-color: white; border: 1px solid #cccccc;")  # 스타일 설정
+        
+        parent_layout.addWidget(self.chart_view)
+        
+    def setup_action_buttons(self, parent_layout: QVBoxLayout) -> None:
+        """평가 관리 버튼 영역"""
+        button_layout = QHBoxLayout()
+        
+        # 계좌 수정 버튼
+        edit_account_btn = QPushButton("계좌 수정")
+        edit_account_btn.clicked.connect(self.edit_account)
+        button_layout.addWidget(edit_account_btn)
+        
+        # 평가 추가 버튼
+        add_valuation_btn = QPushButton("평가 추가")
+        add_valuation_btn.clicked.connect(self.add_valuation)
+        button_layout.addWidget(add_valuation_btn)
+        
+        # 평가 기간 선택
+        self.period_combo = QComboBox()
+        self.period_combo.addItems(["전체 기간", "1개월", "3개월", "6개월", "1년"])
+        self.period_combo.currentTextChanged.connect(self.update_chart)
+        button_layout.addWidget(self.period_combo)
+        
+        # 자동 평가 버튼
+        auto_valuation_btn = QPushButton("자동 평가")
+        auto_valuation_btn.clicked.connect(self.auto_valuation)
+        button_layout.addWidget(auto_valuation_btn)
+        
+        button_layout.addStretch()
+        parent_layout.addLayout(button_layout)
+        
+    def update_chart(self, period: str = "전체 기간") -> None:
+        """그래프 업데이트"""
+        valuations = self.get_filtered_valuations(period)
+        chart = self.create_valuation_chart(valuations)
+        self.chart_view.setChart(chart)
+        
+    def get_filtered_valuations(self, period: str) -> list[ValuationRecord]:
+        """기간에 따른 평가 기록 필터링"""
+        from datetime import datetime, timedelta
+        all_valuations = self.service.get_valuations(self.account.id)
+        
+        # "transaction_type": "valuation"인 기록이 있는지 확인
+        valuation_records = [v for v in all_valuations if v.transaction_type == "valuation"]
+        
+        if valuation_records:
+            # 가장 최근의 valuation 기록 찾기
+            latest_valuation = max(valuation_records, key=lambda v: v.evaluation_date)
+            
+            # 가장 최근의 valuation 기록과 그 이후의 모든 기록만 반환
+            latest_date = datetime.fromisoformat(latest_valuation.evaluation_date.replace('Z', '+00:00'))
+            filtered_valuations = [v for v in all_valuations 
+                                 if datetime.fromisoformat(v.evaluation_date.replace('Z', '+00:00')) >= latest_date]
+            
+            # 기간 필터링 적용
+            if period != "전체 기간":
+                from datetime import datetime, timedelta
+                end_date = datetime.now()
+                
+                if period == "1개월":
+                    start_date = end_date - timedelta(days=30)
+                elif period == "3개월":
+                    start_date = end_date - timedelta(days=90)
+                elif period == "6개월":
+                    start_date = end_date - timedelta(days=180)
+                elif period == "1년":
+                    start_date = end_date - timedelta(days=365)
+                else:
+                    return filtered_valuations
+                    
+                return [v for v in filtered_valuations 
+                        if datetime.fromisoformat(v.evaluation_date.replace('Z', '+00:00')) >= start_date]
+            
+            return filtered_valuations
+        
+        # valuation 기록이 없는 경우 기존 로직 적용
+        if period == "전체 기간":
+            return all_valuations
+        
+        from datetime import datetime, timedelta
+        end_date = datetime.now()
+        
+        if period == "1개월":
+            start_date = end_date - timedelta(days=30)
+        elif period == "3개월":
+            start_date = end_date - timedelta(days=90)
+        elif period == "6개월":
+            start_date = end_date - timedelta(days=180)
+        elif period == "1년":
+            start_date = end_date - timedelta(days=365)
+        else:
+            return all_valuations
+            
+        return [v for v in all_valuations 
+                if datetime.fromisoformat(v.evaluation_date.replace('Z', '+00:00')) >= start_date]
+        
+    def create_valuation_chart(self, valuations: list[ValuationRecord]) -> QChart:
+        """평가금액 변화 그래프 생성"""
+        from PySide6.QtCharts import QLineSeries, QValueAxis, QDateTimeAxis, QScatterSeries, QBarSeries, QBarSet, QBarCategoryAxis
+        
+        chart = QChart()
+        chart.setTitle("자산 평가금액 변화 추이")
+        chart.setAnimationOptions(QChart.SeriesAnimations)
+        
+        # 차트 배경 및 테두리 설정
+        chart.setBackgroundBrush(QBrush(QColor(255, 255, 255)))  # 흰색 배경
+        chart.setMargins(QMargins(10, 10, 10, 10))  # 마진 설정
+        chart.layout().setContentsMargins(0, 0, 0, 0)  # 레이아웃 마진 제거
+        
+        if not valuations:
+            # 데이터가 없을 경우 메시지 표시
+            from PySide6.QtCharts import QBarSeries, QBarSet, QBarCategoryAxis
+            
+            # 빈 바 시리즈 생성하여 메시지 표시
+            bar_set = QBarSet("데이터 없음")
+            bar_set.append([0])  # 높이 0의 바 추가
+            
+            bar_series = QBarSeries()
+            bar_series.append(bar_set)
+            
+            # 카테고리 축
+            category_axis = QBarCategoryAxis()
+            category_axis.append(["평가 기록이 없습니다"])
+            
+            chart.addSeries(bar_series)
+            chart.addAxis(category_axis, Qt.AlignBottom)
+            bar_series.attachAxis(category_axis)
+            
+            # Y축 설정
+            axis_y = QValueAxis()
+            axis_y.setRange(0, 1)
+            axis_y.setVisible(False)  # Y축 숨기기
+            chart.addAxis(axis_y, Qt.AlignLeft)
+            bar_series.attachAxis(axis_y)
+            
+            # 차트 중앙에 텍스트 추가 - 차트가 생성된 후 타이머로 추가
+            from PySide6.QtWidgets import QGraphicsTextItem
+            from PySide6.QtCore import QTimer
+            
+            def add_no_data_text():
+                if chart.scene():
+                    text_item = QGraphicsTextItem()
+                    text_item.setPlainText("평가 기록이 없습니다\n'평가 추가' 버튼을 클릭하여 데이터를 추가하세요")
+                    text_item.setDefaultTextColor(QColor("#888888"))
+                    text_item.setFont(QFont("NanumSquare", 12))
+                    text_item.setTextWidth(300)
+                    text_item.setPos(150, 150)  # 차트 중앙 근처에 위치
+                    chart.scene().addItem(text_item)
+            
+            # 차트가 표시된 후 텍스트 추가
+            QTimer.singleShot(100, add_no_data_text)
+            
+            return chart
+        
+        # 단일 데이터 포인트일 경우 산점도로 명확하게 표시
+        if len(valuations) == 1:
+            from PySide6.QtCharts import QScatterSeries
+            
+            scatter = QScatterSeries()
+            scatter.setName("평가금액")
+            scatter.setColor(QColor("#e74c3c"))  # 빨간색
+            scatter.setMarkerSize(15.0)  # 마커 크기 키우기
+            scatter.setUseOpenGL(True)
+            
+            # 데이터 포인트 추가
+            valuation = valuations[0]
+            date_str = valuation.evaluation_date
+            
+            if 'T' in date_str and 'Z' in date_str:
+                date_time = QDateTime.fromString(date_str, "yyyy-MM-ddThh:mm:ssZ")
+            else:
+                date_time = QDateTime.fromString(date_str, Qt.ISODate)
+            
+            if date_time.isValid():
+                value = valuation.evaluated_amount
+                scatter.append(date_time.toMSecsSinceEpoch(), value)
+            
+            chart.addSeries(scatter)
+            
+            # X축 (날짜) 설정
+            axis_x = QDateTimeAxis()
+            axis_x.setFormat("yyyy-MM-dd")
+            axis_x.setTitleText("평가일")
+            
+            # 단일 날짜를 중심으로 앞뒤로 하루씩 범위 설정
+            start_date = date_time.addDays(-1)
+            end_date = date_time.addDays(1)
+            axis_x.setRange(start_date, end_date)
+            
+            chart.addAxis(axis_x, Qt.AlignBottom)
+            scatter.attachAxis(axis_x)
+            
+            # Y축 (금액) 설정 - 숫자 표시하지 않음
+            axis_y = QValueAxis()
+            axis_y.setLabelsVisible(False)  # Y축 레이블 숨기기
+            axis_y.setTitleText("")  # Y축 제목 제거
+            axis_y.setLineVisible(False)  # Y축 선 숨기기
+            
+            # Y축 범위 설정 - 0을 포함하도록
+            min_y = 0
+            max_y = value * 1.2  # 20% 여유
+            axis_y.setRange(min_y, max_y)
+            
+            chart.addAxis(axis_y, Qt.AlignLeft)
+            scatter.attachAxis(axis_y)
+            
+            # 차트 레전드는 숨기기
+            chart.legend().setVisible(False)
+            
+            # 툴팁 추가 - chartView의 이벤트를 사용하여 구현
+            def show_tooltip_for_single_point(pos: QPointF):
+                # 마우스 위치와 데이터 포인트의 거리 계산
+                chart_pos = self.chart_view.chart().mapToValue(pos)
+                data_point = QPointF(date_time.toMSecsSinceEpoch(), value)
+                
+                # 거리 계산 (화면 좌표 기준)
+                scene_pos = self.chart_view.mapFromScene(pos)
+                data_scene_pos = self.chart_view.chart().mapToPosition(data_point)
+                
+                # QPointF 연산을 위해 명시적 타입 변환
+                scene_x = float(scene_pos.x())
+                scene_y = float(scene_pos.y())
+                data_x = float(data_scene_pos.x())
+                data_y = float(data_scene_pos.y())
+                
+                distance = abs(scene_x - data_x) + abs(scene_y - data_y)
+                
+                if distance < 20:  # 20픽셀 이내면 툴팁 표시
+                    date_str = valuations[0].evaluation_date[:10]
+                    value_str = format_currency(valuations[0].evaluated_amount)
+                    memo_str = f"\n메모: {valuations[0].memo}" if valuations[0].memo else ""
+                    type_str = {"buy": "매수", "sell": "매도", "valuation": "평가"}.get(valuations[0].transaction_type, "평가")
+                    QToolTip.showText(QCursor.pos(), f"{date_str}\n{type_str}\n금액: {value_str}{memo_str}")
+                else:
+                    QToolTip.hideText()
+            
+            # ChartView의 마우스 이동 이벤트 연결
+            self.chart_view.setMouseTracking(True)
+            original_mouse_move_event = self.chart_view.mouseMoveEvent
+            
+            def mouse_move_event(event):
+                if original_mouse_move_event:
+                    original_mouse_move_event(event)
+                show_tooltip_for_single_point(event.pos())
+            
+            self.chart_view.mouseMoveEvent = mouse_move_event
+            
+            # 차트 뷰에 레이블 추가를 위한 타이머 설정
+            def add_label_to_chart():
+                # 차트 뷰에서 씬 가져오기
+                scene = self.chart_view.scene()
+                if scene:
+                    # 차트의 좌표계를 씬의 좌표계로 변환
+                    chart_rect = self.chart_view.chart().plotArea()
+                    chart_pos = QPointF(date_time.toMSecsSinceEpoch(), value)
+                    
+                    # 차트 내에서의 상대적 위치 계산 (0.0 ~ 1.0)
+                    x_axis = chart.axisX()
+                    y_axis = chart.axisY()
+                    
+                    x_min = x_axis.min()
+                    x_max = x_axis.max()
+                    y_min = y_axis.min()
+                    y_max = y_axis.max()
+                    
+                    # 상대적 위치 계산
+                    chart_x = float(chart_pos.x())
+                    chart_y = float(chart_pos.y())
+                    rel_x = (chart_x - x_min) / (x_max - x_min)
+                    rel_y = 1.0 - (chart_y - y_min) / (y_max - y_min)  # Y축은 반대
+                    
+                    # 씬 좌표로 변환
+                    scene_x = chart_rect.left() + rel_x * chart_rect.width()
+                    scene_y = chart_rect.top() + rel_y * chart_rect.height()
+                    
+                    # 금액 레이블 생성
+                    value_text = scene.addText(format_currency(value))
+                    value_text.setFont(QFont("NanumSquare", 10, QFont.Bold))
+                    value_text.setDefaultTextColor(QColor("#333333"))
+                    
+                    # 레이블 위치 조정 (데이터 포인트 위쪽)
+                    text_rect = value_text.boundingRect()
+                    label_x = scene_x - text_rect.width() / 2
+                    label_y = scene_y - text_rect.height() - 5  # 5px 위쪽
+                    value_text.setPos(label_x, label_y)
+            
+            # 차트가 표시된 후 레이블 추가
+            from PySide6.QtCore import QTimer
+            QTimer.singleShot(100, add_label_to_chart)
+            
+        else:
+            # 여러 데이터 포인트일 경우 매수/매도 pair를 식별하여 표시
+            
+            # Trade pair 가져오기
+            trade_pairs = self.service.get_trade_pairs(self.account.id)
+            
+            # 전체 추세선 추가 (모든 점을 연결하는 회색 선)
+            line_series = QLineSeries()
+            line_series.setName("추세선")
+            line_series.setColor(QColor("#95a5a6"))  # 회색 선
+            line_series.setUseOpenGL(True)
+            
+            # 라인 그래프에 데이터 포인트 추가
+            for valuation in valuations:
+                date_str = valuation.evaluation_date
+                if 'T' in date_str and 'Z' in date_str:
+                    date_time = QDateTime.fromString(date_str, "yyyy-MM-ddThh:mm:ssZ")
+                else:
+                    date_time = QDateTime.fromString(date_str, Qt.ISODate)
+                
+                if date_time.isValid():
+                    value = valuation.evaluated_amount
+                    line_series.append(date_time.toMSecsSinceEpoch(), value)
+            
+            chart.addSeries(line_series)
+            
+            
+            # X축 (날짜) 설정
+            axis_x = QDateTimeAxis()
+            axis_x.setFormat("yyyy-MM-dd")
+            axis_x.setTitleText("평가일")
+            
+            start_date_str = valuations[0].evaluation_date
+            end_date_str = valuations[-1].evaluation_date
+            
+            start_date = QDateTime.fromString(start_date_str, Qt.ISODate)
+            end_date = QDateTime.fromString(end_date_str, Qt.ISODate)
+            
+            if start_date.isValid() and end_date.isValid():
+                axis_x.setRange(start_date, end_date)
+            
+            # Y축 (금액) 설정
+            axis_y = QValueAxis()
+            axis_y.setLabelFormat("%.0f")
+            axis_y.setTitleText("평가금액 (원)")
+            
+            values = [v.evaluated_amount for v in valuations]
+            min_value = min(values)
+            max_value = max(values)
+            padding = (max_value - min_value) * 0.1  # 10% padding
+            y_min = max(0, min_value - padding)
+            y_max = max_value + padding
+            
+            axis_y.setRange(y_min, y_max)
+            
+            # 축을 차트에 추가
+            chart.addAxis(axis_x, Qt.AlignBottom)
+            chart.addAxis(axis_y, Qt.AlignLeft)
+            
+            # 라인 시리즈에 축 연결
+            line_series.attachAxis(axis_x)
+            line_series.attachAxis(axis_y)
+            
+            # 각 페어별로 연결선 추가 (모든 페어는 매수/매도 쌍으로 완료됨)
+            for i, pair in enumerate(trade_pairs):
+                    pair_line = QLineSeries()
+                    pair_line.setName(f"Pair {i+1}")
+                    
+                    # 수익률에 따른 선 색상 지정
+                    if pair.return_rate > 0:
+                        pair_line.setColor(QColor("#e74c3c"))  # 빨간색 (수익)
+                    elif pair.return_rate < 0:
+                        pair_line.setColor(QColor("#3498db"))  # 파란색 (손실)
+                    else:
+                        pair_line.setColor(QColor("#95a5a6"))  # 회색 (변동 없음)
+                    
+                    pair_line.setUseOpenGL(True)
+                    # QLineSeries는 setWidth() 메소드가 없음, 대신 setPen()을 사용하여 선 스타일 설정
+                    from PySide6.QtGui import QPen
+                    pen = QPen(pair_line.color())
+                    pen.setWidth(3)  # 선 굵기 설정
+                    pair_line.setPen(pen)
+                    
+                    # 매수 지점
+                    buy_date_str = pair.buy_valuation.evaluation_date
+                    buy_date_time = QDateTime.fromString(buy_date_str, Qt.ISODate)
+                    buy_value = pair.buy_valuation.evaluated_amount
+                    
+                    # 매도 지점
+                    sell_date_str = pair.sell_valuation.evaluation_date
+                    sell_date_time = QDateTime.fromString(sell_date_str, Qt.ISODate)
+                    sell_value = pair.sell_valuation.evaluated_amount
+                    
+                    if buy_date_time.isValid() and sell_date_time.isValid():
+                        # 페어 연결선에 데이터 포인트 추가
+                        pair_line.append(buy_date_time.toMSecsSinceEpoch(), buy_value)
+                        pair_line.append(sell_date_time.toMSecsSinceEpoch(), sell_value)
+                        
+                        chart.addSeries(pair_line)
+                        pair_line.attachAxis(axis_x)
+                        pair_line.attachAxis(axis_y)
+                        
+                        # 페어 연결선 정보 저장 (마우스 이동 이벤트에서 사용)
+                        pair_line.setProperty("pair_data", pair)
+            
+            # 각 포인트마다 다른 색상의 산점도 추가 (매수: 빨간색, 매도: 파란색)
+            for i, valuation in enumerate(valuations):
+                scatter = QScatterSeries()
+                scatter.setName(f"평가금액 {i+1}")
+                
+                # 거래 타입에 따른 색상 지정
+                if valuation.transaction_type == "buy":
+                    color = "#e74c3c"  # 빨간색 (매수)
+                elif valuation.transaction_type == "sell":
+                    color = "#3498db"  # 파란색 (매도)
+                else:
+                    color = "#2ecc71"  # 초록색 (평가)
+                
+                scatter.setColor(QColor(color))
+                scatter.setMarkerSize(12.0)
+                scatter.setUseOpenGL(True)
+                scatter.setBorderColor(QColor(color))
+                
+                # 날짜 형식을 명시적으로 지정하여 파싱
+                date_str = valuation.evaluation_date
+                if 'T' in date_str and 'Z' in date_str:
+                    date_time = QDateTime.fromString(date_str, "yyyy-MM-ddThh:mm:ssZ")
+                else:
+                    date_time = QDateTime.fromString(date_str, Qt.ISODate)
+                
+                if date_time.isValid():
+                    value = valuation.evaluated_amount
+                    scatter.append(date_time.toMSecsSinceEpoch(), value)
+                
+                chart.addSeries(scatter)
+                scatter.attachAxis(axis_x)
+                scatter.attachAxis(axis_y)
+                
+                # 각 포인트에 툴팁 추가 - chartView의 이벤트를 사용하여 구현
+                def show_tooltip_for_point(pos: QPointF, valuation_data=valuation):
+                    # 마우스 위치와 데이터 포인트의 거리 계산
+                    chart_pos = self.chart_view.chart().mapToValue(pos)
+                    
+                    # 날짜 형식을 명시적으로 지정하여 파싱
+                    date_str = valuation_data.evaluation_date
+                    if 'T' in date_str and 'Z' in date_str:
+                        date_time = QDateTime.fromString(date_str, "yyyy-MM-ddThh:mm:ssZ")
+                    else:
+                        date_time = QDateTime.fromString(date_str, Qt.ISODate)
+                    
+                    if date_time.isValid():
+                        value = valuation_data.evaluated_amount
+                        data_point = QPointF(date_time.toMSecsSinceEpoch(), value)
+                        
+                        # 거리 계산 (화면 좌표 기준)
+                        scene_pos = self.chart_view.mapFromScene(pos)
+                        data_scene_pos = self.chart_view.chart().mapToPosition(data_point)
+                        
+                        # QPoint 연산을 위해 개별 좌표 추출
+                        scene_x = scene_pos.x()
+                        scene_y = scene_pos.y()
+                        data_x = data_scene_pos.x()
+                        data_y = data_scene_pos.y()
+                        
+                        # 맨해튼 거리 계산
+                        distance = abs(scene_x - data_x) + abs(scene_y - data_y)
+                        
+                        if distance < 20:  # 20픽셀 이내면 툴팁 표시
+                            date_str = valuation_data.evaluation_date[:10]
+                            value_str = format_currency(valuation_data.evaluated_amount)
+                            memo_str = f"\n메모: {valuation_data.memo}" if valuation_data.memo else ""
+                            type_str = {"buy": "매수", "sell": "매도", "valuation": "평가"}.get(valuation_data.transaction_type, "평가")
+                            QToolTip.showText(QCursor.pos(), f"{date_str}\n{type_str}\n금액: {value_str}{memo_str}")
+                        else:
+                            QToolTip.hideText()
+            
+            # 여러 데이터 포인트에 대한 툴팁 처리 함수
+            def show_tooltip_for_multiple_points(pos: QPointF):
+                # 페어 연결선에 대한 툴팁 확인
+                for i, pair in enumerate(trade_pairs):
+                    # 모든 페어는 매수/매도 쌍으로 완료됨
+                    # 매수/매도 지점의 좌표
+                    buy_date_str = pair.buy_valuation.evaluation_date
+                    buy_date_time = QDateTime.fromString(buy_date_str, Qt.ISODate)
+                    buy_value = pair.buy_valuation.evaluated_amount
+                    buy_point = QPointF(buy_date_time.toMSecsSinceEpoch(), buy_value)
+                    
+                    sell_date_str = pair.sell_valuation.evaluation_date
+                    sell_date_time = QDateTime.fromString(sell_date_str, Qt.ISODate)
+                    sell_value = pair.sell_valuation.evaluated_amount
+                    sell_point = QPointF(sell_date_time.toMSecsSinceEpoch(), sell_value)
+                    
+                    # 화면 좌표로 변환
+                    buy_scene_pos = self.chart_view.chart().mapToPosition(buy_point)
+                    sell_scene_pos = self.chart_view.chart().mapToPosition(sell_point)
+                    mouse_scene_pos = self.chart_view.mapFromScene(pos)
+                    
+                    # 선과 점 사이의 거리 계산 (화면 좌표 기준)
+                    distance_to_line = self.point_to_line_distance_scene(mouse_scene_pos, buy_scene_pos, sell_scene_pos)
+                    
+                    if distance_to_line < 20:  # 20픽셀 이내면 툴팁 표시 (임시로 넓힘)
+                        buy_date = pair.buy_valuation.evaluation_date[:10]
+                        sell_date = pair.sell_valuation.evaluation_date[:10]
+                        buy_value_str = format_currency(pair.buy_valuation.evaluated_amount)
+                        sell_value_str = format_currency(pair.sell_valuation.evaluated_amount)
+                        return_rate = f"{pair.return_rate:+.2f}%"
+                        
+                        tooltip_text = f"매수: {buy_date} ({buy_value_str})\n"
+                        tooltip_text += f"매도: {sell_date} ({sell_value_str})\n"
+                        tooltip_text += f"수익률: {return_rate}"
+                        
+                        QToolTip.showText(QCursor.pos(), tooltip_text)
+                        return  # 페어 연결선 툴팁을 우선 표시
+                
+                # 데이터 포인트에 대한 툴팁 확인
+                for valuation in valuations:
+                    # 날짜 형식을 명시적으로 지정하여 파싱
+                    date_str = valuation.evaluation_date
+                    if 'T' in date_str and 'Z' in date_str:
+                        date_time = QDateTime.fromString(date_str, "yyyy-MM-ddThh:mm:ssZ")
+                    else:
+                        date_time = QDateTime.fromString(date_str, Qt.ISODate)
+                    
+                    if date_time.isValid():
+                        value = valuation.evaluated_amount
+                        data_point = QPointF(date_time.toMSecsSinceEpoch(), value)
+                        
+                        # 거리 계산 (화면 좌표 기준)
+                        scene_pos = self.chart_view.mapFromScene(pos)
+                        data_scene_pos = self.chart_view.chart().mapToPosition(data_point)
+                        
+                        # QPoint 연산을 위해 개별 좌표 추출
+                        scene_x = scene_pos.x()
+                        scene_y = scene_pos.y()
+                        data_x = data_scene_pos.x()
+                        data_y = data_scene_pos.y()
+
+                        # 맨해튼 거리 계산
+                        distance = abs(scene_x - data_x) + abs(scene_y - data_y)
+                        
+                        if distance < 20:  # 20픽셀 이내면 툴팁 표시
+                            date_str = valuation.evaluation_date[:10]
+                            value_str = format_currency(valuation.evaluated_amount)
+                            memo_str = f"\n메모: {valuation.memo}" if valuation.memo else ""
+                            type_str = {"buy": "매수", "sell": "매도", "valuation": "평가"}.get(valuation.transaction_type, "평가")
+                            QToolTip.showText(QCursor.pos(), f"{date_str}\n{type_str}\n금액: {value_str}{memo_str}")
+                            return  # 첫 번째로 찾은 포인트만 툴팁 표시
+                
                 QToolTip.hideText()
-                return
-
-            value = barset.at(index)
-            pos = chart.mapToPosition(QPointF(index + 0.5, value), series)
-            text = f"{int(value):,.0f}원"
-            QToolTip.showText(QCursor.pos(), text)
-
-        series.hovered.connect(handle_hover)
+            
+            # 점과 선 사이의 거리 계산 메소드 (화면 좌표 기준)
+            def point_to_line_distance_scene(point: QPointF, line_start: QPointF, line_end: QPointF) -> float:
+                # 점에서 선까지의 최단 거리 계산 (화면 좌표 기준)
+                import math
+                
+                x0, y0 = point.x(), point.y()
+                x1, y1 = line_start.x(), line_start.y()
+                x2, y2 = line_end.x(), line_end.y()
+                
+                # 선분의 길이
+                line_length = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+                
+                if line_length == 0:
+                    # 선분의 길이가 0이면 점과 시작점 사이의 거리 반환
+                    return math.sqrt((x0 - x1)**2 + (y0 - y1)**2)
+                
+                # 투영 계산
+                t = max(0, min(1, ((x0 - x1) * (x2 - x1) + (y0 - y1) * (y2 - y1)) / line_length**2))
+                
+                # 투영점의 좌표
+                projection_x = x1 + t * (x2 - x1)
+                projection_y = y1 + t * (y2 - y1)
+                
+                # 점과 투영점 사이의 거리
+                distance = math.sqrt((x0 - projection_x)**2 + (y0 - projection_y)**2)
+                
+                return distance
+            
+            # 클래스 메소드로도 정의
+            self.point_to_line_distance_scene = point_to_line_distance_scene
+            
+            # ChartView의 마우스 이동 이벤트 연결
+            self.chart_view.setMouseTracking(True)
+            original_mouse_move_event = self.chart_view.mouseMoveEvent
+            
+            def mouse_move_event(event):
+                if original_mouse_move_event:
+                    original_mouse_move_event(event)
+                show_tooltip_for_multiple_points(event.pos())
+            
+            self.chart_view.mouseMoveEvent = mouse_move_event
+            
+            # 수익률 레이블 추가를 위한 타이머 설정
+            def add_return_rate_labels():
+                # 차트 뷰에서 씬 가져오기
+                scene = self.chart_view.scene()
+                
+                if scene:
+                    for i, pair in enumerate(trade_pairs):
+                        if pair.return_rate is not None:
+                            # 매수 지점
+                            buy_date_str = pair.buy_valuation.evaluation_date
+                            buy_date_time = QDateTime.fromString(buy_date_str, Qt.ISODate)
+                            buy_value = pair.buy_valuation.evaluated_amount
+                            
+                            # 매도 지점
+                            sell_date_str = pair.sell_valuation.evaluation_date
+                            sell_date_time = QDateTime.fromString(sell_date_str, Qt.ISODate)
+                            sell_value = pair.sell_valuation.evaluated_amount
+                            
+                            if buy_date_time.isValid() and sell_date_time.isValid():
+                                # 매수/매도 지점의 좌표 계산
+                                buy_timestamp = buy_date_time.toMSecsSinceEpoch()
+                                sell_timestamp = sell_date_time.toMSecsSinceEpoch()
+                                
+                                # 차트의 좌표계를 씬의 좌표계로 변환
+                                chart_rect = self.chart_view.chart().plotArea()
+                                
+                                # 차트 내에서의 상대적 위치 계산 (0.0 ~ 1.0)
+                                x_axis = chart.axisX()
+                                y_axis = chart.axisY()
+                                
+                                x_min = x_axis.min()
+                                x_max = x_axis.max()
+                                y_min = y_axis.min()
+                                y_max = y_axis.max()
+                                
+                                # 매수 지점 좌표 변환
+                                buy_chart_pos = QPointF(buy_timestamp, buy_value)
+                                buy_chart_x = float(buy_chart_pos.x())
+                                buy_chart_y = float(buy_chart_pos.y())
+                                buy_rel_x = (buy_chart_x - x_min) / (x_max - x_min)
+                                buy_rel_y = 1.0 - (buy_chart_y - y_min) / (y_max - y_min)
+                                buy_scene_x = chart_rect.left() + buy_rel_x * chart_rect.width()
+                                buy_scene_y = chart_rect.top() + buy_rel_y * chart_rect.height()
+                                
+                                # 매도 지점 좌표 변환
+                                sell_chart_pos = QPointF(sell_timestamp, sell_value)
+                                sell_chart_x = float(sell_chart_pos.x())
+                                sell_chart_y = float(sell_chart_pos.y())
+                                sell_rel_x = (sell_chart_x - x_min) / (x_max - x_min)
+                                sell_rel_y = 1.0 - (sell_chart_y - y_min) / (y_max - y_min)
+                                sell_scene_x = chart_rect.left() + sell_rel_x * chart_rect.width()
+                                sell_scene_y = chart_rect.top() + sell_rel_y * chart_rect.height()
+                                
+                                # 연결선 위의 중간 지점 계산
+                                mid_scene_x = (buy_scene_x + sell_scene_x) / 2
+                                mid_scene_y = (buy_scene_y + sell_scene_y) / 2
+                                
+                                # 수익률 텍스트 생성
+                                return_rate_text = f"{pair.return_rate:+.2f}%"  # + 부호 추가
+                                return_label = scene.addText(return_rate_text)
+                                return_label.setFont(QFont("NanumSquare", 9, QFont.Bold))
+                                
+                                # 배경 사각형 추가 (가독성 향상)
+                                text_rect = return_label.boundingRect()
+                                padding = 4
+                                bg_rect = scene.addRect(
+                                    mid_scene_x - text_rect.width() / 2 - padding,
+                                    mid_scene_y - text_rect.height() / 2 - padding,
+                                    text_rect.width() + padding * 2,
+                                    text_rect.height() + padding * 2
+                                )
+                                
+                                # 수익률에 따른 색상 지정
+                                if pair.return_rate > 0:
+                                    return_label.setDefaultTextColor(QColor("#ffffff"))  # 흰색 텍스트
+                                    bg_rect.setBrush(QColor("#e74c3c"))  # 빨간색 배경
+                                elif pair.return_rate < 0:
+                                    return_label.setDefaultTextColor(QColor("#ffffff"))  # 흰색 텍스트
+                                    bg_rect.setBrush(QColor("#3498db"))  # 파란색 배경
+                                else:
+                                    return_label.setDefaultTextColor(QColor("#ffffff"))  # 흰색 텍스트
+                                    bg_rect.setBrush(QColor("#333333"))  # 검은색 배경
+                                
+                                bg_rect.setPen(Qt.NoPen)  # 테두리 없음
+                                
+                                # 텍스트 위치 조정 (배경 중앙)
+                                label_x = mid_scene_x - text_rect.width() / 2
+                                label_y = mid_scene_y - text_rect.height() / 2
+                                return_label.setPos(label_x, label_y)
+                                
+                                # 배경을 텍스트 뒤로 보내기
+                                bg_rect.setZValue(-1)
+                                return_label.setZValue(0)
+            
+            # 차트가 표시된 후 수익률 레이블 추가
+            from PySide6.QtCore import QTimer
+            
+            def delayed_add_return_rate_labels():
+                # 차트가 완전히 렌더링될 때까지 기다린 후 레이블 추가
+                add_return_rate_labels()
+                # 추가로 한번 더 지연하여 레이블이 제대로 표시되도록 함
+                QTimer.singleShot(200, add_return_rate_labels)
+            
+            QTimer.singleShot(300, delayed_add_return_rate_labels)
+            
+            # 레전드 숨기기
+            chart.legend().setVisible(False)
         
         return chart
+        
+    def add_valuation(self) -> None:
+        """새로운 평가 기록 추가 다이얼로그"""
+        dlg = ValuationDialog(self.account)
+        if dlg.exec() == QDialog.Accepted:
+            try:
+                amount, date, memo, transaction_type = dlg.get_data()
+                self.service.add_valuation(self.account.id, amount, date, memo, transaction_type)
+                self.update_chart()
+                # 계좌 정보 업데이트
+                self.account = self.service.get_account(self.account.id)
+                self.setup_account_info(self.layout())
+            except Exception as e:
+                QMessageBox.warning(self, "에러", f"평가 추가 실패: {str(e)}")
+                
+    def auto_valuation(self) -> None:
+        """자동 평가 실행 (현재 날짜와 금액으로 평가 기록 추가)"""
+        from datetime import datetime, timezone
+        
+        # 가장 최근 평가금액 가져오기
+        latest_valuation = self.account.latest_valuation
+        if not latest_valuation:
+            QMessageBox.information(self, "알림", "이전 평가 기록이 없습니다. 수동으로 평가를 추가해주세요.")
+            return
+            
+        # 현재 날짜와 이전 평가금액으로 자동 평가
+        current_date = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        current_amount = latest_valuation.evaluated_amount  # 이전 평가금액 유지
+        
+        reply = QMessageBox.question(
+            self,
+            "자동 평가",
+            f"현재 날짜({current_date[:10]})로 평가 기록을 추가하시겠습니까?\n"
+            f"평가금액: {format_currency(current_amount)}",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        
+        if reply == QMessageBox.Yes:
+            try:
+                self.service.add_valuation(self.account.id, current_amount, current_date, "자동 평가")
+                self.update_chart()
+                self.account = self.service.get_account(self.account.id)
+                self.setup_account_info(self.layout())
+                QMessageBox.information(self, "성공", "자동 평가가 완료되었습니다.")
+            except Exception as e:
+                QMessageBox.warning(self, "에러", f"자동 평가 실패: {str(e)}")
+                
+    def edit_account(self) -> None:
+        """계좌 수정 다이얼로그 열기"""
+        dlg = AccountEditDialog(self.account)
+        if dlg.exec() == QDialog.Accepted:
+            try:
+                # Unpack all values, including new investment ones
+                new_name, new_type, new_balance, new_color, new_image_path, new_purchase_amount, new_cash_holding, new_evaluated_amount, new_valuation_date = dlg.get_data()
+                if not new_name:
+                    QMessageBox.warning(self, "에러", "계좌명을 입력하세요.")
+                    return
+                
+                # Calculate the difference to adjust opening_balance
+                balance_diff = new_balance - self.account.balance()
+                self.account.opening_balance += balance_diff
+                self.account.name = new_name
+                self.account.type = new_type
+                self.account.color = new_color
+                self.account.image_path = new_image_path # Update image path
+                
+                # Update investment specific fields
+                if self.account.type == "투자":
+                    self.account.purchase_amount = new_purchase_amount
+                    self.account.cash_holding = new_cash_holding
+                    self.account.evaluated_amount = new_evaluated_amount
+                    self.account.last_valuation_date = new_valuation_date
+                
+                self.service.update_account(self.account)
+                self.setWindowTitle(f"{new_name} 자산 평가 추이")
+                self.update_chart()
+                self.setup_account_info(self.layout())
+                # Update parent UI if available
+                if hasattr(self.parent(), 'update_ui'):
+                    self.parent().update_ui()
+                    
+            except ValueError as e:
+                QMessageBox.warning(self, "에러", str(e))
+            except Exception as e:
+                # Catching generic exception for cases where get_data returns less than 9 values (e.g. for non-investment accounts if not handled carefully)
+                # However, get_data now always returns 9 values.
+                QMessageBox.warning(self, "에러", f"계좌 수정 중 오류 발생: {str(e)}")

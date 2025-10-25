@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from collections import defaultdict
 from pathlib import Path
 
-from domain import Account, Transaction
+from domain import Account, Transaction, ValuationRecord, TradePair
 from PySide6.QtWidgets import QMessageBox
 
 # ==== HELPER FUNCTIONS =====================================================
@@ -100,6 +100,28 @@ class LedgerRepository:
         
         for acc_dict in raw.get("accounts", []):
             txns = [Transaction(**t) for t in acc_dict.get("transactions", [])]
+            
+            # 기존 평가 기록에 transaction_type 추가 (호환성 유지)
+            valuations = []
+            for v in acc_dict.get("valuations", []):
+                # ValuationRecord 객체 생성
+                valuation = ValuationRecord(**v)
+                
+                # transaction_type이 없는 경우 자동으로 설정
+                if not hasattr(valuation, 'transaction_type') or valuation.transaction_type is None:
+                    # 부동산 계좌인 경우 특별 처리
+                    if acc_dict.get("name") == "부동산":
+                        # 첫 번째 평가 기록은 매수, 두 번째는 매도로 설정
+                        if len(valuations) == 0:
+                            valuation.transaction_type = "buy"
+                        else:
+                            valuation.transaction_type = "sell"
+                    else:
+                        # 다른 투자 계좌는 기본적으로 valuation으로 설정
+                        valuation.transaction_type = "valuation"
+                
+                valuations.append(valuation)
+            
             acc = Account(
                 id=acc_dict["id"],
                 name=acc_dict["name"],
@@ -112,7 +134,8 @@ class LedgerRepository:
                 cash_holding=acc_dict.get("cash_holding", 0.0),     # Load new field
                 evaluated_amount=acc_dict.get("evaluated_amount", 0.0), # Load new field
                 last_valuation_date=acc_dict.get("last_valuation_date", ""), # Load new field
-                transactions=txns
+                transactions=txns,
+                valuations=valuations
             )
             self.accounts[acc.id] = acc
 
@@ -292,3 +315,106 @@ class LedgerService:
                     monthly_data[year_month]["expense"] += txn.amount
         
         return dict(sorted(monthly_data.items()))
+
+    def add_valuation(self, account_id: str, amount: float, date: str, memo: str = "", transaction_type: Literal["buy", "sell", "valuation"] = "valuation") -> ValuationRecord:
+        """투자 계좌에 새로운 평가 기록 추가"""
+        account = self.get_account(account_id)
+        if not account:
+            raise ValueError("Account not found")
+        if account.type != "투자":
+            raise ValueError("Valuation is only available for investment accounts")
+        
+        valuation = ValuationRecord(
+            id=gen_id(),
+            account_id=account_id,
+            evaluated_amount=amount,
+            evaluation_date=date,
+            memo=memo,
+            transaction_type=transaction_type
+        )
+        account.valuations.append(valuation)
+        
+        # 호환성을 위해 기존 필드도 업데이트
+        account.evaluated_amount = amount
+        account.last_valuation_date = date[:10]  # YYYY-MM-DD 형식으로 저장
+        
+        self.repo.update_account(account)
+        return valuation
+    
+    def get_valuations(self, account_id: str) -> list[ValuationRecord]:
+        """계좌의 모든 평가 기록 반환 (날짜순 정렬)"""
+        account = self.get_account(account_id)
+        if not account:
+            return []
+        return sorted(account.valuations, key=lambda v: v.evaluation_date)
+    
+    def delete_valuation(self, account_id: str, valuation_id: str) -> None:
+        """특정 평가 기록 삭제"""
+        account = self.get_account(account_id)
+        if not account:
+            raise ValueError("Account not found")
+        
+        account.valuations = [v for v in account.valuations if v.id != valuation_id]
+        # 삭제 후 최신 평가 기록으로 호환성 필드 업데이트
+        if account.valuations:
+            latest = account.latest_valuation
+            account.evaluated_amount = latest.evaluated_amount
+            account.last_valuation_date = latest.evaluation_date[:10]
+        else:
+            account.evaluated_amount = 0.0
+            account.last_valuation_date = ""
+        
+        self.repo.update_account(account)
+    
+    def get_valuation_history(self, account_id: str, start_date: Optional[str] = None, end_date: Optional[str] = None) -> list[ValuationRecord]:
+        """특정 기간의 평가 기록 반환"""
+        valuations = self.get_valuations(account_id)
+        
+        if start_date:
+            valuations = [v for v in valuations if v.evaluation_date >= start_date]
+        if end_date:
+            valuations = [v for v in valuations if v.evaluation_date <= end_date]
+            
+        return valuations
+    
+    def get_trade_pairs(self, account_id: str) -> list[TradePair]:
+        """계좌의 매수/매도 쌍 반환 - 단순화된 동적 페어링 로직"""
+        valuations = self.get_valuations(account_id)
+        
+        pairs = []
+        unpaired_buys = []  # 페어링되지 않은 buy 기록들
+        
+        for valuation in valuations:
+            if valuation.transaction_type == "buy":
+                # buy 기록은 일단 unpaired 목록에 추가
+                unpaired_buys.append(valuation)
+                
+            elif valuation.transaction_type == "sell":
+                # sell 기록이면 가장 오래된 unpaired buy와 페어링
+                if unpaired_buys:
+                    buy_val = unpaired_buys.pop(0)  # 가장 오래된 buy
+                    pair = TradePair(buy_valuation=buy_val, sell_valuation=valuation)
+                    pairs.append(pair)
+                    
+            elif valuation.transaction_type == "valuation":
+                # valuation 기록이면 가장 오래된 unpaired buy와 페어링
+                if unpaired_buys:
+                    # 이 buy가 이미 다른 valuation과 페어링되었는지 확인
+                    buy_val = unpaired_buys[0]
+                    
+                    # 이미 pairs에 이 buy가 포함된 pair가 있는지 확인
+                    existing_pair_with_buy = None
+                    for pair in pairs:
+                        if pair.buy_valuation.id == buy_val.id:
+                            existing_pair_with_buy = pair
+                            break
+                    
+                    if existing_pair_with_buy:
+                        # 기존에 valuation과 페어링된 pair가 있으면 제거
+                        pairs.remove(existing_pair_with_buy)
+                    
+                    # 새로운 valuation과 페어링
+                    pair = TradePair(buy_valuation=buy_val, sell_valuation=valuation)
+                    pairs.append(pair)
+        
+        return pairs

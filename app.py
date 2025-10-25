@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
         self.grid_widget = QWidget()
         self.grid_layout = QGridLayout(self.grid_widget)
         self.scroll.setWidget(self.grid_widget)
-        
+         
         # Main layout
         vbox = QVBoxLayout()
         vbox.addWidget(self.total_label)
@@ -221,8 +221,15 @@ class MainWindow(QMainWindow):
         """Open transaction dialog for specific account"""
         acc = self.service.get_account(account_id)
         if acc:
-            dlg = TransactionTableDialog(acc, self.service)
-            dlg.exec()
+            if acc.type == "투자":
+                # 투자 계좌인 경우 ValuationChartDialog 열기
+                from ui_components import ValuationChartDialog
+                dlg = ValuationChartDialog(acc, self.service)
+                dlg.exec()
+            else:
+                # 기존 거래 내역 다이얼로그 열기
+                dlg = TransactionTableDialog(acc, self.service)
+                dlg.exec()
             self.update_ui()
 
     def save(self):
