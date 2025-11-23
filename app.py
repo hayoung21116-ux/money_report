@@ -1,19 +1,19 @@
+from __future__ import annotations
 import sys
 from pathlib import Path
 
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton,
-    QScrollArea, QDialog, QMessageBox,
-    QGridLayout
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
+    QScrollArea, QDialog, QMessageBox, QGraphicsScene, QGridLayout, QFrame
 )
-from PySide6.QtGui import QAction, QFont, QFontDatabase
+from PySide6.QtCore import Qt, QDate
+from PySide6.QtGui import QAction, QFont, QFontDatabase, QPixmap, QPainter
 
 from services import LocalJSONDataSource, LedgerRepository, LedgerService, format_currency
 from ui_components import (
     AccountCard, AccountDialog, TransactionTableDialog, TransactionDialog, 
-    SalaryDialog, StatsDialog, ValuationChartDialog
+    SalaryDialog, StatsDialog
 )
-
 
 class MainWindow(QMainWindow):
     """Main application window for the ledger system"""
@@ -91,15 +91,6 @@ class MainWindow(QMainWindow):
         """)
         self.fab.clicked.connect(self.add_salary)
 
-        # Add transaction button
-        self.add_transaction_btn = QPushButton("거래 추가", self)
-        self.add_transaction_btn.setStyleSheet("""
-            padding: 8px 16px;
-            font-weight: bold;
-            margin-left: 10px;
-        """)
-        self.add_transaction_btn.clicked.connect(self.add_transaction_to_first_account)
-
         # Stats button
         self.stats_btn = QPushButton("통계", self)
         self.stats_btn.setStyleSheet("""
@@ -120,7 +111,7 @@ class MainWindow(QMainWindow):
         # Add transaction shortcut
         act_new_txn = QAction(self)
         act_new_txn.setShortcut("Ctrl+T")
-        act_new_txn.triggered.connect(self.add_transaction_to_first_account)
+        act_new_txn.triggered.connect(self.add_transaction)
         self.addAction(act_new_txn)
         
         # Save shortcut
@@ -139,7 +130,6 @@ class MainWindow(QMainWindow):
         """Handle window resize events to position buttons"""
         super().resizeEvent(e)
         self.add_account_btn.move(self.width()-150, 10)
-        self.add_transaction_btn.move(self.width()-350, 10) # Position new button
         self.stats_btn.move(self.width()-250, 10)
         self.fab.move(self.width()-70, self.height()-70)
         
@@ -201,10 +191,11 @@ class MainWindow(QMainWindow):
         dlg = AccountDialog()
         if dlg.exec() == QDialog.Accepted:
             try:
-                name, type_, color, bal, image_path, purchase_amount, cash_holding, evaluated_amount, valuation_date = dlg.get_data()
-                self.service.add_account(name, type_, color, bal, image_path, purchase_amount, cash_holding, evaluated_amount, valuation_date)
+                name, type_, color, bal, image_path = dlg.get_data()
+                self.service.add_account(name, type_, color, bal, image_path)
                 self.update_ui()
             except Exception as e:
+                from PySide6.QtWidgets import QMessageBox
                 QMessageBox.warning(self, "에러", str(e))
 
     def add_salary(self):
@@ -213,14 +204,15 @@ class MainWindow(QMainWindow):
         dlg.exec()
         self.update_ui()
         
-    def add_transaction_to_first_account(self):
-        """Open dialog to add transaction to the first account"""
+    def add_transaction(self):
+        """Open dialog to add transaction to first account"""
         accounts = self.service.list_accounts()
         if not accounts:
+            from PySide6.QtWidgets import QMessageBox
             QMessageBox.warning(self, "에러", "계좌를 먼저 추가해주세요")
             return
             
-        # Open transaction dialog for the first account
+        # 첫 번째 계좌로 바로 거래 추가 다이얼로그 열기
         dlg = TransactionDialog(accounts[0], self.service)
         dlg.exec()
         self.update_ui()
@@ -230,17 +222,20 @@ class MainWindow(QMainWindow):
         acc = self.service.get_account(account_id)
         if acc:
             if acc.type == "투자":
-                # Open ValuationChartDialog for investment accounts
+                # 투자 계좌인 경우 ValuationChartDialog 열기
+                from ui_components import ValuationChartDialog
                 dlg = ValuationChartDialog(acc, self.service)
                 dlg.exec()
             else:
-                # Open existing transaction history dialog
+                # 기존 거래 내역 다이얼로그 열기
                 dlg = TransactionTableDialog(acc, self.service)
                 dlg.exec()
             self.update_ui()
 
     def save(self):
-        """Show save confirmation message"""
+        """Save current data"""
+        # Service handles saving automatically, but we can add manual save feedback
+        from PySide6.QtWidgets import QMessageBox
         QMessageBox.information(self, "저장", "저장되었습니다.")
 
     def show_stats(self):
@@ -252,46 +247,35 @@ def load_fonts():
     """Load NanumSquare fonts"""
     fontDB = QFontDatabase()
     
-    # Define font files to load
+    # Load all NanumSquare fonts
     font_files = [
         "fonts/NanumSquareR.ttf",
         "fonts/NanumSquareB.ttf", 
         "fonts/NanumSquareEB.ttf",
         "fonts/NanumSquareL.ttf",
-        "fonts/NanumSquareOTF_acR.otf", # Corrected filename
-        "fonts/NanumSquareOTF_acB.otf", # Corrected filename
-        "fonts/NanumSquareOTF_acEB.otf", # Corrected filename
-        "fonts/NanumSquareOTF_acL.otf"  # Corrected filename
+        "fonts/NanumSquareacR.ttf",
+        "fonts/NanumSquareacB.ttf",
+        "fonts/NanumSquareacEB.ttf",
+        "fonts/NanumSquareacL.ttf"
     ]
     
     loaded_fonts = []
     for font_file in font_files:
-        # Ensure font file exists before loading
-        if Path(font_file).exists():
-            font_id = fontDB.addApplicationFont(font_file)
-            if font_id != -1:
-                font_family = fontDB.applicationFontFamilies(font_id)[0]
-                loaded_fonts.append(font_family)
-            else:
-                print(f"Warning: Could not load font: {font_file}")
-        else:
-            print(f"Warning: Font file not found: {font_file}")
+        font_id = fontDB.addApplicationFont(font_file)
+        if font_id != -1:
+            font_family = fontDB.applicationFontFamilies(font_id)[0]
+            loaded_fonts.append(font_family)
     
-    # Return a preferred font family if available
-    if "NanumSquare" in loaded_fonts:
-        return "NanumSquare"
-    elif loaded_fonts:
-        return loaded_fonts[0]
-    return None
+    return loaded_fonts
 
 def main():
     """Main application entry point"""
     app = QApplication(sys.argv)
     
     # Load fonts
-    preferred_font = load_fonts()
-    if preferred_font:
-        app.setFont(QFont(preferred_font, 10))
+    loaded_fonts = load_fonts()
+    if loaded_fonts:
+        app.setFont(QFont(loaded_fonts[0], 10))
     
     # Initialize data layer
     ds = LocalJSONDataSource("ledger.json")

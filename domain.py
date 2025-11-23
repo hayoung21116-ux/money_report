@@ -2,16 +2,16 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict, field
 from typing import Literal, Optional
 from datetime import datetime
-import uuid # Directly import uuid
-# from services import gen_id # Removed import gen_id from services
+import uuid
 
-# def gen_id() -> str:
-#     """Generate a unique ID using UUID v4"""
-#     return str(uuid.uuid4())
+def gen_id() -> str:
+    """Generate a unique ID using UUID v4"""
+    return str(uuid.uuid4())
 
 @dataclass
 class Transaction:
     """Represents a financial transaction with an account"""
+    id: str
     account_id: str
     type: Literal["income", "expense"]
     amount: float
@@ -19,7 +19,6 @@ class Transaction:
     memo: str
     date: str  # ISO8601 format: "YYYY-MM-DDTHH:MM:SSZ"
     item: str = ""  # 항목 필드 추가 (기본값은 빈 문자열)
-    id: str = field(default_factory=lambda: str(uuid.uuid4())) # Use uuid directly
 
     def validate(self) -> None:
         """Validate transaction data"""
@@ -35,12 +34,12 @@ class Transaction:
 @dataclass
 class ValuationRecord:
     """자산 평가 기록 모델"""
+    id: str
     account_id: str
     evaluated_amount: float
     evaluation_date: str  # ISO8601 format: "YYYY-MM-DDTHH:MM:SSZ"
     memo: str = ""  # 평가 사유 또는 메모
     transaction_type: Literal["buy", "sell", "valuation"] = "valuation"  # 거래 타입 추가
-    id: str = field(default_factory=lambda: str(uuid.uuid4())) # Use uuid directly
     
     def validate(self) -> None:
         """Validate valuation record data"""
@@ -74,6 +73,7 @@ class TradePair:
 @dataclass
 class Account:
     """Account information model"""
+    id: str
     name: str
     type: Literal["현금", "투자", "소비"]
     color: str
@@ -85,10 +85,8 @@ class Account:
     # Fields for investment accounts
     purchase_amount: float = 0.0 # 총 매입금액
     cash_holding: float = 0.0 # 보유 현금
-    id: str = field(default_factory=lambda: str(uuid.uuid4())) # Use uuid directly
-    # Removed redundant fields for investment accounts, as they can be accessed via latest_valuation
-    # evaluated_amount: float = 0.0 # 현재 평가금액 (호환성 유지)
-    # last_valuation_date: str = "" # 마지막 평가 날짜 (YYYY-MM-DD) (호환성 유지)
+    evaluated_amount: float = 0.0 # 현재 평가금액 (호환성 유지)
+    last_valuation_date: str = "" # 마지막 평가 날짜 (YYYY-MM-DD) (호환성 유지)
 
     @property
     def latest_valuation(self) -> Optional[ValuationRecord]:
@@ -100,16 +98,38 @@ class Account:
     @property
     def return_rate(self) -> float:
         """Calculate return rate for investment accounts."""
-        if self.type == "투자" and self.purchase_amount != 0:
-            current_value = self.latest_valuation.evaluated_amount if self.latest_valuation else 0.0
-            return ((current_value - self.purchase_amount) / self.purchase_amount) * 100
+        if self.type == "투자" and self.valuations:
+            # 부동산 계좌인 경우: 첫 buy 거래와 마지막 sell 거래로 수익률 계산
+            if "부동산" in self.name:
+                buy_valuations = [v for v in self.valuations if v.transaction_type == "buy"]
+                sell_valuations = [v for v in self.valuations if v.transaction_type == "sell"]
+                
+                if buy_valuations and sell_valuations:
+                    first_buy = min(buy_valuations, key=lambda v: v.evaluation_date)
+                    last_sell = max(sell_valuations, key=lambda v: v.evaluation_date)
+                    
+                    buy_amount = first_buy.evaluated_amount
+                    sell_amount = last_sell.evaluated_amount
+                    
+                    if buy_amount != 0:
+                        return ((sell_amount - buy_amount) / buy_amount) * 100
+            
+            # 다른 투자 계좌 또는 부동산 계좌이지만 buy/sell이 없는 경우: 기존 로직 사용
+            elif self.purchase_amount != 0:
+                current_value = self.evaluated_amount
+                if self.valuations:
+                    current_value = self.latest_valuation.evaluated_amount
+                return ((current_value - self.purchase_amount) / self.purchase_amount) * 100
+        
         return 0.0
 
     @property
     def asset_value(self) -> float:
         """Calculate total asset value for investment accounts, or balance for others."""
         if self.type == "투자":
-            current_value = self.latest_valuation.evaluated_amount if self.latest_valuation else 0.0
+            current_value = self.evaluated_amount
+            if self.valuations:
+                current_value = self.latest_valuation.evaluated_amount
             return current_value + self.cash_holding
         return self.balance()
 
@@ -121,21 +141,20 @@ class Account:
         expense = sum(t.amount for t in self.transactions if t.type == "expense")
         return self.opening_balance + income - expense
 
-    # Removed add_valuation method as it is managed by LedgerService
-    # def add_valuation(self, amount: float, date: str, memo: str = "") -> ValuationRecord:
-    #     """새로운 평가 기록 추가"""
-    #     valuation = ValuationRecord(
-    #         id=gen_id(),
-    #         account_id=self.id,
-    #         evaluated_amount=amount,
-    #         evaluation_date=date,
-    #         memo=memo
-    #     )
-    #     self.valuations.append(valuation)
-    #     # 호환성을 위해 기존 필드도 업데이트
-    #     self.evaluated_amount = amount
-    #     self.last_valuation_date = date[:10]  # YYYY-MM-DD 형식으로 저장
-    #     return valuation
+    def add_valuation(self, amount: float, date: str, memo: str = "") -> ValuationRecord:
+        """새로운 평가 기록 추가"""
+        valuation = ValuationRecord(
+            id=gen_id(),
+            account_id=self.id,
+            evaluated_amount=amount,
+            evaluation_date=date,
+            memo=memo
+        )
+        self.valuations.append(valuation)
+        # 호환성을 위해 기존 필드도 업데이트
+        self.evaluated_amount = amount
+        self.last_valuation_date = date[:10]  # YYYY-MM-DD 형식으로 저장
+        return valuation
 
     def validate(self) -> None:
         """Validate account data"""
