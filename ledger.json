@@ -494,6 +494,16 @@
           "memo": "",
           "date": "2025-11-14T00:00:00Z",
           "item": ""
+        },
+        {
+          "id": "4ef42950-f5be-47cc-8a65-61e2d4d123e5",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 1166540.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-12-01T00:00:00Z",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -1112,6 +1122,66 @@
           "memo": "비트코인",
           "date": "2025-11-18T00:00:00Z",
           "item": ""
+        },
+        {
+          "id": "a3b56500-0bc3-4df8-8546-21617f4a24f8",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "비상금",
+          "date": "2025-11-23T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ccc350a7-f422-407a-94ee-ace98483435c",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 6000000.0,
+          "category": "이동",
+          "memo": "민규: 개인연금",
+          "date": "2025-11-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6717b6ea-284e-4354-97ff-70991eb1dca5",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 3000000.0,
+          "category": "지출",
+          "memo": "민규: 퇴직연금",
+          "date": "2025-11-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "606afb68-f829-4427-92f1-a3a7c4456cf8",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 3000000.0,
+          "category": "지출",
+          "memo": "하영: 퇴직연금",
+          "date": "2025-11-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "6cceea5a-f23b-40f7-a5a3-94c19f61d708",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 2000000.0,
+          "category": "이동",
+          "memo": "하영: 개인연금",
+          "date": "2025-11-25T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "462226d9-2b2a-4fd2-80f6-7bd95bc372dc",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "비트코인",
+          "date": "2025-12-01T00:00:00Z",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -1363,6 +1433,16 @@
           "category": "저축",
           "memo": "",
           "date": "2025-10-31T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "d7128d0c-6749-4727-ae34-bc330dcd59e9",
+          "account_id": "5ba03a67-65e7-4b13-8ef6-251df6dc6292",
+          "type": "income",
+          "amount": 3000000.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-11-30T00:00:00Z",
           "item": ""
         }
       ],
@@ -3946,6 +4026,16 @@
           "memo": "",
           "date": "2025-11-23T00:00:00Z",
           "item": ""
+        },
+        {
+          "id": "da53a113-518f-4667-baff-3cbda3f72a9b",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-11-23T00:00:00Z",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -4208,6 +4298,16 @@
           "memo": "잔금(아빠 차용)",
           "date": "2025-11-11T00:00:00Z",
           "item": ""
+        },
+        {
+          "id": "2315c6a1-44ec-4063-b1f0-60fcbe6a7a76",
+          "account_id": "0b65d4db-f1d8-457f-8508-a2bab1199a97",
+          "type": "income",
+          "amount": 1657058.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-12-01T00:00:00Z",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -4393,6 +4493,26 @@
     {
       "amount": 4467200.0,
       "month": "2025-10",
+      "person": "하영"
+    },
+    {
+      "amount": 4466540.0,
+      "month": "2025-12",
+      "person": "하영"
+    },
+    {
+      "amount": 4514495.0,
+      "month": "2025-12",
+      "person": "민규"
+    },
+    {
+      "amount": 4505985.0,
+      "month": "2025-11",
+      "person": "민규"
+    },
+    {
+      "amount": 4784550.0,
+      "month": "2025-11",
       "person": "하영"
     }
   ]
