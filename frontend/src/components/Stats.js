@@ -48,12 +48,13 @@ const StatsContainer = styled.div`
   }
   
   .tab-content {
-    .summary {
-      background-color: white;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      margin-bottom: 30px;
+      .summary {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        position: relative; /* Add this line */
       
       .summary-text {
         font-size: 1.1rem;
@@ -258,7 +259,20 @@ function Stats() {
       <div className="tab-content">
         <div className="summary">
           <div className="summary-text">
-            <p>{selectedYear}년 순수익 요약</p>
+            <p style={{ fontSize: '1.7rem', fontWeight: 'bold', marginBottom: '10px' }}>{selectedYear}년 순수익 요약</p>
+            {activeTab === 'net-income' && (
+              <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
+                <select 
+                  value={selectedYear} 
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '1rem' }}
+                >
+                  {years.map(year => (
+                    <option key={year} value={year}>{year}년</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <p>총 수입: {formatCurrency(totalIncome)}</p>
             <p>총 지출: {formatCurrency(totalExpense)}</p>
             <p>순수익: {formatCurrency(netIncome)}</p>
@@ -313,7 +327,20 @@ function Stats() {
       <div className="tab-content">
         <div className="summary">
           <div className="summary-text">
-            <p>{selectedYear}년 저축+이자 요약</p>
+            <p style={{ fontSize: '1.7rem', fontWeight: 'bold', marginBottom: '10px' }}>{selectedYear}년 저축+이자 요약</p>
+            {activeTab === 'savings' && (
+              <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
+                <select 
+                  value={selectedYear} 
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '1rem' }}
+                >
+                  {years.map(year => (
+                    <option key={year} value={year}>{year}년</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <p>저축: {formatCurrency(totalSavings)}</p>
             <p>이자: {formatCurrency(totalInterest)}</p>
             <p>합계: {formatCurrency(total)}</p>
@@ -411,6 +438,19 @@ function Stats() {
         <div className="summary">
           <div className="summary-text">
             <p style={{ fontSize: '1.7rem', fontWeight: 'bold', marginBottom: '10px' }}>{selectedYear}년 월급 요약</p>
+            {activeTab === 'salary' && (
+              <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
+                <select 
+                  value={selectedYear} 
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '1rem' }}
+                >
+                  {years.map(year => (
+                    <option key={year} value={year}>{year}년</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '-5px', marginBottom: '5px' }}>** 월급의 기준은 전달 21일/25일에 들어온 금액이다. 예를 들어, 1월의 월급은 12월 21일/25일에 지급되었다.</p>
             <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '-5px', marginBottom: '15px' }}>** PS는 2월, PI는 7월, 8월, 12월에 합쳐 기록한다.</p>
             <p style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '8px' }}>
@@ -940,16 +980,6 @@ function Stats() {
     <StatsContainer>
       <div className="stats-header">
         <h2>월별 통계</h2>
-        <div className="year-selector">
-          <select 
-            value={selectedYear} 
-            onChange={(e) => setSelectedYear(e.target.value)}
-          >
-            {years.map(year => (
-              <option key={year} value={year}>{year}년</option>
-            ))}
-          </select>
-        </div>
       </div>
       
       <div className="tabs">
