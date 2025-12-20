@@ -94,6 +94,12 @@ export const statsApi = {
   
   // Get salaries
   getSalaries: (year) => api.get('/stats/salaries', { params: { year } }),
+
+  // Get median salary
+  getSalaryMedian: (year, person) => api.get('/stats/salaries/median', { params: { year, person } }),
+
+  // Get monthly salary totals
+  getMonthlySalaryTotals: (year, person) => api.get('/stats/salaries/monthly-totals', { params: { year, person } }),
   
   // Add salary
   addSalary: (amount, month, person) => 

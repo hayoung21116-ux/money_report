@@ -61,6 +61,24 @@ async def delete_salary(index: int, service: LedgerService = Depends(get_ledger_
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@router.get("/salaries/median")
+async def get_salary_median(year: Optional[str] = None, person: Optional[str] = None, service: LedgerService = Depends(get_ledger_service)):
+    """Get the median of monthly salary totals"""
+    median = service.calculate_salary_median(year=year, person=person)
+    if median is None:
+        return {"message": "No salary data available for median calculation"}
+    return {"median_salary": median}
+
+@router.get("/salaries/monthly-totals")
+async def get_monthly_salary_totals(year: Optional[str] = None, person: Optional[str] = None, service: LedgerService = Depends(get_ledger_service)):
+    """Get monthly salary totals, sorted in descending order of amount"""
+    monthly_totals = service.get_monthly_salary_totals(year=year, person=person)
+    
+    # Sort by amount in descending order
+    sorted_totals = sorted(monthly_totals.items(), key=lambda item: item[1], reverse=True)
+    
+    return {"monthly_totals": dict(sorted_totals)}
+
 @router.get("/asset-allocation")
 async def get_asset_allocation(service: LedgerService = Depends(get_ledger_service)):
     """Calculate the total value for each asset category"""

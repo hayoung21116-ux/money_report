@@ -131,6 +131,9 @@ function Stats() {
   const [totalAssets, setTotalAssets] = useState(0);
   const [totalCash, setTotalCash] = useState(0);
   const [salaries, setSalaries] = useState([]);
+  const [minGuiMedianSalary, setMinGuiMedianSalary] = useState(0); // Add state for MinGui median
+  const [haYoungMedianSalary, setHaYoungMedianSalary] = useState(0); // Add state for HaYoung median
+  const [monthlySalaryTotals, setMonthlySalaryTotals] = useState({}); // Add state for monthly totals
   const [hoveredBar, setHoveredBar] = useState(null);
   const [editingSalary, setEditingSalary] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -148,13 +151,15 @@ function Stats() {
 
   const fetchStats = async () => {
     try {
-      const [allocationResponse, assetsResponse, cashResponse, incomeResponse, savingsResponse, salaryResponse] = await Promise.all([
+      const [allocationResponse, assetsResponse, cashResponse, incomeResponse, salaryResponse, minGuiMedianResponse, haYoungMedianResponse, monthlyTotalsResponse] = await Promise.all([
         statsApi.getAssetAllocation(),
         statsApi.getTotalAssets(),
         statsApi.getTotalCash(),
         statsApi.getMonthlyIncomeBreakdown(selectedYear),
-        statsApi.getMonthlyIncomeBreakdown(selectedYear),
-        statsApi.getSalaries(selectedYear)
+        statsApi.getSalaries(selectedYear),
+        statsApi.getSalaryMedian(selectedYear, '민규'), // Fetch MinGui median
+        statsApi.getSalaryMedian(selectedYear, '하영'), // Fetch HaYoung median
+        statsApi.getMonthlySalaryTotals(selectedYear) // Fetch monthly totals
       ]);
       
       setAssetAllocation(allocationResponse.data);
@@ -162,6 +167,10 @@ function Stats() {
       setTotalCash(cashResponse.data.total_cash);
       setMonthlyIncome(incomeResponse.data);
       setSalaries(salaryResponse.data);
+      setMinGuiMedianSalary(minGuiMedianResponse.data.median_salary || 0); // Set MinGui median
+      setHaYoungMedianSalary(haYoungMedianResponse.data.median_salary || 0); // Set HaYoung median
+      setMonthlySalaryTotals(monthlyTotalsResponse.data.monthly_totals || {}); // Set monthly totals
+
       // In a full implementation, we would also set the other data
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -381,26 +390,6 @@ function Stats() {
     const minGuiAverage = minGuiPaymentCount > 0 ? Math.round(minGuiTotal / minGuiPaymentCount) : 0;
     const haYoungAverage = haYoungPaymentCount > 0 ? Math.round(haYoungTotal / haYoungPaymentCount) : 0;
     
-    // Calculate medians
-    const minGuiSalaries = salaries.filter(salary => salary.person === '민규').map(s => s.amount).sort((a, b) => a - b);
-    const haYoungSalaries = salaries.filter(salary => salary.person === '하영').map(s => s.amount).sort((a, b) => a - b);
-    const allSalaries = salaries.map(s => s.amount).sort((a, b) => a - b);
-    
-    const minGuiMedian = minGuiSalaries.length > 0 ? 
-      (minGuiSalaries.length % 2 === 0 ? 
-        (minGuiSalaries[minGuiSalaries.length / 2 - 1] + minGuiSalaries[minGuiSalaries.length / 2]) / 2 : 
-        minGuiSalaries[Math.floor(minGuiSalaries.length / 2)]) : 0;
-        
-    const haYoungMedian = haYoungSalaries.length > 0 ? 
-      (haYoungSalaries.length % 2 === 0 ? 
-        (haYoungSalaries[haYoungSalaries.length / 2 - 1] + haYoungSalaries[haYoungSalaries.length / 2]) / 2 : 
-        haYoungSalaries[Math.floor(haYoungSalaries.length / 2)]) : 0;
-        
-    const medianSalary = allSalaries.length > 0 ? 
-      (allSalaries.length % 2 === 0 ? 
-        (allSalaries[allSalaries.length / 2 - 1] + allSalaries[allSalaries.length / 2]) / 2 : 
-        allSalaries[Math.floor(allSalaries.length / 2)]) : 0;
-
     // Find the maximum salary value for chart scaling
     const maxSalary = Math.max(...Object.values(monthlySalaries).map(data => Math.max(data.민규.total, data.하영.total)), 1);
     
@@ -435,7 +424,7 @@ function Stats() {
               )}
             </p>
             <p style={{ fontSize: '0.95rem' }}>평균: {formatCurrency(averageSalary)} (민규) {formatCurrency(minGuiAverage)} / (하영) {formatCurrency(haYoungAverage)}</p>
-            <p style={{ fontSize: '0.95rem' }}>중앙값: {formatCurrency(medianSalary)} (민규) {formatCurrency(minGuiMedian)} / (하영) {formatCurrency(haYoungMedian)}</p>
+            <p style={{ fontSize: '0.95rem' }}>중앙값: {formatCurrency(minGuiMedianSalary)} (민규) / {formatCurrency(haYoungMedianSalary)} (하영)</p>
           </div>
         </div>
         
@@ -513,7 +502,7 @@ function Stats() {
                             <div 
                               style={{ 
                                 width: '15px', 
-                                height: `${minGuiTotalHeight}px`, 
+                                height: `${minGuiTotalHeight}px`,
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
@@ -676,7 +665,7 @@ function Stats() {
                           </div>
                           <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             <div 
-                              style={{ 
+                              style={{
                                 position: 'absolute', 
                                 top: '-30px', 
                                 left: '50%', 
@@ -696,9 +685,9 @@ function Stats() {
                             </div>
                             {/* HaYoung stacked bar: salary (opaque) + bonus (transparent) */}
                             <div 
-                              style={{ 
+                              style={{
                                 width: '15px', 
-                                height: `${haYoungTotalHeight}px`, 
+                                height: `${haYoungTotalHeight}px`,
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
@@ -773,8 +762,7 @@ function Stats() {
                                     console.error('Error fetching all salaries:', error);
                                   }
                                 } else {
-                                  // If we still can't find the data, show an error
-                                  console.error('Could not find salary data for', month, '하영', isBonusClicked ? '보너스' : '월급');
+                                  console.error('Could not find salary data for', month, '하영');
                                 }
                               }}
                               onContextMenu={async (e) => {

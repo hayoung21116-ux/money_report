@@ -129,12 +129,43 @@ class LedgerService:
         """Delete salary data by index"""
         self.repo.delete_salary(index)
 
-    def get_salaries(self, year: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Get all salary data, optionally filtered by year"""
+    def get_salaries(self, year: Optional[str] = None, person: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Get all salary data, optionally filtered by year and person"""
         all_salaries = self.repo.get_salaries()
         if year:
-            return [s for s in all_salaries if s["month"].startswith(year)]
+            all_salaries = [s for s in all_salaries if s["month"].startswith(year)]
+        if person:
+            all_salaries = [s for s in all_salaries if s["person"] == person]
         return all_salaries
+
+    def get_monthly_salary_totals(self, year: Optional[str] = None, person: Optional[str] = None) -> Dict[str, float]:
+        """Calculate total salary for each month, optionally filtered by year and person.
+        This aggregates all salary-related entries (e.g., 월급, 보너스) for each month.
+        """
+        monthly_totals = defaultdict(float)
+        salaries = self.get_salaries(year=year, person=person)
+        for s in salaries:
+            month_key = s["month"]  # Expecting YYYY-MM format
+            monthly_totals[month_key] += s["amount"]
+        return dict(sorted(monthly_totals.items()))
+
+    def calculate_salary_median(self, year: Optional[str] = None, person: Optional[str] = None) -> Optional[float]:
+        """Calculate the median of monthly salary totals, optionally filtered by year and person.
+        If 1월에 월급이랑 보너스를 둘 다 받았다면 그 둘을 더해 1월 총액을 삼고,
+        이를 기준으로 월들의 중앙값을 찾습니다.
+        """
+        monthly_totals = self.get_monthly_salary_totals(year=year, person=person)
+        if not monthly_totals:
+            return None
+
+        # Extract only the aggregated amounts and sort them
+        amounts = sorted(list(monthly_totals.values()))
+        n = len(amounts)
+
+        if n % 2 == 1:  # Odd number of months
+            return amounts[n // 2]
+        else:  # Even number of months
+            return amounts[n // 2 -1]
 
     def monthly_income_breakdown(self, year: Optional[str] = None) -> Dict[str, Dict]:
         """Returns monthly income breakdown (savings, interest, expense), optionally filtered by year."""
