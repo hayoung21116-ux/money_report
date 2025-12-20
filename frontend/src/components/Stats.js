@@ -412,7 +412,7 @@ function Stats() {
           <div className="summary-text">
             <p style={{ fontSize: '1.7rem', fontWeight: 'bold', marginBottom: '10px' }}>{selectedYear}년 월급 요약</p>
             <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '-5px', marginBottom: '5px' }}>** 월급의 기준은 전달 21일/25일에 들어온 금액이다. 예를 들어, 1월의 월급은 12월 21일/25일에 지급되었다.</p>
-            <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '-5px', marginBottom: '15px' }}>** PS는 2월, PI는 7월,12월에 합쳐 기록한다.</p>
+            <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '-5px', marginBottom: '15px' }}>** PS는 2월, PI는 7월, 8월, 12월에 합쳐 기록한다.</p>
             <p style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '8px' }}>
               총 월급: {formatCurrency(totalSalary)} 
               {minGuiTotal > haYoungTotal ? (
