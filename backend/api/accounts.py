@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
-from typing import List
+from typing import List, Literal
+from pydantic import BaseModel
 from models.domain import Account, Transaction, ValuationRecord
 from core.service import LedgerService
 from database.json_database import JSONDatabase
@@ -14,7 +15,8 @@ def get_ledger_service():
     service = LedgerService(repository)
     return service
 
-@router.get("/", response_model=List[Account])
+@router.get("", response_model=List[Account])
+@router.get("/", response_model=List[Account], include_in_schema=False)
 async def list_accounts(service: LedgerService = Depends(get_ledger_service)):
     """Get all accounts"""
     accounts = service.list_accounts()
@@ -22,3 +24,38 @@ async def list_accounts(service: LedgerService = Depends(get_ledger_service)):
     for account in accounts:
         print(f"API endpoint - Account: {account.name}, Color: {account.color}")
     return accounts
+
+@router.get("/{account_id}", response_model=Account)
+async def get_account(account_id: str, service: LedgerService = Depends(get_ledger_service)):
+    """Get account by ID"""
+    account = service.get_account(account_id)
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    return account
+
+@router.get("/{account_id}/transactions", response_model=List[Transaction])
+async def list_transactions(account_id: str, ascending: bool = False, service: LedgerService = Depends(get_ledger_service)):
+    """Get transactions for an account"""
+    return service.list_transactions(account_id, ascending)
+
+class AccountCreate(BaseModel):
+    name: str
+    type: Literal["현금", "투자", "소비"]
+    color: str
+    opening_balance: float = 0
+    image_path: str = ""
+
+@router.post("", response_model=Account)
+@router.post("/", response_model=Account, include_in_schema=False)
+async def create_account(account_data: AccountCreate, service: LedgerService = Depends(get_ledger_service)):
+    """Create a new account"""
+    try:
+        return service.add_account(
+            name=account_data.name,
+            type_=account_data.type,
+            color=account_data.color,
+            opening_balance=account_data.opening_balance,
+            image_path=account_data.image_path
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

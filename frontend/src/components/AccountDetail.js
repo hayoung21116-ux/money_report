@@ -176,7 +176,7 @@ function AccountDetail() {
         accountApi.getAccount(id),
         accountApi.getTransactions(id)
       ]);
-      
+
       setAccount(accountResponse.data);
       setTransactions(transactionsResponse.data);
     } catch (error) {
@@ -189,20 +189,20 @@ function AccountDetail() {
       // For investment accounts, use asset_value if available
       return account.asset_value || 0;
     }
-    
+
     // For other account types, calculate balance from transactions
     const income = account.transactions
       ? account.transactions
-          .filter(t => t.type === "income")
-          .reduce((sum, t) => sum + t.amount, 0)
+        .filter(t => t.type === "income")
+        .reduce((sum, t) => sum + t.amount, 0)
       : 0;
-      
+
     const expense = account.transactions
       ? account.transactions
-          .filter(t => t.type === "expense")
-          .reduce((sum, t) => sum + t.amount, 0)
+        .filter(t => t.type === "expense")
+        .reduce((sum, t) => sum + t.amount, 0)
       : 0;
-      
+
     return account.opening_balance + income - expense;
   };
 
@@ -234,7 +234,7 @@ function AccountDetail() {
       // await accountApi.deleteAccount(id);
       // onClose();
       // window.location.href = '/'; // Navigate back to account list
-      
+
       // For now, we'll just simulate the API call
       console.log('Deleting account with id:', id);
       alert('계좌가 성공적으로 삭제되었습니다!');
@@ -257,7 +257,7 @@ function AccountDetail() {
       // await accountApi.toggleAccountStatus(id);
       // onClose();
       // fetchAccountDetails(); // Refresh the account details
-      
+
       // For now, we'll just simulate the API call
       console.log('Toggling account status with id:', id);
       const action = account.status === 'dead' ? '활성화' : '비활성화';
@@ -310,7 +310,7 @@ function AccountDetail() {
           )}
         </div>
       </div>
-      
+
       <div className="action-buttons">
         <button className="action-button" onClick={handleAddTransaction}>거래 추가</button>
         <button className="action-button edit" onClick={handleEditAccount}>계좌 수정</button>
@@ -319,7 +319,7 @@ function AccountDetail() {
         </button>
         <button className="action-button delete" onClick={handleDeleteAccount}>계좌 삭제</button>
       </div>
-      
+
       <div className="transactions-table">
         <h3>거래 내역</h3>
         {transactions.length > 0 ? (
@@ -336,14 +336,14 @@ function AccountDetail() {
             <tbody>
               {transactions.map(transaction => (
                 <tr key={transaction.id} className={transaction.category === '이동' ? 'transfer' : ''}>
-                <td className={transaction.type === 'income' ? 'income' : 'expense'}>
-                  {transaction.type === 'income' ? '수입' : '지출'}
-                </td>
-                <td>{formatCurrency(transaction.amount)}</td>
-                <td>{transaction.category}</td>
-                <td>{transaction.memo}</td>
-                <td>{transaction.date}</td>
-              </tr>
+                  <td className={transaction.type === 'income' ? 'income' : 'expense'}>
+                    {transaction.type === 'income' ? '수입' : '지출'}
+                  </td>
+                  <td>{formatCurrency(transaction.amount)}</td>
+                  <td>{transaction.category}</td>
+                  <td>{transaction.memo}</td>
+                  <td>{transaction.date.substring(0, 10)}</td>
+                </tr>
               ))}
             </tbody>
           </table>
@@ -351,7 +351,7 @@ function AccountDetail() {
           <p>거래 내역이 없습니다.</p>
         )}
       </div>
-      
+
       <AddTransactionModal
         isOpen={isAddTransactionModalOpen}
         onClose={() => setIsAddTransactionModalOpen(false)}
@@ -359,21 +359,21 @@ function AccountDetail() {
         onTransactionAdded={handleTransactionAdded}
         accountType={account.type}
       />
-      
+
       <EditAccountModal
         isOpen={isEditAccountModalOpen}
         onClose={() => setIsEditAccountModalOpen(false)}
         account={account}
         onAccountUpdated={handleAccountUpdated}
       />
-      
+
       <DeleteAccountDialog
         isOpen={isDeleteAccountDialogOpen}
         onClose={() => setIsDeleteAccountDialogOpen(false)}
         onConfirm={handleDeleteAccountConfirm}
         accountName={account.name}
       />
-      
+
       <DeactivateAccountDialog
         isOpen={isDeactivateAccountDialogOpen}
         onClose={() => setIsDeactivateAccountDialogOpen(false)}

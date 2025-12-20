@@ -112,18 +112,27 @@ function AddAccountModal({ isOpen, onClose, onAccountAdded }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // In a real implementation, we would call the API to create the account
-      // const response = await accountApi.createAccount(formData);
-      // onAccountAdded(response.data);
-      
-      // For now, we'll just simulate the API call
-      console.log('Creating account with data:', formData);
+      // Prepare the account data
+      const accountData = {
+        name: formData.name,
+        type: formData.type,
+        color: formData.color,
+        opening_balance: formData.balance,
+        image_path: formData.image_path
+      };
+
+      console.log('Creating account with data:', accountData);
+      await accountApi.createAccount(accountData);
+
       alert('계좌가 성공적으로 추가되었습니다!');
       onClose();
       onAccountAdded();
     } catch (error) {
       console.error('Error creating account:', error);
-      alert('계좌 추가 중 오류가 발생했습니다.');
+      const errorMessage = error.response?.data?.detail
+        ? (typeof error.response.data.detail === 'object' ? JSON.stringify(error.response.data.detail) : error.response.data.detail)
+        : error.message;
+      alert('계좌 추가 중 오류가 발생했습니다: ' + errorMessage);
     }
   };
 
@@ -146,7 +155,7 @@ function AddAccountModal({ isOpen, onClose, onAccountAdded }) {
               required
             />
           </FormGroup>
-          
+
           <FormGroup>
             <label htmlFor="type">계좌 유형</label>
             <select
@@ -160,7 +169,7 @@ function AddAccountModal({ isOpen, onClose, onAccountAdded }) {
               <option value="소비">소비</option>
             </select>
           </FormGroup>
-          
+
           <FormGroup>
             <label htmlFor="balance">초기 잔액</label>
             <input
@@ -173,7 +182,7 @@ function AddAccountModal({ isOpen, onClose, onAccountAdded }) {
               step="1000"
             />
           </FormGroup>
-          
+
           <FormGroup>
             <label htmlFor="color">색상</label>
             <input
@@ -184,7 +193,7 @@ function AddAccountModal({ isOpen, onClose, onAccountAdded }) {
               onChange={handleChange}
             />
           </FormGroup>
-          
+
           <ButtonGroup>
             <Button type="button" className="secondary" onClick={onClose}>
               취소

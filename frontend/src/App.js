@@ -98,10 +98,17 @@ function App() {
   const [isAddAccountModalOpen, setIsAddAccountModalOpen] = useState(false);
   const [isAddSalaryModalOpen, setIsAddSalaryModalOpen] = useState(false);
 
+  // Listen for custom event to open add account modal
+  React.useEffect(() => {
+    const handleOpenModal = () => setIsAddAccountModalOpen(true);
+    window.addEventListener('openAddAccountModal', handleOpenModal);
+    return () => window.removeEventListener('openAddAccountModal', handleOpenModal);
+  }, []);
+
   const handleAddAccount = () => {
     setIsAddAccountModalOpen(true);
   };
-  
+
   const handleAddSalary = () => {
     setIsAddSalaryModalOpen(true);
   };
@@ -125,25 +132,25 @@ function App() {
           <button className="header-button" onClick={handleAddAccount}>계좌 추가</button>
         </div>
       </Header>
-      
+
       <Navigation>
         <a href="/">계좌 목록</a>
         <a href="/stats">통계</a>
       </Navigation>
-      
+
       <Routes>
         <Route path="/" element={<AccountList />} />
         <Route path="/account/:id" element={<AccountDetail />} />
         <Route path="/stats" element={<Stats />} />
       </Routes>
-      
-      <AddAccountModal 
+
+      <AddAccountModal
         isOpen={isAddAccountModalOpen}
         onClose={() => setIsAddAccountModalOpen(false)}
         onAccountAdded={handleAccountAdded}
       />
-      
-      <AddSalaryModal 
+
+      <AddSalaryModal
         isOpen={isAddSalaryModalOpen}
         onClose={() => setIsAddSalaryModalOpen(false)}
         onSalaryAdded={handleSalaryAdded}

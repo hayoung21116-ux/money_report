@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { accountApi, statsApi, formatCurrency, getTextColor } from '../services/api';
 
 const AccountGrid = styled.div`
@@ -102,6 +103,7 @@ const TotalAssets = styled.div`
 `;
 
 function AccountList() {
+  const navigate = useNavigate();
   const [accounts, setAccounts] = useState([]);
   const [totalAssets, setTotalAssets] = useState(0);
   const [totalCash, setTotalCash] = useState(0);
@@ -117,24 +119,24 @@ function AccountList() {
       const response = await accountApi.getAllAccounts();
       console.log('Accounts API response:', response); // Debug log
       console.log('Accounts data:', response.data); // Debug log
-      
+
       if (!response.data || !Array.isArray(response.data)) {
         console.error('Invalid accounts data received:', response.data);
         return;
       }
-      
+
       // Sort accounts to match the desktop app behavior
       const sortedAccounts = response.data.sort((a, b) => {
         // First by status (active first)
         if (a.status === "dead" && b.status !== "dead") return 1;
         if (a.status !== "dead" && b.status === "dead") return -1;
-        
+
         // Then by type order
-        const typeOrder = {"현금": 0, "투자": 1, "소비": 2};
+        const typeOrder = { "현금": 0, "투자": 1, "소비": 2 };
         const aTypeOrder = typeOrder[a.type] !== undefined ? typeOrder[a.type] : 3;
         const bTypeOrder = typeOrder[b.type] !== undefined ? typeOrder[b.type] : 3;
         if (aTypeOrder !== bTypeOrder) return aTypeOrder - bTypeOrder;
-        
+
         // Finally by name (민규 first)
         const aHasMinGyu = a.name.includes("민규") ? 0 : 1;
         const bHasMinGyu = b.name.includes("민규") ? 0 : 1;
@@ -171,20 +173,20 @@ function AccountList() {
       // For investment accounts, use asset_value if available
       return account.asset_value || 0;
     }
-    
+
     // For other account types, calculate balance from transactions
     const income = account.transactions
       ? account.transactions
-          .filter(t => t.type === "income")
-          .reduce((sum, t) => sum + t.amount, 0)
+        .filter(t => t.type === "income")
+        .reduce((sum, t) => sum + t.amount, 0)
       : 0;
-      
+
     const expense = account.transactions
       ? account.transactions
-          .filter(t => t.type === "expense")
-          .reduce((sum, t) => sum + t.amount, 0)
+        .filter(t => t.type === "expense")
+        .reduce((sum, t) => sum + t.amount, 0)
       : 0;
-      
+
     return account.opening_balance + income - expense;
   };
 
@@ -195,18 +197,18 @@ function AccountList() {
           총 자산: {formatCurrency(totalAssets)} / 현금: {formatCurrency(totalCash)}
         </div>
       </TotalAssets>
-      
+
       <AccountGrid>
         {accounts.map(account => {
           const bgColor = account.status === "dead" ? "#808080" : account.color;
           const textColor = getTextColor(bgColor);
           console.log(`Account ${account.name}: bgColor=${bgColor}, textColor=${textColor}`); // Debug log
           return (
-            <AccountCard 
+            <AccountCard
               key={account.id}
               color={bgColor}
               textColor={textColor}
-              onClick={() => window.location.href = `#/account/${account.id}`}
+              onClick={() => navigate(`/account/${account.id}`)}
             >
               <div className="account-icon">
                 {account.name.charAt(0)}
@@ -214,8 +216,8 @@ function AccountList() {
               <div className="account-info">
                 <div className="account-name">{account.name}</div>
                 <div className="account-balance">
-                  {account.type === '투자' 
-                    ? formatCurrency(account.asset_value) 
+                  {account.type === '투자'
+                    ? formatCurrency(account.asset_value)
                     : formatCurrency(calculateBalance(account))}
                 </div>
               </div>
@@ -223,8 +225,8 @@ function AccountList() {
           );
         })}
       </AccountGrid>
-      
-      <AddAccountButton onClick={() => alert('계좌 추가 기능은 다음 단계에서 구현됩니다.')}>
+
+      <AddAccountButton onClick={() => window.dispatchEvent(new CustomEvent('openAddAccountModal'))}>
         +
       </AddAccountButton>
     </div>
