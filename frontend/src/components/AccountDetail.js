@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { accountApi, formatCurrency } from '../services/api';
-import AddTransactionModal from './AddTransactionModal';
-import EditAccountModal from './EditAccountModal';
-import DeleteAccountDialog from './DeleteAccountDialog';
+import { accountApi, formatCurrency } from '../services/api.js';
+import AddTransactionModal from './AddTransactionModal.js';
+import EditAccountModal from './EditAccountModal.js';
+import DeleteAccountDialog from './DeleteAccountDialog.js';
 import DeactivateAccountDialog from './DeactivateAccountDialog.js';
 
 const AccountDetailContainer = styled.div`

@@ -4348,10 +4348,16 @@
         "classification": "월급"
       },
       {
-        "amount": 8442610.0,
+        "amount": 4343030.0,
         "month": "2024-11",
         "person": "민규",
         "classification": "월급"
+      },      
+      {
+        "amount": 4099580.0,
+        "month": "2024-11",
+        "person": "민규",
+        "classification": "보너스"
       },
       {
         "amount": 3993940.0,
@@ -4393,7 +4399,7 @@
         "amount": 53215553.0,
         "month": "2025-02",
         "person": "민규",
-        "classification": "월급"
+        "classification": "보너스"
       },
       {
         "amount": 4103890.0,
@@ -4480,10 +4486,16 @@
         "classification": "보너스"
       },
       {
-        "amount": 8892445.0,
+        "amount": 4449425.0,
         "month": "2025-08",
         "person": "민규",
         "classification": "월급"
+      },
+      {
+        "amount": 4443020.0,
+        "month": "2025-08",
+        "person": "민규",
+        "classification": "보너스"
       },
       {
         "amount": 4269340.0,
