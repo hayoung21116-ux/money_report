@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { statsApi, formatCurrency } from '../services/api';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const StatsContainer = styled.div`
   .stats-header {
@@ -162,7 +167,7 @@ function Stats() {
         statsApi.getSalaryMedian(selectedYear, '하영'), // Fetch HaYoung median
         statsApi.getMonthlySalaryTotals(selectedYear) // Fetch monthly totals
       ]);
-      
+
       setAssetAllocation(allocationResponse.data);
       setTotalAssets(assetsResponse.data.total_assets);
       setTotalCash(cashResponse.data.total_cash);
@@ -182,29 +187,119 @@ function Stats() {
     fetchStats();
   }, [selectedYear]);
 
-  const formatCurrency = (amount) => {
-    if (amount === undefined || amount === null) return '₩0';
-    return `₩${amount.toLocaleString()}`;
-  };
-
-  const getColorForCategory = (category) => {
-    const colors = {
-      "현금": "#4CAF50",
-      "부동산": "#2196F3",
-      "비트코인": "#FF9800",
-      "주식": "#9C27B0",
-      "기타": "#607D8B"
-    };
-    return colors[category] || "#9E9E9E";
-  };
-
-  const calculatePercentage = (value, total) => {
-    return total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-  };
 
   const renderPortfolioTab = () => {
+    const legendMargin = {
+      id: 'legendMargin',
+      beforeInit(chart) {
+        if (chart.legend) {
+          const originalFit = chart.legend.fit;
+          chart.legend.fit = function fit() {
+            if (originalFit) {
+              originalFit.bind(chart.legend)();
+            }
+            this.width += 100; // Increase width reserve
+          };
+        }
+      },
+      afterUpdate(chart) {
+        // Shift the legend text to the right to create visual gap
+        if (chart.legend) {
+          chart.legend.left += 80;
+        }
+      }
+    };
+
+    const getColorForCategory = (category) => {
+      const colors = {
+        "현금": "#4CAF50",
+        "부동산": "#2196F3",
+        "비트코인": "#FF9800",
+        "주식": "#9C27B0",
+        "기타": "#607D8B"
+      };
+      return colors[category] || "#9E9E9E";
+    };
+
+    const calculatePercentage = (value, total) => {
+      return total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+    };
+
     const total = Object.values(assetAllocation).reduce((sum, value) => sum + value, 0);
-    
+
+    const chartData = {
+      labels: Object.keys(assetAllocation),
+      datasets: [
+        {
+          data: Object.values(assetAllocation),
+          backgroundColor: Object.keys(assetAllocation).map(category => getColorForCategory(category)),
+          borderColor: Object.keys(assetAllocation).map(category => getColorForCategory(category)),
+          borderWidth: 1,
+        },
+      ],
+    };
+
+    const chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            font: {
+              size: 14,
+            },
+            generateLabels: (chart) => {
+              const data = chart.data;
+              const total = Object.values(assetAllocation).reduce((sum, value) => sum + value, 0);
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                  const style = data.datasets[0].backgroundColor[i];
+                  const value = data.datasets[0].data[i];
+                  const percentage = calculatePercentage(value, total);
+                  return {
+                    text: label,
+                    fillStyle: style,
+                    strokeStyle: style,
+                    lineWidth: 1,
+                    hidden: isNaN(value) || chart.getDatasetMeta(0).data[i].hidden,
+                    index: i,
+                  };
+                });
+              }
+              return [];
+            },
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              const label = context.label || '';
+              const value = context.parsed;
+              const percentage = calculatePercentage(value, total);
+              return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+            }
+          }
+        },
+        datalabels: {
+          color: '#fff',
+          formatter: (value, context) => {
+            const percentage = calculatePercentage(value, total);
+            return percentage > 0 ? `${percentage}%` : '';
+          },
+          font: {
+            weight: 'bold',
+            size: 14,
+          },
+          display: function (context) {
+            // Only display datalabels if the segment is large enough to show the label clearly
+            // You might need to adjust this threshold based on your chart size and data distribution
+            return context.dataset.data[context.dataIndex] / total * 100 > 5;
+          }
+        }
+      },
+    };
+
     return (
       <div className="tab-content">
         <div className="summary">
@@ -222,15 +317,11 @@ function Stats() {
             )}
           </div>
         </div>
-        
+
         <div className="chart-container">
           {Object.keys(assetAllocation).length > 0 ? (
-            <div style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {/* In a real implementation, this would be a donut chart */}
-              <div className="chart-placeholder">
-                <p>포트폴리오 도넛 차트</p>
-                <p>(실제 구현에서는 여기에 차트가 표시됩니다)</p>
-              </div>
+            <div style={{ width: '100%', maxWidth: '500px', height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Doughnut data={chartData} options={chartOptions} plugins={[legendMargin]} />
             </div>
           ) : (
             <div className="chart-placeholder">
@@ -247,12 +338,12 @@ function Stats() {
     // Calculate summary statistics
     let totalIncome = 0;
     let totalExpense = 0;
-    
+
     Object.values(monthlyIncome).forEach(monthData => {
       totalIncome += (monthData.savings || 0) + (monthData.interest || 0);
       totalExpense += (monthData.expense || 0);
     });
-    
+
     const netIncome = totalIncome - totalExpense;
 
     return (
@@ -262,8 +353,8 @@ function Stats() {
             <p style={{ fontSize: '1.7rem', fontWeight: 'bold', marginBottom: '10px' }}>{selectedYear}년 순수익 요약</p>
             {activeTab === 'net-income' && (
               <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
-                <select 
-                  value={selectedYear} 
+                <select
+                  value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
                   style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '1rem' }}
                 >
@@ -278,7 +369,7 @@ function Stats() {
             <p>순수익: {formatCurrency(netIncome)}</p>
           </div>
         </div>
-        
+
         <div className="chart-container">
           {Object.keys(monthlyIncome).length > 0 ? (
             <div style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -315,12 +406,12 @@ function Stats() {
     // Calculate summary statistics
     let totalSavings = 0;
     let totalInterest = 0;
-    
+
     Object.values(monthlyIncome).forEach(monthData => {
       totalSavings += (monthData.savings || 0);
       totalInterest += (monthData.interest || 0);
     });
-    
+
     const total = totalSavings + totalInterest;
 
     return (
@@ -330,8 +421,8 @@ function Stats() {
             <p style={{ fontSize: '1.7rem', fontWeight: 'bold', marginBottom: '10px' }}>{selectedYear}년 저축+이자 요약</p>
             {activeTab === 'savings' && (
               <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
-                <select 
-                  value={selectedYear} 
+                <select
+                  value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
                   style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '1rem' }}
                 >
@@ -346,7 +437,7 @@ function Stats() {
             <p>합계: {formatCurrency(total)}</p>
           </div>
         </div>
-        
+
         <div className="chart-container">
           {Object.keys(monthlyIncome).length > 0 ? (
             <div style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -382,15 +473,15 @@ function Stats() {
       const person = salary.person;
       const amount = salary.amount;
       const classification = salary.classification || '월급'; // Default to '월급' if not specified
-      
+
       if (!monthlySalaries[month]) {
-        monthlySalaries[month] = { 
-          민규: { salary: 0, bonus: 0, total: 0 }, 
-          하영: { salary: 0, bonus: 0, total: 0 }, 
-          total: 0 
+        monthlySalaries[month] = {
+          민규: { salary: 0, bonus: 0, total: 0 },
+          하영: { salary: 0, bonus: 0, total: 0 },
+          total: 0
         };
       }
-      
+
       if (classification === '보너스') {
         monthlySalaries[month][person].bonus += amount;
       } else {
@@ -407,19 +498,19 @@ function Stats() {
     const totalSalary = Object.values(monthlySalaries).reduce((sum, monthData) => sum + monthData.total, 0);
     const minGuiTotal = Object.values(monthlySalaries).reduce((sum, monthData) => sum + monthData.민규.total, 0);
     const haYoungTotal = Object.values(monthlySalaries).reduce((sum, monthData) => sum + monthData.하영.total, 0);
-    
+
     // Calculate payment counts for each person
     const minGuiPaymentCount = salaries.filter(salary => salary.person === '민규').length;
     const haYoungPaymentCount = salaries.filter(salary => salary.person === '하영').length;
-    
+
     // Calculate averages
     const averageSalary = salaries.length > 0 ? Math.round(totalSalary / salaries.length) : 0;
     const minGuiAverage = minGuiPaymentCount > 0 ? Math.round(minGuiTotal / minGuiPaymentCount) : 0;
     const haYoungAverage = haYoungPaymentCount > 0 ? Math.round(haYoungTotal / haYoungPaymentCount) : 0;
-    
+
     // Find the maximum salary value for chart scaling
     const maxSalary = Math.max(...Object.values(monthlySalaries).map(data => Math.max(data.민규.total, data.하영.total)), 1);
-    
+
     // Calculate y-axis grid values based on the new formula
     // Round up maxSalary to nearest 100,000 and divide by 5
     const roundedMaxSalary = Math.ceil(maxSalary / 100000) * 100000;
@@ -440,8 +531,8 @@ function Stats() {
             <p style={{ fontSize: '1.7rem', fontWeight: 'bold', marginBottom: '10px' }}>{selectedYear}년 월급 요약</p>
             {activeTab === 'salary' && (
               <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
-                <select 
-                  value={selectedYear} 
+                <select
+                  value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
                   style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '1rem' }}
                 >
@@ -454,7 +545,7 @@ function Stats() {
             <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '-5px', marginBottom: '5px' }}>** 월급의 기준은 전달 21일/25일에 들어온 금액이다. 예를 들어, 1월의 월급은 12월 21일/25일에 지급되었다.</p>
             <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '-5px', marginBottom: '15px' }}>** PS는 2월, PI는 7월, 8월, 12월에 합쳐 기록한다.</p>
             <p style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '8px' }}>
-              총 월급: {formatCurrency(totalSalary)} 
+              총 월급: {formatCurrency(totalSalary)}
               {minGuiTotal > haYoungTotal ? (
                 <> 👑(민규) {formatCurrency(minGuiTotal)} / (하영) {formatCurrency(haYoungTotal)}</>
               ) : haYoungTotal > minGuiTotal ? (
@@ -467,7 +558,7 @@ function Stats() {
             <p style={{ fontSize: '0.95rem' }}>중앙값: {formatCurrency(minGuiMedianSalary)} (민규) / {formatCurrency(haYoungMedianSalary)} (하영)</p>
           </div>
         </div>
-        
+
         <div className="chart-container">
           {salaries.length > 0 ? (
             <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -475,7 +566,7 @@ function Stats() {
               <div style={{ textAlign: 'center', marginBottom: '10px', fontSize: '18px', fontWeight: 'bold' }}>
                 월급
               </div>
-              
+
               {/* Chart area */}
               <div style={{ display: 'flex', height: '300px', marginBottom: '10px' }}>
                 {/* Y-axis labels */}
@@ -487,11 +578,11 @@ function Stats() {
                   <span>{(yAxisValues[4] / 10000).toLocaleString()}만원</span>
                   <span>0-</span>
                 </div>
-                
+
                 {/* Chart area with grid lines */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
                   {/* Bars */}
-                  <div 
+                  <div
                     style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: '2%', paddingBottom: '20px', borderBottom: '1px solid #ddd', position: 'relative', paddingLeft: '0.5%', paddingRight: '0.5%' }}
                     onMouseMove={(e) => {
                       console.log('Mouse moved in chart area - coordinates:', e.clientX, e.clientY);
@@ -509,27 +600,27 @@ function Stats() {
                       const maxBarHeight = 250; // Maximum bar height in pixels
                       const minGuiTotalHeight = maxSalary > 0 ? (data.민규.total / maxSalary) * maxBarHeight : 0;
                       const haYoungTotalHeight = maxSalary > 0 ? (data.하영.total / maxSalary) * maxBarHeight : 0;
-                      
+
                       // Calculate individual heights for salary and bonus
                       const minGuiSalaryHeight = maxSalary > 0 ? (data.민규.salary / maxSalary) * maxBarHeight : 0;
                       const minGuiBonusHeight = maxSalary > 0 ? (data.민규.bonus / maxSalary) * maxBarHeight : 0;
                       const haYoungSalaryHeight = maxSalary > 0 ? (data.하영.salary / maxSalary) * maxBarHeight : 0;
                       const haYoungBonusHeight = maxSalary > 0 ? (data.하영.bonus / maxSalary) * maxBarHeight : 0;
-                      
+
                       return (
                         <div key={month} style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', minWidth: '30px', flexGrow: 1, justifyContent: 'center' }}>
                           <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <div 
-                              style={{ 
-                                position: 'absolute', 
-                                top: '-30px', 
-                                left: '50%', 
-                                transform: 'translateX(-50%)', 
-                                backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                                color: 'white', 
-                                padding: '4px 8px', 
-                                borderRadius: '4px', 
-                                fontSize: '12px', 
+                            <div
+                              style={{
+                                position: 'absolute',
+                                top: '-30px',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                color: 'white',
+                                padding: '4px 8px',
+                                borderRadius: '4px',
+                                fontSize: '12px',
                                 whiteSpace: 'nowrap',
                                 display: hoveredBar === `${month}-minGui` ? 'block' : 'none',
                                 zIndex: '1000',
@@ -539,9 +630,9 @@ function Stats() {
                               {formatCurrency(data.민규.total)} ({formatCurrency(data.민규.bonus)}/{formatCurrency(data.민규.salary)})
                             </div>
                             {/* MinGui stacked bar: salary (opaque) + bonus (transparent) */}
-                            <div 
-                              style={{ 
-                                width: '15px', 
+                            <div
+                              style={{
+                                width: '15px',
                                 height: `${minGuiTotalHeight}px`,
                                 display: 'flex',
                                 flexDirection: 'column',
@@ -565,7 +656,7 @@ function Stats() {
                                 const rect = e.currentTarget.getBoundingClientRect();
                                 const clickY = e.clientY - rect.top;
                                 const isBonusClicked = clickY < minGuiBonusHeight;
-                                
+
                                 // Find the appropriate salary data based on which segment was clicked
                                 // We need to find the correct index in the original salaries array
                                 let salaryIndex = -1;
@@ -581,30 +672,30 @@ function Stats() {
                                     }
                                   }
                                 }
-                                
+
                                 if (salaryIndex !== -1) {
                                   // Get the actual salary data from the filtered array
                                   const selectedSalary = salaries[salaryIndex];
-                                  
+
                                   // Now we need to find the index of this salary in the full array
                                   // Fetch all salaries to get the full array
                                   try {
                                     const allSalariesResponse = await statsApi.getSalaries();
                                     const allSalaries = allSalariesResponse.data;
-                                    
+
                                     // Find the index in the full array that matches our selected salary
                                     let fullArrayIndex = -1;
                                     for (let i = 0; i < allSalaries.length; i++) {
                                       const s = allSalaries[i];
-                                      if (s.month === selectedSalary.month && 
-                                          s.person === selectedSalary.person && 
-                                          s.amount === selectedSalary.amount &&
-                                          s.classification === selectedSalary.classification) {
+                                      if (s.month === selectedSalary.month &&
+                                        s.person === selectedSalary.person &&
+                                        s.amount === selectedSalary.amount &&
+                                        s.classification === selectedSalary.classification) {
                                         fullArrayIndex = i;
                                         break;
                                       }
                                     }
-                                    
+
                                     if (fullArrayIndex !== -1) {
                                       console.log('Clicked on salary data at index:', fullArrayIndex, 'in full array for month:', month, 'person: 민규', 'classification:', isBonusClicked ? '보너스' : '월급');
                                       setEditingSalary({ ...selectedSalary, index: fullArrayIndex });
@@ -647,26 +738,26 @@ function Stats() {
                                 if (salaryIndex !== -1) {
                                   // Get the actual salary data from the filtered array
                                   const selectedSalary = salaries[salaryIndex];
-                                  
+
                                   // Now we need to find the index of this salary in the full array
                                   // Fetch all salaries to get the full array
                                   try {
                                     const allSalariesResponse = await statsApi.getSalaries();
                                     const allSalaries = allSalariesResponse.data;
-                                    
+
                                     // Find the index in the full array that matches our selected salary
                                     let fullArrayIndex = -1;
                                     for (let i = 0; i < allSalaries.length; i++) {
                                       const s = allSalaries[i];
-                                      if (s.month === selectedSalary.month && 
-                                          s.person === selectedSalary.person && 
-                                          s.amount === selectedSalary.amount &&
-                                          s.classification === selectedSalary.classification) {
+                                      if (s.month === selectedSalary.month &&
+                                        s.person === selectedSalary.person &&
+                                        s.amount === selectedSalary.amount &&
+                                        s.classification === selectedSalary.classification) {
                                         fullArrayIndex = i;
                                         break;
                                       }
                                     }
-                                    
+
                                     if (fullArrayIndex !== -1) {
                                       console.log('Clicked on salary data at index:', fullArrayIndex, 'in full array for month:', month, 'person: 민규');
                                       setEditingSalary({ ...selectedSalary, index: fullArrayIndex });
@@ -704,17 +795,17 @@ function Stats() {
                             </div>
                           </div>
                           <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <div 
+                            <div
                               style={{
-                                position: 'absolute', 
-                                top: '-30px', 
-                                left: '50%', 
-                                transform: 'translateX(-50%)', 
-                                backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                                color: 'white', 
-                                padding: '4px 8px', 
-                                borderRadius: '4px', 
-                                fontSize: '12px', 
+                                position: 'absolute',
+                                top: '-30px',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                color: 'white',
+                                padding: '4px 8px',
+                                borderRadius: '4px',
+                                fontSize: '12px',
                                 whiteSpace: 'nowrap',
                                 display: hoveredBar === `${month}-haYoung` ? 'block' : 'none',
                                 zIndex: '1000',
@@ -724,9 +815,9 @@ function Stats() {
                               {formatCurrency(data.하영.total)} ({formatCurrency(data.하영.bonus)}/{formatCurrency(data.하영.salary)})
                             </div>
                             {/* HaYoung stacked bar: salary (opaque) + bonus (transparent) */}
-                            <div 
+                            <div
                               style={{
-                                width: '15px', 
+                                width: '15px',
                                 height: `${haYoungTotalHeight}px`,
                                 display: 'flex',
                                 flexDirection: 'column',
@@ -750,7 +841,7 @@ function Stats() {
                                 const rect = e.currentTarget.getBoundingClientRect();
                                 const clickY = e.clientY - rect.top;
                                 const isBonusClicked = clickY < haYoungBonusHeight;
-                                
+
                                 // Find the appropriate salary data based on which segment was clicked
                                 // We need to find the correct index in the original salaries array
                                 let salaryIndex = -1;
@@ -766,30 +857,30 @@ function Stats() {
                                     }
                                   }
                                 }
-                                
+
                                 if (salaryIndex !== -1) {
                                   // Get the actual salary data from the filtered array
                                   const selectedSalary = salaries[salaryIndex];
-                                  
+
                                   // Now we need to find the index of this salary in the full array
                                   // Fetch all salaries to get the full array
                                   try {
                                     const allSalariesResponse = await statsApi.getSalaries();
                                     const allSalaries = allSalariesResponse.data;
-                                    
+
                                     // Find the index in the full array that matches our selected salary
                                     let fullArrayIndex = -1;
                                     for (let i = 0; i < allSalaries.length; i++) {
                                       const s = allSalaries[i];
-                                      if (s.month === selectedSalary.month && 
-                                          s.person === selectedSalary.person && 
-                                          s.amount === selectedSalary.amount &&
-                                          s.classification === selectedSalary.classification) {
+                                      if (s.month === selectedSalary.month &&
+                                        s.person === selectedSalary.person &&
+                                        s.amount === selectedSalary.amount &&
+                                        s.classification === selectedSalary.classification) {
                                         fullArrayIndex = i;
                                         break;
                                       }
                                     }
-                                    
+
                                     if (fullArrayIndex !== -1) {
                                       console.log('Clicked on salary data at index:', fullArrayIndex, 'in full array for month:', month, 'person: 하영', 'classification:', isBonusClicked ? '보너스' : '월급');
                                       setEditingSalary({ ...selectedSalary, index: fullArrayIndex });
@@ -831,26 +922,26 @@ function Stats() {
                                 if (salaryIndex !== -1) {
                                   // Get the actual salary data from the filtered array
                                   const selectedSalary = salaries[salaryIndex];
-                                  
+
                                   // Now we need to find the index of this salary in the full array
                                   // Fetch all salaries to get the full array
                                   try {
                                     const allSalariesResponse = await statsApi.getSalaries();
                                     const allSalaries = allSalariesResponse.data;
-                                    
+
                                     // Find the index in the full array that matches our selected salary
                                     let fullArrayIndex = -1;
                                     for (let i = 0; i < allSalaries.length; i++) {
                                       const s = allSalaries[i];
-                                      if (s.month === selectedSalary.month && 
-                                          s.person === selectedSalary.person && 
-                                          s.amount === selectedSalary.amount &&
-                                          s.classification === selectedSalary.classification) {
+                                      if (s.month === selectedSalary.month &&
+                                        s.person === selectedSalary.person &&
+                                        s.amount === selectedSalary.amount &&
+                                        s.classification === selectedSalary.classification) {
                                         fullArrayIndex = i;
                                         break;
                                       }
                                     }
-                                    
+
                                     if (fullArrayIndex !== -1) {
                                       console.log('Clicked on salary data at index:', fullArrayIndex, 'in full array for month:', month, 'person: 하영');
                                       setEditingSalary({ ...selectedSalary, index: fullArrayIndex });
@@ -891,7 +982,7 @@ function Stats() {
                       );
                     })}
                   </div>
-                  
+
                   {/* X-axis labels */}
                   <div style={{ display: 'flex', gap: '2%', justifyContent: 'center', paddingTop: '5px', paddingLeft: '0.5%', paddingRight: '0.5%' }}>
                     {sortedMonths.map(month => (
@@ -902,7 +993,7 @@ function Stats() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Legend */}
               <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -959,7 +1050,7 @@ function Stats() {
   // Function to handle salary deletion
   const handleDeleteSalary = async () => {
     if (!editingSalary) return;
-    
+
     try {
       await statsApi.deleteSalary(editingSalary.index);
       // Refresh the data
@@ -981,34 +1072,34 @@ function Stats() {
       <div className="stats-header">
         <h2>월별 통계</h2>
       </div>
-      
+
       <div className="tabs">
-        <div 
+        <div
           className={`tab ${activeTab === 'portfolio' ? 'active' : ''}`}
           onClick={() => setActiveTab('portfolio')}
         >
           포트폴리오
         </div>
-        <div 
+        <div
           className={`tab ${activeTab === 'net-income' ? 'active' : ''}`}
           onClick={() => setActiveTab('net-income')}
         >
           순수익
         </div>
-        <div 
+        <div
           className={`tab ${activeTab === 'savings' ? 'active' : ''}`}
           onClick={() => setActiveTab('savings')}
         >
           저축+이자
         </div>
-        <div 
+        <div
           className={`tab ${activeTab === 'salary' ? 'active' : ''}`}
           onClick={() => setActiveTab('salary')}
         >
           월급
         </div>
       </div>
-      
+
       {renderTabContent()}
 
       {/* Edit Salary Modal */}
@@ -1075,20 +1166,20 @@ function Stats() {
               </select>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <button 
+              <button
                 onClick={handleDeleteSalary}
                 style={{ backgroundColor: '#f44336', color: 'white', border: 'none', padding: '10px 15px', borderRadius: '4px', cursor: 'pointer' }}
               >
                 삭제
               </button>
               <div>
-                <button 
+                <button
                   onClick={() => setShowEditModal(false)}
                   style={{ backgroundColor: '#ccc', color: 'black', border: 'none', padding: '10px 15px', borderRadius: '4px', cursor: 'pointer', marginRight: '10px' }}
                 >
                   취소
                 </button>
-                <button 
+                <button
                   onClick={() => handleUpdateSalary(editingSalary)}
                   style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '10px 15px', borderRadius: '4px', cursor: 'pointer' }}
                 >
