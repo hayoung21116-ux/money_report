@@ -155,3 +155,8 @@ async def update_account(account_id: str, account_data: AccountUpdate, service: 
         return account
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/{account_id}/valuations", response_model=List[ValuationRecord])
+async def get_valuations(account_id: str, service: LedgerService = Depends(get_ledger_service)):
+    """Get valuations for an account"""
+    return service.get_valuations(account_id)

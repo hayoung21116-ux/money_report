@@ -816,7 +816,6 @@
       "opening_balance": 0.0,
       "status": "active",
       "image_path": "images\\부동산.jpg",
-      "transactions": [],
       "valuations": [
         {
           "id": "ec40d8d4-c20b-4a5a-9a03-9a4cc7b4798e",
@@ -4272,7 +4271,6 @@
       "opening_balance": 60000000.0,
       "status": "active",
       "image_path": "images\\비트코인.png",
-      "transactions": [],
       "valuations": [],
       "purchase_amount": 0.0,
       "cash_holding": 60000000.0,
@@ -4333,7 +4331,6 @@
       "opening_balance": 0.0,
       "status": "active",
       "image_path": "images\\나무증권.png",
-      "transactions": [],
       "valuations": [],
       "purchase_amount": 0.0,
       "cash_holding": 0.0,
@@ -4554,7 +4551,6 @@
       "opening_balance": 0.0,
       "status": "active",
       "image_path": "images\\한국투자증권.png",
-      "transactions": [],
       "valuations": [],
       "purchase_amount": 29220139.0,
       "cash_holding": 1380620.0,
@@ -4569,7 +4565,6 @@
       "opening_balance": 0.0,
       "status": "active",
       "image_path": "images\\비트코인.png",
-      "transactions": [],
       "valuations": [
         {
           "id": "8ad749b8-7c07-4818-92fd-223b1d25b4a9",

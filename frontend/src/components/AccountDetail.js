@@ -1,11 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js';
 import { accountApi, formatCurrency } from '../services/api.js';
 import AddTransactionModal from './AddTransactionModal.js';
 import EditAccountModal from './EditAccountModal.js';
 import DeleteAccountDialog from './DeleteAccountDialog.js';
 import DeactivateAccountDialog from './DeactivateAccountDialog.js';
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 const AccountDetailContainer = styled.div`
   .account-header {
@@ -57,6 +81,47 @@ const AccountDetailContainer = styled.div`
     }
   }
   
+  .tabs-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .tabs-header {
+    display: flex;
+    border-bottom: 2px solid #e0e0e0;
+    background-color: #f8f9fa;
+    
+    .tab-button {
+      flex: 1;
+      padding: 15px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      color: #666;
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+      
+      &:hover {
+        background-color: #e9ecef;
+        color: #333;
+      }
+      
+      &.active {
+        color: #007bff;
+        border-bottom-color: #007bff;
+        background-color: white;
+      }
+    }
+  }
+  
+  .tab-content {
+    padding: 20px;
+  }
+  
   .transactions-table {
     background-color: white;
     border-radius: 8px;
@@ -74,6 +139,11 @@ const AccountDetailContainer = styled.div`
         margin: 0;
       }
     }
+  }
+  
+  .chart-container {
+    padding: 20px;
+    min-height: 400px;
   }
   
   .action-buttons {
@@ -137,6 +207,24 @@ const AccountDetailContainer = styled.div`
       font-weight: 600;
     }
     
+    // Set column widths
+    th:nth-child(1), td:nth-child(1) { // 타입
+      width: 5%;
+    }
+    th:nth-child(2), td:nth-child(2) { // 금액
+      width: 5%;
+    }
+    th:nth-child(3), td:nth-child(3) { // 메모
+      width: 40%;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    th:nth-child(4), td:nth-child(4) { // 날짜
+      width: 10%;
+    }
+    
     tr:hover {
       background-color: #f5f5f5;
     }
@@ -151,6 +239,15 @@ const AccountDetailContainer = styled.div`
     
     .transfer {
       background-color: #fffacd;
+    }
+    
+    .valuation {
+      background-color: #e7f3ff;
+    }
+    
+    .valuation-type {
+      color: #0066cc;
+      font-weight: 600;
     }
   }
   
@@ -186,6 +283,8 @@ function AccountDetail() {
   const { id } = useParams();
   const [account, setAccount] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [valuations, setValuations] = useState([]);
+  const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' or 'chart'
   const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] = useState(false);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
   const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
@@ -202,8 +301,22 @@ function AccountDetail() {
         accountApi.getTransactions(id)
       ]);
 
-      setAccount(accountResponse.data);
+      const accountData = accountResponse.data;
+      setAccount(accountData);
       setTransactions(transactionsResponse.data);
+      
+      // Fetch valuations if it's an investment account
+      if (accountData.type === '투자') {
+        try {
+          const valuationsResponse = await accountApi.getValuations(id);
+          setValuations(valuationsResponse.data || []);
+        } catch (error) {
+          console.error('Error fetching valuations:', error);
+          setValuations([]);
+        }
+      } else {
+        setValuations([]);
+      }
     } catch (error) {
       console.error('Error fetching account details:', error);
     }
@@ -297,9 +410,59 @@ function AccountDetail() {
     }
   };
 
+  const calculateReturnRateData = () => {
+    if (!account || account.type !== '투자' || valuations.length === 0) {
+      return null;
+    }
+
+    // Sort valuations by date
+    const sortedValuations = [...valuations].sort((a, b) => 
+      new Date(a.evaluation_date) - new Date(b.evaluation_date)
+    );
+
+    // Calculate return rate for each valuation point
+    const labels = [];
+    const returnRates = [];
+    const baseAmount = account.purchase_amount || 0;
+    
+    sortedValuations.forEach((valuation) => {
+      const date = new Date(valuation.evaluation_date);
+      labels.push(date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' }));
+      
+      // Calculate return rate: ((current_value - purchase_amount) / purchase_amount) * 100
+      if (baseAmount > 0) {
+        const returnRate = ((valuation.evaluated_amount - baseAmount) / baseAmount) * 100;
+        returnRates.push(returnRate);
+      } else {
+        // If no purchase amount, show 0% or calculate from first valuation
+        returnRates.push(0);
+      }
+    });
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: '수익률 (%)',
+          data: returnRates,
+          borderColor: account.color || '#007bff',
+          backgroundColor: `${account.color || '#007bff'}20`,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        }
+      ]
+    };
+  };
+
+  const chartData = calculateReturnRateData();
+
   if (!account) {
     return <div>Loading...</div>;
   }
+
+  const isInvestmentAccount = account.type === '투자';
 
   return (
     <AccountDetailContainer>
@@ -346,40 +509,171 @@ function AccountDetail() {
         </div>
       </div>
 
-      <div className="transactions-table">
-        <div className="transactions-header">
-          <h3>거래 내역</h3>
-          <button className="action-button" onClick={handleAddTransaction}>거래 추가</button>
+      {isInvestmentAccount ? (
+        <div className="tabs-container">
+          <div className="tabs-header">
+            <button
+              className={`tab-button ${activeTab === 'transactions' ? 'active' : ''}`}
+              onClick={() => setActiveTab('transactions')}
+            >
+              거래 내역
+            </button>
+            <button
+              className={`tab-button ${activeTab === 'chart' ? 'active' : ''}`}
+              onClick={() => setActiveTab('chart')}
+            >
+              수익률 차트
+            </button>
+          </div>
+          <div className="tab-content">
+            {activeTab === 'transactions' ? (
+              <div className="transactions-table">
+                <div className="transactions-header">
+                  <h3>거래 내역</h3>
+                  <button className="action-button" onClick={handleAddTransaction}>거래 추가</button>
+                </div>
+                {(transactions.length > 0 || valuations.length > 0) ? (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>타입</th>
+                        <th>금액</th>
+                        <th>메모</th>
+                        <th>날짜</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        // Combine transactions and valuations, sorted by date
+                        ...transactions.map(t => ({ ...t, itemType: 'transaction' })),
+                        ...valuations.map(v => ({ ...v, itemType: 'valuation' }))
+                      ]
+                        .sort((a, b) => {
+                          const dateA = a.itemType === 'transaction' ? a.date : a.evaluation_date;
+                          const dateB = b.itemType === 'transaction' ? b.date : b.evaluation_date;
+                          return new Date(dateB) - new Date(dateA); // 최신순
+                        })
+                        .map(item => {
+                          if (item.itemType === 'transaction') {
+                            return (
+                              <tr key={item.id} className={item.category === '이동' ? 'transfer' : ''}>
+                                <td className={item.type === 'income' ? 'income' : 'expense'}>
+                                  {item.type === 'income' ? '수입' : '지출'}
+                                </td>
+                                <td>{formatCurrency(item.amount)}</td>
+                                <td>{item.memo}</td>
+                                <td>{item.date.substring(0, 10)}</td>
+                              </tr>
+                            );
+                          } else {
+                            // Valuation record
+                            const typeLabel = item.transaction_type === 'buy' ? '매수' : 
+                                            item.transaction_type === 'sell' ? '매도' : '평가';
+                            return (
+                              <tr key={item.id} className="valuation">
+                                <td className="valuation-type">{typeLabel}</td>
+                                <td>{formatCurrency(item.evaluated_amount)}</td>
+                                <td>{item.memo || '-'}</td>
+                                <td>{item.evaluation_date.substring(0, 10)}</td>
+                              </tr>
+                            );
+                          }
+                        })}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>거래 내역이 없습니다.</p>
+                )}
+              </div>
+            ) : (
+              <div className="chart-container">
+                <h3>수익률 추이</h3>
+                {chartData && valuations.length > 0 ? (
+                  <Line
+                    data={chartData}
+                    options={{
+                      responsive: true,
+                      maintainAspectRatio: true,
+                      plugins: {
+                        legend: {
+                          display: true,
+                          position: 'top',
+                        },
+                        tooltip: {
+                          mode: 'index',
+                          intersect: false,
+                          callbacks: {
+                            label: function(context) {
+                              return `수익률: ${context.parsed.y.toFixed(2)}%`;
+                            }
+                          }
+                        }
+                      },
+                      scales: {
+                        y: {
+                          beginAtZero: false,
+                          ticks: {
+                            callback: function(value) {
+                              return value.toFixed(2) + '%';
+                            }
+                          },
+                          title: {
+                            display: true,
+                            text: '수익률 (%)'
+                          }
+                        },
+                        x: {
+                          title: {
+                            display: true,
+                            text: '날짜'
+                          }
+                        }
+                      }
+                    }}
+                  />
+                ) : (
+                  <p>수익률 데이터가 없습니다. 평가 기록을 추가해주세요.</p>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-        {transactions.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>타입</th>
-                <th>금액</th>
-                <th>카테고리</th>
-                <th>메모</th>
-                <th>날짜</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map(transaction => (
-                <tr key={transaction.id} className={transaction.category === '이동' ? 'transfer' : ''}>
-                  <td className={transaction.type === 'income' ? 'income' : 'expense'}>
-                    {transaction.type === 'income' ? '수입' : '지출'}
-                  </td>
-                  <td>{formatCurrency(transaction.amount)}</td>
-                  <td>{transaction.category}</td>
-                  <td>{transaction.memo}</td>
-                  <td>{transaction.date.substring(0, 10)}</td>
+      ) : (
+        <div className="transactions-table">
+          <div className="transactions-header">
+            <h3>거래 내역</h3>
+            <button className="action-button" onClick={handleAddTransaction}>거래 추가</button>
+          </div>
+          {transactions.length > 0 ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>타입</th>
+                  <th>금액</th>
+                  <th>카테고리</th>
+                  <th>메모</th>
+                  <th>날짜</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>거래 내역이 없습니다.</p>
-        )}
-      </div>
+              </thead>
+              <tbody>
+                {transactions.map(transaction => (
+                  <tr key={transaction.id} className={transaction.category === '이동' ? 'transfer' : ''}>
+                    <td className={transaction.type === 'income' ? 'income' : 'expense'}>
+                      {transaction.type === 'income' ? '수입' : '지출'}
+                    </td>
+                    <td>{formatCurrency(transaction.amount)}</td>
+                    <td>{transaction.category}</td>
+                    <td>{transaction.memo}</td>
+                    <td>{transaction.date.substring(0, 10)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>거래 내역이 없습니다.</p>
+          )}
+        </div>
+      )}
 
       <AddTransactionModal
         isOpen={isAddTransactionModalOpen}
