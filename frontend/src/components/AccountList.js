@@ -125,8 +125,30 @@ function AccountList() {
         return;
       }
 
+      // 투자 계좌의 valuations를 가져오기
+      const accountsWithValuations = await Promise.all(
+        response.data.map(async (account) => {
+          if (account.type === '투자') {
+            try {
+              const valuationsResponse = await accountApi.getValuations(account.id);
+              return {
+                ...account,
+                valuations: valuationsResponse.data || []
+              };
+            } catch (error) {
+              console.error(`Error fetching valuations for account ${account.id}:`, error);
+              return {
+                ...account,
+                valuations: []
+              };
+            }
+          }
+          return account;
+        })
+      );
+
       // Sort accounts to match the desktop app behavior
-      const sortedAccounts = response.data.sort((a, b) => {
+      const sortedAccounts = accountsWithValuations.sort((a, b) => {
         // First by status (active first)
         if (a.status === "dead" && b.status !== "dead") return 1;
         if (a.status !== "dead" && b.status === "dead") return -1;
@@ -168,10 +190,122 @@ function AccountList() {
     return `₩${amount.toLocaleString()}`;
   };
 
+  const calculateInvestmentAsset = (account) => {
+    console.log(`Calculating asset for ${account.name}:`, {
+      valuations: account.valuations?.length || 0,
+      asset_value: account.asset_value,
+      evaluated_amount: account.evaluated_amount
+    });
+    
+    // valuations가 없거나 빈 배열이면 기존 값 사용
+    if (!account.valuations || account.valuations.length === 0) {
+      // asset_value가 있으면 사용, 없으면 evaluated_amount 사용
+      const fallbackValue = account.asset_value || account.evaluated_amount || 0;
+      console.log(`No valuations, using fallback: ${fallbackValue}`);
+      return fallbackValue;
+    }
+
+    // Sort valuations by date
+    const sortedValuations = [...account.valuations].sort((a, b) => 
+      new Date(a.evaluation_date) - new Date(b.evaluation_date)
+    );
+
+    // Build pairs와 unpaired buys (AccountDetail과 동일한 로직)
+    const pairs = [];
+    const unpairedBuys = [];
+    const unpairedBuyValuations = [];
+
+    sortedValuations.forEach((valuation) => {
+      if (valuation.transaction_type === 'buy') {
+        unpairedBuys.push({
+          buyDate: valuation.evaluation_date,
+          buyAmount: valuation.evaluated_amount,
+          buyValuation: valuation
+        });
+        unpairedBuyValuations.push(valuation);
+      } else if (valuation.transaction_type === 'sell') {
+        if (unpairedBuys.length > 0) {
+          const buy = unpairedBuys.shift();
+          const buyVal = unpairedBuyValuations.shift();
+          const sellAmount = valuation.evaluated_amount;
+          const returnRate = ((sellAmount - buy.buyAmount) / buy.buyAmount) * 100;
+          
+          pairs.push({
+            buyDate: buy.buyDate,
+            buyAmount: buy.buyAmount,
+            sellDate: valuation.evaluation_date,
+            sellAmount: sellAmount,
+            returnRate: returnRate,
+            buyValuations: [buyVal],
+            sellValuation: valuation
+          });
+        }
+      } else if (valuation.transaction_type === 'valuation') {
+        if (unpairedBuys.length > 0) {
+          const buy = unpairedBuys[0];
+          const buyVal = unpairedBuyValuations[0];
+          
+          let existingPairIndex = -1;
+          for (let i = 0; i < pairs.length; i++) {
+            if (pairs[i].buyValuations[0]?.id === buyVal.id) {
+              existingPairIndex = i;
+              break;
+            }
+          }
+          
+          if (existingPairIndex >= 0) {
+            pairs.splice(existingPairIndex, 1);
+          } else {
+            unpairedBuys.shift();
+            unpairedBuyValuations.shift();
+          }
+          
+          const sellAmount = valuation.evaluated_amount;
+          const returnRate = ((sellAmount - buy.buyAmount) / buy.buyAmount) * 100;
+          
+          pairs.push({
+            buyDate: buy.buyDate,
+            buyAmount: buy.buyAmount,
+            sellDate: valuation.evaluation_date,
+            sellAmount: sellAmount,
+            returnRate: returnRate,
+            buyValuations: [buyVal],
+            sellValuation: valuation
+          });
+        }
+      }
+    });
+
+    // 자산 계산: 누적 매수가 있으면 최신 누적 매수 값, 없으면 최신 valuation
+    if (unpairedBuys.length > 0) {
+      // 누적 매수가 있으면 모든 unpaired buys의 합계
+      const unpairedTotal = unpairedBuys.reduce((sum, buy) => sum + buy.buyAmount, 0);
+      console.log(`Unpaired buys total: ${unpairedTotal}`);
+      return unpairedTotal;
+    } else {
+      // 최신 valuation 찾기
+      const latestValuation = sortedValuations
+        .filter(v => v.transaction_type === 'valuation')
+        .sort((a, b) => new Date(b.evaluation_date) - new Date(a.evaluation_date))[0];
+      
+      if (latestValuation) {
+        console.log(`Latest valuation: ${latestValuation.evaluated_amount}`);
+        return latestValuation.evaluated_amount;
+      } else if (account.evaluated_amount > 0) {
+        console.log(`Using evaluated_amount: ${account.evaluated_amount}`);
+        return account.evaluated_amount;
+      }
+    }
+
+    const finalValue = account.asset_value || 0;
+    console.log(`Final fallback: ${finalValue}`);
+    return finalValue;
+  };
+
   const calculateBalance = (account) => {
     if (account.type === '투자') {
-      // For investment accounts, use asset_value if available
-      return account.asset_value || 0;
+      // 투자 계좌는 자산 계산 로직 사용
+      return calculateInvestmentAsset(account);
     }
 
     // For other account types, calculate balance from transactions
@@ -216,9 +350,7 @@ function AccountList() {
               <div className="account-info">
                 <div className="account-name">{account.name}</div>
                 <div className="account-balance">
-                  {account.type === '투자'
-                    ? formatCurrency(account.asset_value)
-                    : formatCurrency(calculateBalance(account))}
+                  {formatCurrency(calculateBalance(account))}
                 </div>
               </div>
             </AccountCard>

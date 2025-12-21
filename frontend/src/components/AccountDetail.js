@@ -673,6 +673,116 @@ function AccountDetail() {
 
   const chartData = calculateReturnRateData();
 
+  // 투자 계좌의 자산과 수익률 계산
+  const calculateInvestmentInfo = () => {
+    if (!account || account.type !== '투자' || valuations.length === 0) {
+      return { asset: account?.asset_value || 0, returnRate: account?.return_rate || 0 };
+    }
+
+    // Sort valuations by date
+    const sortedValuations = [...valuations].sort((a, b) => 
+      new Date(a.evaluation_date) - new Date(b.evaluation_date)
+    );
+
+    // Build pairs와 unpaired buys (차트 로직과 동일)
+    const pairs = [];
+    const unpairedBuys = [];
+    const unpairedBuyValuations = [];
+
+    sortedValuations.forEach((valuation) => {
+      if (valuation.transaction_type === 'buy') {
+        unpairedBuys.push({
+          buyDate: valuation.evaluation_date,
+          buyAmount: valuation.evaluated_amount,
+          buyValuation: valuation
+        });
+        unpairedBuyValuations.push(valuation);
+      } else if (valuation.transaction_type === 'sell') {
+        if (unpairedBuys.length > 0) {
+          const buy = unpairedBuys.shift();
+          const buyVal = unpairedBuyValuations.shift();
+          const sellAmount = valuation.evaluated_amount;
+          const returnRate = ((sellAmount - buy.buyAmount) / buy.buyAmount) * 100;
+          
+          pairs.push({
+            buyDate: buy.buyDate,
+            buyAmount: buy.buyAmount,
+            sellDate: valuation.evaluation_date,
+            sellAmount: sellAmount,
+            returnRate: returnRate,
+            buyValuations: [buyVal],
+            sellValuation: valuation
+          });
+        }
+      } else if (valuation.transaction_type === 'valuation') {
+        if (unpairedBuys.length > 0) {
+          const buy = unpairedBuys[0];
+          const buyVal = unpairedBuyValuations[0];
+          
+          let existingPairIndex = -1;
+          for (let i = 0; i < pairs.length; i++) {
+            if (pairs[i].buyValuations[0]?.id === buyVal.id) {
+              existingPairIndex = i;
+              break;
+            }
+          }
+          
+          if (existingPairIndex >= 0) {
+            pairs.splice(existingPairIndex, 1);
+          } else {
+            unpairedBuys.shift();
+            unpairedBuyValuations.shift();
+          }
+          
+          const sellAmount = valuation.evaluated_amount;
+          const returnRate = ((sellAmount - buy.buyAmount) / buy.buyAmount) * 100;
+          
+          pairs.push({
+            buyDate: buy.buyDate,
+            buyAmount: buy.buyAmount,
+            sellDate: valuation.evaluation_date,
+            sellAmount: sellAmount,
+            returnRate: returnRate,
+            buyValuations: [buyVal],
+            sellValuation: valuation
+          });
+        }
+      }
+    });
+
+    // 자산 계산: 누적 매수가 있으면 최신 누적 매수 값, 없으면 최신 valuation
+    let asset = 0;
+    if (unpairedBuys.length > 0) {
+      // 누적 매수가 있으면 가장 최신의 누적 매수 값 (모든 unpaired buys의 합)
+      asset = unpairedBuys.reduce((sum, buy) => sum + buy.buyAmount, 0);
+    } else {
+      // 최신 valuation 찾기
+      const latestValuation = sortedValuations
+        .filter(v => v.transaction_type === 'valuation')
+        .sort((a, b) => new Date(b.evaluation_date) - new Date(a.evaluation_date))[0];
+      
+      if (latestValuation) {
+        asset = latestValuation.evaluated_amount;
+      } else if (account.evaluated_amount > 0) {
+        asset = account.evaluated_amount;
+      }
+    }
+
+    // 수익률: 제일 최신의 pair의 수익률
+    let returnRate = 0;
+    if (pairs.length > 0) {
+      // 가장 최신 pair 찾기 (sellDate 기준)
+      const latestPair = pairs.sort((a, b) => 
+        new Date(b.sellDate) - new Date(a.sellDate)
+      )[0];
+      returnRate = latestPair.returnRate;
+    }
+
+    return { asset, returnRate };
+  };
+
+  const investmentInfo = account?.type === '투자' ? calculateInvestmentInfo() : null;
+
   if (!account) {
     return <div>Loading...</div>;
   }
@@ -698,7 +808,7 @@ function AccountDetail() {
             <>
               <div className="info-item">
                 <div className="label">자산</div>
-                <div className="value">{formatCurrency(account.asset_value)}</div>
+                <div className="value">{formatCurrency(investmentInfo?.asset || account.asset_value || 0)}</div>
               </div>
               <div className="info-item">
                 <div className="label">매입금액</div>
@@ -710,7 +820,7 @@ function AccountDetail() {
               </div>
               <div className="info-item">
                 <div className="label">수익률</div>
-                <div className="value">{account.return_rate != null ? account.return_rate.toFixed(2) : '0.00'}%</div>
+                <div className="value">{investmentInfo?.returnRate != null ? investmentInfo.returnRate.toFixed(1) : (account.return_rate != null ? account.return_rate.toFixed(1) : '0.0')}%</div>
               </div>
             </>
           ) : (
