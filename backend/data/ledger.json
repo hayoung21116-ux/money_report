@@ -1272,6 +1272,26 @@
           "memo": "비트코인",
           "date": "2025-12-21",
           "item": ""
+        },
+        {
+          "id": "1ccce8b6-73ed-4f27-8afa-b7997a4ad2da",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 6437.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-12-21",
+          "item": ""
+        },
+        {
+          "id": "34588c62-0e01-4d6d-b4b1-7e11737b3269",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 300000.0,
+          "category": "이동",
+          "memo": "비상금 추가",
+          "date": "2025-12-21",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -3090,7 +3110,7 @@
     },
     {
       "id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
-      "name": "비상금",
+      "name": "비상금(하영)",
       "type": "소비",
       "color": "#000000",
       "opening_balance": 0.0,
@@ -4133,7 +4153,7 @@
           "type": "income",
           "amount": 200000.0,
           "category": "이동",
-          "memo": "???",
+          "memo": "경조사-(하영)외조부상_부의금",
           "date": "2025-12-01",
           "item": ""
         },
@@ -4163,7 +4183,7 @@
           "type": "expense",
           "amount": 600000.0,
           "category": "지출",
-          "memo": "(민규)로봇청소기52/욱형부조10/권순기축의5",
+          "memo": "경조사-(민규)로봇청소기52/욱형부조10/권순기축의5",
           "date": "2025-12-14",
           "item": ""
         },
@@ -4173,7 +4193,7 @@
           "type": "expense",
           "amount": 70000.0,
           "category": "지출",
-          "memo": "(민규)로봇청소기52/욱형부조10/권순기축의5",
+          "memo": "경조사-(민규)로봇청소기52/욱형부조10/권순기축의5",
           "date": "2025-12-14",
           "item": ""
         },
@@ -4193,6 +4213,46 @@
           "type": "income",
           "amount": 1122.0,
           "category": "이자",
+          "memo": "",
+          "date": "2025-12-21",
+          "item": ""
+        },
+        {
+          "id": "56353d51-3fe4-4ae3-b894-e7597e42220c",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100530.0,
+          "category": "지출",
+          "memo": "자동차세",
+          "date": "2025-12-21",
+          "item": ""
+        },
+        {
+          "id": "55bf1f57-0e47-48ea-be7a-4f328c0624b5",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 213000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)생일_아블라",
+          "date": "2025-12-21",
+          "item": ""
+        },
+        {
+          "id": "8a25963e-76ad-4b3f-8074-ec9617444b7d",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "경조사-(민규)정연축의",
+          "date": "2025-12-21",
+          "item": ""
+        },
+        {
+          "id": "15f12c67-ee6b-4655-855f-f3b645c2d5a9",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 300000.0,
+          "category": "이동",
           "memo": "",
           "date": "2025-12-21",
           "item": ""
@@ -4535,7 +4595,7 @@
     },
     {
       "id": "18576cbc-e2f7-4110-b6fb-42c5302f6405",
-      "name": "엄마_받을돈",
+      "name": "엄마_받을돈(하영)",
       "type": "현금",
       "color": "#ffac80",
       "opening_balance": 30000000.0,
@@ -4551,8 +4611,8 @@
     {
       "id": "84bbd81d-add2-44c3-b0da-9da36a900a29",
       "name": "가족비상금(민규)",
-      "type": "현금",
-      "color": "#f0e3a3",
+      "type": "소비",
+      "color": "#000000",
       "opening_balance": 2850000.0,
       "status": "active",
       "image_path": "",
@@ -4566,8 +4626,8 @@
     {
       "id": "05808f58-e839-41a8-bdf6-67bfc5e12cd6",
       "name": "엔화(민규)",
-      "type": "현금",
-      "color": "#fd8181",
+      "type": "소비",
+      "color": "#000000",
       "opening_balance": 2000000.0,
       "status": "active",
       "image_path": "",
@@ -4581,8 +4641,8 @@
     {
       "id": "398034e2-801d-47db-a68b-3490dc85563a",
       "name": "달러(민규)",
-      "type": "현금",
-      "color": "#5947e1",
+      "type": "소비",
+      "color": "#000000",
       "opening_balance": 2000000.0,
       "status": "active",
       "image_path": "",

@@ -90,6 +90,18 @@ class AccountCreate(BaseModel):
     opening_balance: float = 0
     image_path: str = ""
 
+class AccountUpdate(BaseModel):
+    name: str
+    type: Literal["현금", "투자", "소비"]
+    color: str
+    image_path: str = ""
+    # For regular accounts
+    opening_balance: float = 0
+    # For investment accounts
+    purchase_amount: float = 0.0
+    cash_holding: float = 0.0
+    evaluated_amount: float = 0.0
+
 @router.post("", response_model=Account)
 @router.post("/", response_model=Account, include_in_schema=False)
 async def create_account(account_data: AccountCreate, service: LedgerService = Depends(get_ledger_service)):
@@ -102,5 +114,42 @@ async def create_account(account_data: AccountCreate, service: LedgerService = D
             opening_balance=account_data.opening_balance,
             image_path=account_data.image_path
         )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.put("/{account_id}", response_model=Account)
+async def update_account(account_id: str, account_data: AccountUpdate, service: LedgerService = Depends(get_ledger_service)):
+    """Update an existing account"""
+    try:
+        # Get existing account
+        account = service.get_account(account_id)
+        if not account:
+            raise HTTPException(status_code=404, detail="Account not found")
+        
+        # Update account fields
+        account.name = account_data.name
+        account.type = account_data.type
+        account.color = account_data.color
+        account.image_path = account_data.image_path
+        
+        # Update type-specific fields
+        if account_data.type == "투자":
+            account.purchase_amount = account_data.purchase_amount
+            account.cash_holding = account_data.cash_holding
+            # Update evaluated_amount from form data
+            account.evaluated_amount = account_data.evaluated_amount
+            # Update compatibility field for last_valuation_date if there are valuations
+            if account.valuations:
+                latest = account.latest_valuation
+                if latest:
+                    account.last_valuation_date = latest.evaluation_date[:10]
+            else:
+                account.last_valuation_date = ""
+        else:
+            account.opening_balance = account_data.opening_balance
+        
+        # Save the updated account
+        service.update_account(account)
+        return account
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

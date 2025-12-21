@@ -98,7 +98,10 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
     type: '현금',
     color: '#4CAF50',
     balance: 0,
-    image_path: ''
+    image_path: '',
+    purchase_amount: 0,
+    cash_holding: 0,
+    evaluated_amount: 0
   });
 
   const calculateBalance = (account) => {
@@ -130,34 +133,71 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
         type: account.type,
         color: account.color,
         balance: account.type === '투자' ? account.asset_value : calculateBalance(account),
-        image_path: account.image_path || ''
+        image_path: account.image_path || '',
+        purchase_amount: account.purchase_amount || 0,
+        cash_holding: account.cash_holding || 0,
+        evaluated_amount: account.evaluated_amount || 0
       });
     }
   }, [account]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const numericFields = ['balance', 'purchase_amount', 'cash_holding', 'evaluated_amount'];
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'balance' ? parseFloat(value) || 0 : value
+      [name]: numericFields.includes(name) ? parseFloat(value) || 0 : value
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // In a real implementation, we would call the API to update the account
-      // const response = await accountApi.updateAccount(account.id, formData);
-      // onAccountUpdated(response.data);
-      
-      // For now, we'll just simulate the API call
-      console.log('Updating account with data:', formData);
+      // Prepare update data based on account type
+      const updateData = {
+        name: formData.name,
+        type: formData.type,
+        color: formData.color,
+        image_path: formData.image_path || '',
+        opening_balance: 0,
+        purchase_amount: 0,
+        cash_holding: 0,
+        evaluated_amount: 0
+      };
+
+      if (formData.type === '투자') {
+        // For investment accounts, use the investment-specific fields
+        updateData.purchase_amount = formData.purchase_amount || 0;
+        updateData.cash_holding = formData.cash_holding || 0;
+        updateData.evaluated_amount = formData.evaluated_amount || 0;
+      } else {
+        // For regular accounts, calculate opening_balance from current balance
+        // We need to reverse-calculate: balance = opening_balance + income - expense
+        const income = account.transactions
+          ? account.transactions
+              .filter(t => t.type === "income")
+              .reduce((sum, t) => sum + t.amount, 0)
+          : 0;
+        const expense = account.transactions
+          ? account.transactions
+              .filter(t => t.type === "expense")
+              .reduce((sum, t) => sum + t.amount, 0)
+          : 0;
+        // If balance changed, adjust opening_balance
+        const currentBalance = account.opening_balance + income - expense;
+        const balanceDiff = formData.balance - currentBalance;
+        updateData.opening_balance = account.opening_balance + balanceDiff;
+      }
+
+      const response = await accountApi.updateAccount(account.id, updateData);
       alert('계좌가 성공적으로 수정되었습니다!');
       onClose();
-      onAccountUpdated();
+      if (onAccountUpdated) {
+        onAccountUpdated(response.data);
+      }
     } catch (error) {
       console.error('Error updating account:', error);
-      alert('계좌 수정 중 오류가 발생했습니다.');
+      alert('계좌 수정 중 오류가 발생했습니다: ' + (error.response?.data?.detail || error.message));
     }
   };
 
@@ -191,6 +231,7 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
             >
               <option value="현금">현금</option>
               <option value="투자">투자</option>
+              <option value="소비">소비</option>
             </select>
           </FormGroup>
           
@@ -205,7 +246,7 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
                   value={formData.purchase_amount || 0}
                   onChange={handleChange}
                   min="0"
-                  step="1000"
+                  step="any"
                 />
               </FormGroup>
               
@@ -218,7 +259,7 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
                   value={formData.cash_holding || 0}
                   onChange={handleChange}
                   min="0"
-                  step="1000"
+                  step="any"
                 />
               </FormGroup>
               
@@ -231,7 +272,7 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
                   value={formData.evaluated_amount || 0}
                   onChange={handleChange}
                   min="0"
-                  step="1000"
+                  step="any"
                 />
               </FormGroup>
             </>
@@ -245,7 +286,7 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
                 value={formData.balance}
                 onChange={handleChange}
                 min="0"
-                step="1000"
+                step="any"
               />
             </FormGroup>
           )}
