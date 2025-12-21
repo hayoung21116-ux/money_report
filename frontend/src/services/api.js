@@ -67,6 +67,10 @@ export const accountApi = {
   // Add transaction to account
   addTransaction: (id, transaction) => 
     api.post(`/accounts/${id}/transactions`, transaction),
+
+  // Update transaction
+  updateTransaction: (accountId, transactionId, transaction) =>
+    api.put(`/accounts/${accountId}/transactions/${transactionId}`, transaction),
   
   // Get account valuations
   getValuations: (id) => api.get(`/accounts/${id}/valuations`),

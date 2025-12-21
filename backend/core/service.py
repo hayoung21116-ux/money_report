@@ -83,6 +83,40 @@ class LedgerService:
         self.repo.add_transaction(account_id, transaction)
         return transaction
 
+    def update_transaction(self, account_id: str, transaction_id: str, type_: Literal["income", "expense"],
+                          amount: float, category: str, memo: str, date: str) -> Transaction:
+        """Update an existing transaction"""
+        if amount < 0:
+            raise ValueError("금액은 양수 값이어야 합니다.")
+        if type_ not in ("income", "expense"):
+            raise ValueError("거래 타입이 잘못되었습니다.")
+        
+        # Helper to find existing transaction to preserve ID and other fields if needed
+        account = self.repo.get_account(account_id)
+        if not account:
+            raise ValueError("계좌를 찾을 수 없습니다.")
+        
+        existing_transaction = None
+        for t in account.transactions:
+            if t.id == transaction_id:
+                existing_transaction = t
+                break
+        
+        if not existing_transaction:
+            raise ValueError("거래 내역을 찾을 수 없습니다.")
+
+        updated_transaction = Transaction(
+            id=transaction_id,
+            account_id=account_id,
+            type=type_,
+            amount=amount,
+            category=category,
+            memo=memo,
+            date=date
+        )
+        self.repo.update_transaction(account_id, updated_transaction)
+        return updated_transaction
+
     def list_transactions(self, account_id: str, ascending: bool = False) -> List[Transaction]:
         """Get transactions for an account, sorted by date"""
         account = self.repo.get_account(account_id)

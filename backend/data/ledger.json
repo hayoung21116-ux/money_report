@@ -4163,7 +4163,7 @@
           "type": "expense",
           "amount": 600000.0,
           "category": "지출",
-          "memo": "(민규)로봇청소기+축의",
+          "memo": "(민규)로봇청소기52/욱형부조10/권순기축의5",
           "date": "2025-12-14",
           "item": ""
         },
@@ -4173,7 +4173,7 @@
           "type": "expense",
           "amount": 70000.0,
           "category": "지출",
-          "memo": "(민규)로봇청소기+축의",
+          "memo": "(민규)로봇청소기52/욱형부조10/권순기축의5",
           "date": "2025-12-14",
           "item": ""
         },
@@ -4185,6 +4185,16 @@
           "category": "이동",
           "memo": "",
           "date": "2025-12-14",
+          "item": ""
+        },
+        {
+          "id": "891895ad-135c-4b23-8536-ad0f857bfea2",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 1122.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-12-21",
           "item": ""
         }
       ],
@@ -4458,6 +4468,16 @@
           "memo": "12월 월급 남은 돈",
           "date": "2025-12-01T00:00:00Z",
           "item": ""
+        },
+        {
+          "id": "9bade076-7c6f-4d26-a480-3afd53ac131b",
+          "account_id": "0b65d4db-f1d8-457f-8508-a2bab1199a97",
+          "type": "income",
+          "amount": 1980.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-12-21",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -4519,6 +4539,51 @@
       "type": "현금",
       "color": "#ffac80",
       "opening_balance": 30000000.0,
+      "status": "active",
+      "image_path": "",
+      "transactions": [],
+      "valuations": [],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "84bbd81d-add2-44c3-b0da-9da36a900a29",
+      "name": "가족비상금(민규)",
+      "type": "현금",
+      "color": "#f0e3a3",
+      "opening_balance": 2850000.0,
+      "status": "active",
+      "image_path": "",
+      "transactions": [],
+      "valuations": [],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "05808f58-e839-41a8-bdf6-67bfc5e12cd6",
+      "name": "엔화(민규)",
+      "type": "현금",
+      "color": "#fd8181",
+      "opening_balance": 2000000.0,
+      "status": "active",
+      "image_path": "",
+      "transactions": [],
+      "valuations": [],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
+    },
+    {
+      "id": "398034e2-801d-47db-a68b-3490dc85563a",
+      "name": "달러(민규)",
+      "type": "현금",
+      "color": "#5947e1",
+      "opening_balance": 2000000.0,
       "status": "active",
       "image_path": "",
       "transactions": [],

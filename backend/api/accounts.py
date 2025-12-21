@@ -45,12 +45,35 @@ class TransactionCreate(BaseModel):
     memo: str = ""
     date: str
 
+class TransactionUpdate(BaseModel):
+    type: Literal["income", "expense"]
+    amount: float
+    category: str
+    memo: str = ""
+    date: str
+
 @router.post("/{account_id}/transactions", response_model=Transaction)
 async def add_transaction(account_id: str, transaction_data: TransactionCreate, service: LedgerService = Depends(get_ledger_service)):
     """Add a new transaction to an account"""
     try:
         return service.add_transaction(
             account_id=account_id,
+            type_=transaction_data.type,
+            amount=transaction_data.amount,
+            category=transaction_data.category,
+            memo=transaction_data.memo,
+            date=transaction_data.date
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.put("/{account_id}/transactions/{transaction_id}", response_model=Transaction)
+async def update_transaction(account_id: str, transaction_id: str, transaction_data: TransactionUpdate, service: LedgerService = Depends(get_ledger_service)):
+    """Update an existing transaction"""
+    try:
+        return service.update_transaction(
+            account_id=account_id,
+            transaction_id=transaction_id,
             type_=transaction_data.type,
             amount=transaction_data.amount,
             category=transaction_data.category,

@@ -37,6 +37,17 @@ class LedgerRepository:
             self.save_account(account)
             return True
         return False
+
+    def update_transaction(self, account_id: str, transaction: Transaction) -> bool:
+        """Update transaction in account"""
+        account = self.get_account(account_id)
+        if account:
+            for i, t in enumerate(account.transactions):
+                if t.id == transaction.id:
+                    account.transactions[i] = transaction
+                    self.save_account(account)
+                    return True
+        return False
     
     def add_valuation(self, account_id: str, valuation: ValuationRecord) -> bool:
         """Add valuation to account"""
