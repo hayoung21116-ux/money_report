@@ -586,17 +586,25 @@ function AccountDetail() {
       });
     });
 
-    // Unpaired buys 처리
-    unpairedBuys.forEach((buy) => {
-      const buyDate = new Date(buy.buyDate);
+    // Unpaired buys 처리: 여러 개의 unpaired buy를 누적해서 하나의 점으로 표시
+    if (unpairedBuys.length > 0) {
+      // 모든 unpaired buys의 합계 계산
+      const totalUnpairedAmount = unpairedBuys.reduce((sum, buy) => sum + buy.buyAmount, 0);
+      // 가장 최신 매수 날짜 찾기
+      const latestBuyDate = unpairedBuys.reduce((latest, buy) => {
+        const buyDate = new Date(buy.buyDate);
+        return buyDate > latest ? buyDate : latest;
+      }, new Date(unpairedBuys[0].buyDate));
+      
+      // 하나의 점으로 추가
       allPoints.push({
-        date: buyDate,
+        date: latestBuyDate,
         type: 'unpaired',
-        amount: buy.buyAmount, // 매수 금액 사용
-        returnRate: buy.returnRate || 0,
-        buy: buy // 원본 buy 객체 저장
+        amount: totalUnpairedAmount, // 누적 매수 금액
+        returnRate: 0, // 수익률은 계산하지 않음 (아직 매도가 없으므로)
+        buy: unpairedBuys // 모든 unpaired buys 저장
       });
-    });
+    }
 
     // 날짜순으로 정렬
     allPoints.sort((a, b) => a.date - b.date);
@@ -966,14 +974,15 @@ function AccountDetail() {
                               
                               // Unpaired buys 처리
                               if (datasetIndex === 1) {
-                                // unpaired buys는 labels 배열에서 pairs.length * 2 이후부터 시작
-                                const unpairedIndex = pointIndex - (pairs.length * 2);
-                                if (unpairedIndex >= 0 && unpairedIndex < unpairedBuys.length) {
-                                  const unpaired = unpairedBuys[unpairedIndex];
+                                // unpaired buys는 하나의 점으로 표시되므로 인덱스는 0
+                                if (pointIndex >= pairs.length * 2 && unpairedBuys.length > 0) {
+                                  // 모든 unpaired buys의 정보 표시
+                                  const totalAmount = unpairedBuys.reduce((sum, buy) => sum + buy.buyAmount, 0);
+                                  const buyCount = unpairedBuys.length;
                                   return [
-                                    `현재 평가: ${context.parsed.y.toLocaleString()}원`,
-                                    `매수 금액: ${unpaired.buyAmount.toLocaleString()}원`,
-                                    `예상 수익률: ${unpaired.returnRate.toFixed(1)}%`
+                                    `누적 매수: ${context.parsed.y.toLocaleString()}원`,
+                                    `매수 건수: ${buyCount}건`,
+                                    `평균 매수: ${(totalAmount / buyCount).toLocaleString()}원`
                                   ];
                                 }
                               }

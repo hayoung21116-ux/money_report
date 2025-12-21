@@ -93,28 +93,27 @@ const Button = styled.button`
 `;
 
 function AddTransactionModal({ isOpen, onClose, accountId, onTransactionAdded, accountType }) {
+  const isInvestment = accountType === '투자';
   const [formData, setFormData] = useState({
-    type: 'income',
+    type: isInvestment ? 'buy' : 'income',
     amount: 0,
-    category: accountType === '투자' ? '이동' : '저축',
+    category: isInvestment ? '' : '저축',
     memo: '',
     date: new Date().toISOString().split('T')[0]
   });
 
   useEffect(() => {
-    // Set default category based on account type and transaction type
-    if (accountType === '투자') {
-      setFormData(prev => ({
-        ...prev,
-        category: '이동'
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        category: '저축'
-      }));
+    // Reset form when modal opens
+    if (isOpen) {
+      setFormData({
+        type: isInvestment ? 'buy' : 'income',
+        amount: 0,
+        category: isInvestment ? '' : '저축',
+        memo: '',
+        date: new Date().toISOString().split('T')[0]
+      });
     }
-  }, [accountType]);
+  }, [isOpen, isInvestment]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -123,27 +122,18 @@ function AddTransactionModal({ isOpen, onClose, accountId, onTransactionAdded, a
       [name]: name === 'amount' ? parseFloat(value) || 0 : value
     }));
     
-    // Update category options when type changes
-    if (name === 'type') {
-      if (accountType === '투자') {
-        setFormData(prev => ({
-          ...prev,
-          category: value === 'income' ? '이동' : '이동'
-        }));
-      } else {
-        setFormData(prev => ({
-          ...prev,
-          category: value === 'income' ? '저축' : '지출'
-        }));
-      }
+    // Update category options when type changes (for non-investment accounts)
+    if (name === 'type' && !isInvestment) {
+      setFormData(prev => ({
+        ...prev,
+        category: value === 'income' ? '저축' : '지출'
+      }));
     }
   };
 
   const getCategoryOptions = () => {
-    if (accountType === '투자') {
-      return formData.type === 'income' 
-        ? ['이동', '수익'] 
-        : ['이동', '손익'];
+    if (isInvestment) {
+      return []; // 투자 계좌는 카테고리 없음
     } else {
       return formData.type === 'income' 
         ? ['저축', '이자', '이동', '대출'] 
@@ -154,15 +144,42 @@ function AddTransactionModal({ isOpen, onClose, accountId, onTransactionAdded, a
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // In a real implementation, we would call the API to add the transaction
-      const response = await accountApi.addTransaction(accountId, formData);
-      onTransactionAdded(response.data);
-      
-      alert('거래가 성공적으로 추가되었습니다!');
-      onClose();
+      if (isInvestment) {
+        // 투자 계좌는 valuations에 추가
+        const valuationData = {
+          evaluated_amount: formData.amount,
+          evaluation_date: formData.date + 'T00:00:00Z',
+          memo: formData.memo,
+          transaction_type: formData.type // 'buy' or 'sell'
+        };
+        
+        const response = await accountApi.addValuation(accountId, valuationData);
+        alert('거래가 성공적으로 추가되었습니다!');
+        onClose();
+        if (onTransactionAdded) {
+          onTransactionAdded();
+        }
+      } else {
+        // 일반 계좌는 transactions에 추가
+        const transactionData = {
+          type: formData.type,
+          amount: formData.amount,
+          category: formData.category,
+          memo: formData.memo,
+          date: formData.date + 'T00:00:00Z'
+        };
+        
+        const response = await accountApi.addTransaction(accountId, transactionData);
+        alert('거래가 성공적으로 추가되었습니다!');
+        onClose();
+        if (onTransactionAdded) {
+          onTransactionAdded(response.data);
+        }
+      }
     } catch (error) {
-      console.error('Error adding transaction:', error);
-      alert('거래 추가 중 오류가 발생했습니다.');
+      console.error('Error adding transaction/valuation:', error);
+      const errorMessage = error.response?.data?.detail || error.message || '알 수 없는 오류';
+      alert('거래 추가 중 오류가 발생했습니다: ' + errorMessage);
     }
   };
 
@@ -181,13 +198,23 @@ function AddTransactionModal({ isOpen, onClose, accountId, onTransactionAdded, a
               value={formData.type}
               onChange={handleChange}
             >
-              <option value="income">수입</option>
-              <option value="expense">지출</option>
+              {isInvestment ? (
+                <>
+                  <option value="buy">매수</option>
+                  <option value="sell">매도</option>
+                  <option value="valuation">평가</option>
+                </>
+              ) : (
+                <>
+                  <option value="income">수입</option>
+                  <option value="expense">지출</option>
+                </>
+              )}
             </select>
           </FormGroup>
           
           <FormGroup>
-            <label htmlFor="amount">금액</label>
+            <label htmlFor="amount">{isInvestment ? '금액' : '금액'}</label>
             <input
               type="number"
               id="amount"
@@ -201,19 +228,21 @@ function AddTransactionModal({ isOpen, onClose, accountId, onTransactionAdded, a
             />
           </FormGroup>
           
-          <FormGroup>
-            <label htmlFor="category">카테고리</label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-            >
-              {getCategoryOptions().map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
-          </FormGroup>
+          {!isInvestment && (
+            <FormGroup>
+              <label htmlFor="category">카테고리</label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+              >
+                {getCategoryOptions().map(category => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+            </FormGroup>
+          )}
           
           <FormGroup>
             <label htmlFor="memo">메모</label>

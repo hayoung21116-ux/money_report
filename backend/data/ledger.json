@@ -4274,11 +4274,23 @@
       "opening_balance": 0.0,
       "status": "active",
       "image_path": "images\\비트코인.png",
-      "valuations": [],
+      "transactions": [],
+      "valuations": [
+        {
+          "id": "d944bf5a-66ab-49e1-92c6-3ef61b55414e",
+          "account_id": "dc4134f0-cc87-48c8-a9af-4515fe4c79e5",
+          "evaluated_amount": 60000000.0,
+          "evaluation_date": "2025-12-21T00:00:00Z",
+          "memo": "",
+          "transaction_type": "buy"
+        }
+      ],
       "purchase_amount": 0.0,
       "cash_holding": 60000000.0,
-      "evaluated_amount": 0.0,
-      "last_valuation_date": "2025-08-27"
+      "evaluated_amount": 60000000.0,
+      "last_valuation_date": "2025-12-21",
+      "return_rate": 0.0,
+      "asset_value": 120000000.0
     },
     {
       "id": "29035363-8af7-4319-9af3-15b803d417b5",
@@ -4568,30 +4580,39 @@
       "opening_balance": 0.0,
       "status": "active",
       "image_path": "images\\비트코인.png",
+      "transactions": [],
       "valuations": [
         {
-          "id": "8ad749b8-7c07-4818-92fd-223b1d25b4a9",
+          "id": "6c65a2a8-3ada-459e-9342-efb9d72402db",
           "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 6887800.0,
-          "evaluation_date": "2025-10-12T00:00:00Z",
-          "memo": "이전 매수 내역 모두 합침",
+          "evaluated_amount": 258000.0,
+          "evaluation_date": "2025-03-07T00:00:00Z",
+          "memo": "",
           "transaction_type": "buy"
         },
         {
-          "id": "1c174e40-9486-4422-a58f-53b581854814",
+          "id": "5dd80850-055c-4def-a8e9-4ef8949e7c97",
           "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 7958196.0,
-          "evaluation_date": "2025-10-14T00:00:00Z",
+          "evaluated_amount": 250000.0,
+          "evaluation_date": "2025-03-14T00:00:00Z",
           "memo": "",
-          "transaction_type": "valuation"
+          "transaction_type": "buy"
+        },
+        {
+          "id": "0d1d9b34-fb27-484d-b9df-8bd469b9316c",
+          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
+          "evaluated_amount": 251000.0,
+          "evaluation_date": "2025-03-28T00:00:00Z",
+          "memo": "",
+          "transaction_type": "buy"
         }
       ],
       "purchase_amount": 0.0,
       "cash_holding": 0.0,
-      "evaluated_amount": 7956811.0,
-      "last_valuation_date": "2025-10-14",
+      "evaluated_amount": 251000.0,
+      "last_valuation_date": "2025-03-28",
       "return_rate": 0.0,
-      "asset_value": 7958196.0
+      "asset_value": 251000.0
     },
     {
       "id": "18576cbc-e2f7-4110-b6fb-42c5302f6405",
