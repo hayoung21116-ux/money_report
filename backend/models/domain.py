@@ -151,3 +151,11 @@ class Account(BaseModel):
         if not v.startswith("#") or len(v) != 7:
             raise ValueError('Color must be a valid hex code')
         return v
+    
+    def dict(self, **kwargs):
+        """Override dict() to include computed properties"""
+        data = super().dict(**kwargs)
+        # Add computed properties to the dictionary
+        data['return_rate'] = self.return_rate
+        data['asset_value'] = self.asset_value
+        return data

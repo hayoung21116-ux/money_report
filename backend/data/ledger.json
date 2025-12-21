@@ -4563,7 +4563,7 @@
     },
     {
       "id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-      "name": "비트코인",
+      "name": "비트코인(하영)",
       "type": "투자",
       "color": "#79d4dc",
       "opening_balance": 0.0,
@@ -4591,7 +4591,9 @@
       "purchase_amount": 0.0,
       "cash_holding": 0.0,
       "evaluated_amount": 7956811.0,
-      "last_valuation_date": "2025-10-15"
+      "last_valuation_date": "2025-10-14",
+      "return_rate": 0.0,
+      "asset_value": 7958196.0
     },
     {
       "id": "18576cbc-e2f7-4110-b6fb-42c5302f6405",

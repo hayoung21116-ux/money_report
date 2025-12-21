@@ -332,7 +332,7 @@ function AccountDetail() {
               </div>
               <div className="info-item">
                 <div className="label">수익률</div>
-                <div className="value">{account.return_rate.toFixed(2)}%</div>
+                <div className="value">{account.return_rate != null ? account.return_rate.toFixed(2) : '0.00'}%</div>
               </div>
             </>
           ) : (

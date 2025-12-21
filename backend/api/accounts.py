@@ -23,7 +23,8 @@ async def list_accounts(service: LedgerService = Depends(get_ledger_service)):
     # Debug: Print account colors
     for account in accounts:
         print(f"API endpoint - Account: {account.name}, Color: {account.color}")
-    return accounts
+    # Include computed properties in the response using dict() method
+    return [account.dict() for account in accounts]
 
 @router.get("/{account_id}", response_model=Account)
 async def get_account(account_id: str, service: LedgerService = Depends(get_ledger_service)):
@@ -31,7 +32,8 @@ async def get_account(account_id: str, service: LedgerService = Depends(get_ledg
     account = service.get_account(account_id)
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
-    return account
+    # Include computed properties in the response using dict() method
+    return account.dict()
 
 @router.get("/{account_id}/transactions", response_model=List[Transaction])
 async def list_transactions(account_id: str, ascending: bool = False, service: LedgerService = Depends(get_ledger_service)):
