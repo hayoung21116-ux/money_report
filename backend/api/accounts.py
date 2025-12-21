@@ -160,3 +160,32 @@ async def update_account(account_id: str, account_data: AccountUpdate, service: 
 async def get_valuations(account_id: str, service: LedgerService = Depends(get_ledger_service)):
     """Get valuations for an account"""
     return service.get_valuations(account_id)
+
+class ValuationCreate(BaseModel):
+    evaluated_amount: float
+    evaluation_date: str
+    memo: str = ""
+    transaction_type: Literal["buy", "sell", "valuation"] = "valuation"
+
+@router.post("/{account_id}/valuations", response_model=ValuationRecord)
+async def add_valuation(account_id: str, valuation_data: ValuationCreate, service: LedgerService = Depends(get_ledger_service)):
+    """Add a new valuation to an account"""
+    try:
+        return service.add_valuation(
+            account_id=account_id,
+            amount=valuation_data.evaluated_amount,
+            date=valuation_data.evaluation_date,
+            memo=valuation_data.memo,
+            transaction_type=valuation_data.transaction_type
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.delete("/{account_id}/valuations/{valuation_id}")
+async def delete_valuation(account_id: str, valuation_id: str, service: LedgerService = Depends(get_ledger_service)):
+    """Delete a valuation from an account"""
+    try:
+        service.delete_valuation(account_id, valuation_id)
+        return {"message": "Valuation deleted successfully"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -15,6 +15,8 @@ import {
 } from 'chart.js';
 import { accountApi, formatCurrency } from '../services/api.js';
 import AddTransactionModal from './AddTransactionModal.js';
+import EditTransactionModal from './EditTransactionModal.js';
+import EditValuationModal from './EditValuationModal.js';
 import EditAccountModal from './EditAccountModal.js';
 import DeleteAccountDialog from './DeleteAccountDialog.js';
 import DeactivateAccountDialog from './DeactivateAccountDialog.js';
@@ -229,6 +231,12 @@ const AccountDetailContainer = styled.div`
       background-color: #f5f5f5;
     }
     
+    tr[style*="cursor: pointer"]:hover {
+      background-color: #e3f2fd;
+      transform: scale(1.01);
+      transition: all 0.2s;
+    }
+    
     .income {
       color: #28a745;
     }
@@ -286,6 +294,10 @@ function AccountDetail() {
   const [valuations, setValuations] = useState([]);
   const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' or 'chart'
   const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] = useState(false);
+  const [isEditTransactionModalOpen, setIsEditTransactionModalOpen] = useState(false);
+  const [isEditValuationModalOpen, setIsEditValuationModalOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [selectedValuation, setSelectedValuation] = useState(null);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
   const [isDeleteAccountDialogOpen, setIsDeleteAccountDialogOpen] = useState(false);
   const [isDeactivateAccountDialogOpen, setIsDeactivateAccountDialogOpen] = useState(false);
@@ -351,6 +363,28 @@ function AccountDetail() {
   const handleTransactionAdded = () => {
     // Refresh the transaction list
     fetchAccountDetails();
+  };
+
+  const handleTransactionClick = (transaction) => {
+    setSelectedTransaction(transaction);
+    setIsEditTransactionModalOpen(true);
+  };
+
+  const handleTransactionUpdated = () => {
+    fetchAccountDetails();
+    setIsEditTransactionModalOpen(false);
+    setSelectedTransaction(null);
+  };
+
+  const handleValuationClick = (valuation) => {
+    setSelectedValuation(valuation);
+    setIsEditValuationModalOpen(true);
+  };
+
+  const handleValuationUpdated = () => {
+    fetchAccountDetails();
+    setIsEditValuationModalOpen(false);
+    setSelectedValuation(null);
   };
 
   const handleEditAccount = () => {
@@ -556,7 +590,12 @@ function AccountDetail() {
                         .map(item => {
                           if (item.itemType === 'transaction') {
                             return (
-                              <tr key={item.id} className={item.category === '이동' ? 'transfer' : ''}>
+                              <tr 
+                                key={item.id} 
+                                className={item.category === '이동' ? 'transfer' : ''}
+                                onClick={() => handleTransactionClick(item)}
+                                style={{ cursor: 'pointer' }}
+                              >
                                 <td className={item.type === 'income' ? 'income' : 'expense'}>
                                   {item.type === 'income' ? '수입' : '지출'}
                                 </td>
@@ -570,7 +609,12 @@ function AccountDetail() {
                             const typeLabel = item.transaction_type === 'buy' ? '매수' : 
                                             item.transaction_type === 'sell' ? '매도' : '평가';
                             return (
-                              <tr key={item.id} className="valuation">
+                              <tr 
+                                key={item.id} 
+                                className="valuation"
+                                onClick={() => handleValuationClick(item)}
+                                style={{ cursor: 'pointer' }}
+                              >
                                 <td className="valuation-type">{typeLabel}</td>
                                 <td>{formatCurrency(item.evaluated_amount)}</td>
                                 <td>{item.memo || '-'}</td>
@@ -681,6 +725,29 @@ function AccountDetail() {
         accountId={id}
         onTransactionAdded={handleTransactionAdded}
         accountType={account.type}
+      />
+
+      <EditTransactionModal
+        isOpen={isEditTransactionModalOpen}
+        onClose={() => {
+          setIsEditTransactionModalOpen(false);
+          setSelectedTransaction(null);
+        }}
+        transaction={selectedTransaction}
+        accountId={id}
+        onTransactionUpdated={handleTransactionUpdated}
+        accountType={account.type}
+      />
+
+      <EditValuationModal
+        isOpen={isEditValuationModalOpen}
+        onClose={() => {
+          setIsEditValuationModalOpen(false);
+          setSelectedValuation(null);
+        }}
+        valuation={selectedValuation}
+        accountId={id}
+        onValuationUpdated={handleValuationUpdated}
       />
 
       <EditAccountModal

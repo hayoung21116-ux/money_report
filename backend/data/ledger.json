@@ -816,6 +816,7 @@
       "opening_balance": 0.0,
       "status": "active",
       "image_path": "images\\부동산.jpg",
+      "transactions": [],
       "valuations": [
         {
           "id": "ec40d8d4-c20b-4a5a-9a03-9a4cc7b4798e",
@@ -826,26 +827,28 @@
           "transaction_type": "buy"
         },
         {
-          "id": "4db64912-eadc-41cb-b1e4-649d6b800a02",
-          "account_id": "67800193-e37c-4afa-88e1-88ebfcc41287",
-          "evaluated_amount": 260600000.0,
-          "evaluation_date": "2025-10-13T00:00:00Z",
-          "memo": "장위 매도 / 복비 400만원 ",
-          "transaction_type": "sell"
-        },
-        {
           "id": "bb0a91ed-165a-45f9-9b77-532f875e1da3",
           "account_id": "67800193-e37c-4afa-88e1-88ebfcc41287",
           "evaluated_amount": 400836400.0,
           "evaluation_date": "2025-11-11T00:00:00Z",
           "memo": "계약금 1000만원 (25.10.15) / 중도금 3000만원 (25.10.18) / 잔금 358280000 (25.11.11) / 복비 255만6400원",
           "transaction_type": "buy"
+        },
+        {
+          "id": "ff6727a2-a2d8-4f00-9699-d3914cfb3a73",
+          "account_id": "67800193-e37c-4afa-88e1-88ebfcc41287",
+          "evaluated_amount": 260600000.0,
+          "evaluation_date": "2025-10-13T00:00:00Z",
+          "memo": "장위 매도 / 복비 400만원",
+          "transaction_type": "sell"
         }
       ],
       "purchase_amount": 209099000.0,
       "cash_holding": 0.0,
-      "evaluated_amount": 398280000.0,
-      "last_valuation_date": "2025-11-11"
+      "evaluated_amount": 260600000.0,
+      "last_valuation_date": "2025-10-13",
+      "return_rate": 22.290578557384126,
+      "asset_value": 400836400.0
     },
     {
       "id": "e027a444-28f6-4ffd-bcdb-424b7e58c233",
