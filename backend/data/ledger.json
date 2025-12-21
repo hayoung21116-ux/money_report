@@ -4271,7 +4271,7 @@
       "name": "알트코인(민규)",
       "type": "투자",
       "color": "#5458e3",
-      "opening_balance": 60000000.0,
+      "opening_balance": 0.0,
       "status": "active",
       "image_path": "images\\비트코인.png",
       "valuations": [],
