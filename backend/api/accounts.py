@@ -38,6 +38,28 @@ async def list_transactions(account_id: str, ascending: bool = False, service: L
     """Get transactions for an account"""
     return service.list_transactions(account_id, ascending)
 
+class TransactionCreate(BaseModel):
+    type: Literal["income", "expense"]
+    amount: float
+    category: str
+    memo: str = ""
+    date: str
+
+@router.post("/{account_id}/transactions", response_model=Transaction)
+async def add_transaction(account_id: str, transaction_data: TransactionCreate, service: LedgerService = Depends(get_ledger_service)):
+    """Add a new transaction to an account"""
+    try:
+        return service.add_transaction(
+            account_id=account_id,
+            type_=transaction_data.type,
+            amount=transaction_data.amount,
+            category=transaction_data.category,
+            memo=transaction_data.memo,
+            date=transaction_data.date
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 class AccountCreate(BaseModel):
     name: str
     type: Literal["현금", "투자", "소비"]

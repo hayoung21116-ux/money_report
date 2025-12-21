@@ -504,6 +504,16 @@
           "memo": "",
           "date": "2025-12-01T00:00:00Z",
           "item": ""
+        },
+        {
+          "id": "072b7d6f-0383-4a72-af73-da95e47c2545",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 2245.0,
+          "category": "이자",
+          "memo": "",
+          "date": "2025-12-21",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -1181,6 +1191,86 @@
           "category": "이동",
           "memo": "비트코인",
           "date": "2025-12-01T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "69007837-0ca7-4975-9820-ea90c6085b8f",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 738766.0,
+          "category": "지출",
+          "memo": "삿포로_료칸",
+          "date": "2025-12-07",
+          "item": ""
+        },
+        {
+          "id": "2e91adff-5111-45a9-b1c3-241733f9e9af",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "지출",
+          "memo": "삿포로_료칸",
+          "date": "2025-12-07",
+          "item": ""
+        },
+        {
+          "id": "0f674468-6ab0-46e5-acab-d11cbec56651",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 96411.0,
+          "category": "지출",
+          "memo": "삿포로_료칸",
+          "date": "2025-12-07",
+          "item": ""
+        },
+        {
+          "id": "d0f25346-a83a-46df-aeab-d80627f655a5",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 2808000.0,
+          "category": "지출",
+          "memo": "삿포로_항공권",
+          "date": "2025-12-07",
+          "item": ""
+        },
+        {
+          "id": "18073880-a385-4dee-b1fb-8bd15bf50b9b",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 234350.0,
+          "category": "지출",
+          "memo": "삿포로_렌트카",
+          "date": "2025-12-07",
+          "item": ""
+        },
+        {
+          "id": "df1019c3-3f77-4b35-91b7-725a101f972a",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 500000.0,
+          "category": "이동",
+          "memo": "비상금 추가",
+          "date": "2025-12-14",
+          "item": ""
+        },
+        {
+          "id": "b5840925-ce87-4f87-8d8f-b6a84061a7a1",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "income",
+          "amount": 1000000.0,
+          "category": "저축",
+          "memo": "외할아버지_경조사비",
+          "date": "2025-12-17",
+          "item": ""
+        },
+        {
+          "id": "f086fd29-a2c7-425d-95db-73c6722354cc",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 1000000.0,
+          "category": "이동",
+          "memo": "비트코인",
+          "date": "2025-12-21",
           "item": ""
         }
       ],
@@ -4006,6 +4096,96 @@
           "memo": "",
           "date": "2025-11-23T00:00:00Z",
           "item": ""
+        },
+        {
+          "id": "baf80a65-66e5-438c-a964-c543cbfa983b",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 81000.0,
+          "category": "지출",
+          "memo": "???",
+          "date": "2025-11-23",
+          "item": ""
+        },
+        {
+          "id": "f7715fde-9fba-40a3-b89d-be5fbb08d0b2",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "???",
+          "date": "2025-11-23",
+          "item": ""
+        },
+        {
+          "id": "dda894c0-b9e0-4eb1-9df1-78e4568841a8",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 455760.0,
+          "category": "지출",
+          "memo": "???",
+          "date": "2025-11-30",
+          "item": ""
+        },
+        {
+          "id": "630d2b13-5994-418f-99af-7eb164f29bd0",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 200000.0,
+          "category": "이동",
+          "memo": "???",
+          "date": "2025-12-01",
+          "item": ""
+        },
+        {
+          "id": "a80056d1-c96d-497a-85cc-0c4f7a664b32",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 200000.0,
+          "category": "지출",
+          "memo": "???",
+          "date": "2025-11-30",
+          "item": ""
+        },
+        {
+          "id": "a6735d10-19e6-4448-af49-fd9081a182a7",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "???",
+          "date": "2025-12-09",
+          "item": ""
+        },
+        {
+          "id": "9c603881-5722-4de4-958f-2674f7df12be",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 600000.0,
+          "category": "지출",
+          "memo": "(민규)로봇청소기+축의",
+          "date": "2025-12-14",
+          "item": ""
+        },
+        {
+          "id": "a2951bd0-e1ad-46ce-b3c0-3c5803722944",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 70000.0,
+          "category": "지출",
+          "memo": "(민규)로봇청소기+축의",
+          "date": "2025-12-14",
+          "item": ""
+        },
+        {
+          "id": "35cfecb0-820c-4bd8-b7d3-92e1bebb3f58",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 500000.0,
+          "category": "이동",
+          "memo": "",
+          "date": "2025-12-14",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -4332,6 +4512,21 @@
       "cash_holding": 0.0,
       "evaluated_amount": 7956811.0,
       "last_valuation_date": "2025-10-15"
+    },
+    {
+      "id": "18576cbc-e2f7-4110-b6fb-42c5302f6405",
+      "name": "엄마_받을돈",
+      "type": "현금",
+      "color": "#ffac80",
+      "opening_balance": 30000000.0,
+      "status": "active",
+      "image_path": "",
+      "transactions": [],
+      "valuations": [],
+      "purchase_amount": 0.0,
+      "cash_holding": 0.0,
+      "evaluated_amount": 0.0,
+      "last_valuation_date": ""
     }
   ],
   "salaries": [

@@ -1,7 +1,7 @@
 import json
 from typing import List, Dict, Any, Optional
 from pathlib import Path
-from models.domain import Account, Transaction, ValuationRecord
+from models.domain import Account, Transaction, ValuationRecord, TradePair
 
 class JSONDatabase:
     """JSON file-based database implementation"""
@@ -107,3 +107,35 @@ class JSONDatabase:
         if 0 <= index < len(self.data.get("salaries", [])):
             self.data["salaries"].pop(index)
             self._save_data(self.data)
+
+    def save_account(self, account: Account) -> None:
+        """Save an account"""
+        accounts = self.data.get("accounts", [])
+        
+        # Convert account to dictionary
+        account_dict = account.dict()
+        
+        # Check if account already exists
+        for i, acc in enumerate(accounts):
+            if acc["id"] == account.id:
+                accounts[i] = account_dict
+                self._save_data(self.data)
+                return
+        
+        # Add new account
+        accounts.append(account_dict)
+        self.data["accounts"] = accounts
+        self._save_data(self.data)
+
+    def delete_account(self, account_id: str) -> bool:
+        """Delete an account"""
+        accounts = self.data.get("accounts", [])
+        
+        initial_len = len(accounts)
+        accounts = [acc for acc in accounts if acc["id"] != account_id]
+        
+        if len(accounts) < initial_len:
+            self.data["accounts"] = accounts
+            self._save_data(self.data)
+            return True
+        return False

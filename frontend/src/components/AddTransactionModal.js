@@ -155,14 +155,11 @@ function AddTransactionModal({ isOpen, onClose, accountId, onTransactionAdded, a
     e.preventDefault();
     try {
       // In a real implementation, we would call the API to add the transaction
-      // const response = await accountApi.addTransaction(accountId, formData);
-      // onTransactionAdded(response.data);
+      const response = await accountApi.addTransaction(accountId, formData);
+      onTransactionAdded(response.data);
       
-      // For now, we'll just simulate the API call
-      console.log('Adding transaction with data:', formData);
       alert('거래가 성공적으로 추가되었습니다!');
       onClose();
-      onTransactionAdded();
     } catch (error) {
       console.error('Error adding transaction:', error);
       alert('거래 추가 중 오류가 발생했습니다.');
@@ -198,7 +195,7 @@ function AddTransactionModal({ isOpen, onClose, accountId, onTransactionAdded, a
               value={formData.amount}
               onChange={handleChange}
               min="0"
-              step="1000"
+              step="any"
               placeholder="금액을 입력하세요"
               required
             />

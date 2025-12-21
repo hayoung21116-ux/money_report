@@ -18,6 +18,19 @@ const AccountDetailContainer = styled.div`
     h2 {
       margin-top: 0;
       color: #333;
+      margin-bottom: 0; /* Remove bottom margin to align better in flex container */
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
     }
     
     .account-info {
@@ -50,13 +63,25 @@ const AccountDetailContainer = styled.div`
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow-x: auto;
+    
+    .transactions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      
+      h3 {
+        margin: 0;
+      }
+    }
   }
   
   .action-buttons {
-    display: flex;
     gap: 10px;
     margin-bottom: 20px;
     flex-wrap: wrap;
+    /* .action-buttons class might be unused now, but keeping generic styles just in case, 
+       or we can repurpose .action-button styles which are effectively global in this scope */
   }
   
   .action-button {
@@ -279,7 +304,17 @@ function AccountDetail() {
   return (
     <AccountDetailContainer>
       <div className="account-header">
-        <h2>{account.name} ({account.type})</h2>
+
+        <div className="header-top">
+          <h2>{account.name} ({account.type})</h2>
+          <div className="header-actions">
+            <button className="action-button edit" onClick={handleEditAccount}>계좌 수정</button>
+            <button className="action-button deactivate" onClick={handleDeactivateAccount}>
+              {account.status === 'dead' ? '계좌 활성화' : '계좌 비활성화'}
+            </button>
+            <button className="action-button delete" onClick={handleDeleteAccount}>계좌 삭제</button>
+          </div>
+        </div>
         <div className="account-info">
           {account.type === '투자' ? (
             <>
@@ -311,17 +346,11 @@ function AccountDetail() {
         </div>
       </div>
 
-      <div className="action-buttons">
-        <button className="action-button" onClick={handleAddTransaction}>거래 추가</button>
-        <button className="action-button edit" onClick={handleEditAccount}>계좌 수정</button>
-        <button className="action-button deactivate" onClick={handleDeactivateAccount}>
-          {account.status === 'dead' ? '계좌 활성화' : '계좌 비활성화'}
-        </button>
-        <button className="action-button delete" onClick={handleDeleteAccount}>계좌 삭제</button>
-      </div>
-
       <div className="transactions-table">
-        <h3>거래 내역</h3>
+        <div className="transactions-header">
+          <h3>거래 내역</h3>
+          <button className="action-button" onClick={handleAddTransaction}>거래 추가</button>
+        </div>
         {transactions.length > 0 ? (
           <table>
             <thead>
