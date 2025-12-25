@@ -117,6 +117,16 @@ class LedgerService:
         self.repo.update_transaction(account_id, updated_transaction)
         return updated_transaction
 
+    def delete_transaction(self, account_id: str, transaction_id: str) -> None:
+        """Delete a transaction"""
+        account = self.repo.get_account(account_id)
+        if not account:
+            raise ValueError("계좌를 찾을 수 없습니다.")
+        
+        # Remove the transaction from the account's transactions list
+        account.transactions = [t for t in account.transactions if t.id != transaction_id]
+        self.repo.save_account(account)
+
     def list_transactions(self, account_id: str, ascending: bool = False) -> List[Transaction]:
         """Get transactions for an account, sorted by date"""
         account = self.repo.get_account(account_id)
@@ -255,12 +265,11 @@ class LedgerService:
         
         account.valuations = [v for v in account.valuations if v.id != valuation_id]
         # 삭제 후 최신 평가 기록으로 호환성 필드 업데이트
+        account.evaluated_amount = account.calculated_evaluated_amount
         if account.valuations:
             latest = account.latest_valuation
-            account.evaluated_amount = latest.evaluated_amount
             account.last_valuation_date = latest.evaluation_date[:10]
         else:
-            account.evaluated_amount = 0.0
             account.last_valuation_date = ""
         
         self.repo.save_account(account)

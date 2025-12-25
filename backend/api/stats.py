@@ -85,8 +85,9 @@ async def get_asset_allocation(service: LedgerService = Depends(get_ledger_servi
     categories = {
         "현금": 0.0,
         "부동산": 0.0,
-        "비트코인": 0.0,
+        "코인": 0.0,
         "주식": 0.0,
+        "연금": 0.0,
         "기타": 0.0
     }
     accounts = service.list_accounts()
@@ -95,28 +96,35 @@ async def get_asset_allocation(service: LedgerService = Depends(get_ledger_servi
         if acc.status == "dead":
             continue
         
-        value = acc.asset_value if acc.type == "투자" else acc.balance()
-
-        if value <= 0:
-            continue
-
         if acc.type == "투자":
-            # This is an investment account, categorize it further
-            # Categorize investment accounts by name or image path
-            account_name_lower = acc.name.lower()
-            image_path_lower = acc.image_path.lower() if acc.image_path else ""
+            # For investment accounts, use the asset_value directly
+            # Handle case where asset_value might be undefined
+            investment_value = getattr(acc, 'asset_value', 0) or 0
             
-            if "부동산" in account_name_lower or "부동산" in image_path_lower:
-                categories["부동산"] += value
-            elif "비트코인" in account_name_lower or "비트코인" in image_path_lower or "bitcoin" in image_path_lower:
-                categories["비트코인"] += value
-            elif any(keyword in account_name_lower or keyword in image_path_lower for keyword in ["주식", "증권", "나무", "한국투자", "ibk", "ok저축은행"]):
-                categories["주식"] += value
-            else:
-                categories["기타"] += value
+            if investment_value > 0:
+                # Categorize investment accounts by name or image path
+                account_name = acc.name
+                account_name_lower = account_name.lower()
+                image_path_lower = acc.image_path.lower() if acc.image_path else ""
+                
+                # Check for pension accounts first
+                if "연금" in account_name:
+                    categories["연금"] += investment_value
+                elif "부동산" in account_name_lower or "부동산" in image_path_lower:
+                    categories["부동산"] += investment_value
+                elif "코인" in account_name:  # Include all accounts with "코인" in name
+                    categories["코인"] += investment_value
+                elif any(keyword in account_name_lower or keyword in image_path_lower for keyword in ["주식", "증권", "나무", "한국투자", "ibk", "ok저축은행"]):
+                    categories["주식"] += investment_value
+                else:
+                    categories["기타"] += investment_value
         else:
-            # All other non-investment accounts are treated as cash
-            categories["현금"] += value
+            # For non-investment accounts, add their balance to cash
+            # BUT only include "현금" type accounts, not "소비" type accounts
+            if acc.type == "현금":
+                balance = acc.balance()
+                if balance > 0:
+                    categories["현금"] += balance
     
     final_categories = {k: v for k, v in categories.items() if v > 0}
     return final_categories

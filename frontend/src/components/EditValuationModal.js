@@ -90,6 +90,15 @@ const Button = styled.button`
       background-color: #545b62;
     }
   }
+  
+  &.danger {
+    background-color: #dc3545;
+    color: white;
+    
+    &:hover {
+      background-color: #c82333;
+    }
+  }
 `;
 
 function EditValuationModal({ isOpen, onClose, valuation, accountId, onValuationUpdated }) {
@@ -140,7 +149,7 @@ function EditValuationModal({ isOpen, onClose, valuation, accountId, onValuation
       console.log('Adding new valuation:', newValuation);
       await accountApi.addValuation(accountId, newValuation);
       
-      alert('평가 기록이 성공적으로 수정되었습니다!');
+      alert('거래 기록이 성공적으로 수정되었습니다!');
       onClose();
       if (onValuationUpdated) {
         onValuationUpdated();
@@ -148,7 +157,24 @@ function EditValuationModal({ isOpen, onClose, valuation, accountId, onValuation
     } catch (error) {
       console.error('Error updating valuation:', error);
       const errorMessage = error.response?.data?.detail || error.message || '알 수 없는 오류';
-      alert('평가 기록 수정 중 오류가 발생했습니다: ' + errorMessage);
+      alert('거래 기록 수정 중 오류가 발생했습니다: ' + errorMessage);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('정말로 이 거래 기록을 삭제하시겠습니까?')) {
+      try {
+        await accountApi.deleteValuation(accountId, valuation.id);
+        alert('거래 기록이 성공적으로 삭제되었습니다!');
+        onClose();
+        if (onValuationUpdated) {
+          onValuationUpdated();
+        }
+      } catch (error) {
+        console.error('Error deleting valuation:', error);
+        const errorMessage = error.response?.data?.detail || error.message || '알 수 없는 오류';
+        alert('거래 기록 삭제 중 오류가 발생했습니다: ' + errorMessage);
+      }
     }
   };
 
@@ -157,7 +183,7 @@ function EditValuationModal({ isOpen, onClose, valuation, accountId, onValuation
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={e => e.stopPropagation()}>
-        <h2>평가 기록 수정</h2>
+        <h2>거래 기록 수정</h2>
         <Form onSubmit={handleSubmit}>
           <FormGroup>
             <label htmlFor="edit-transaction-type">거래 타입</label>
@@ -215,6 +241,9 @@ function EditValuationModal({ isOpen, onClose, valuation, accountId, onValuation
             <Button type="button" className="secondary" onClick={onClose}>
               취소
             </Button>
+            <Button type="button" className="danger" onClick={handleDelete}>
+              삭제
+            </Button>
             <Button type="submit" className="primary">
               수정
             </Button>
@@ -226,4 +255,3 @@ function EditValuationModal({ isOpen, onClose, valuation, accountId, onValuation
 }
 
 export default EditValuationModal;
-

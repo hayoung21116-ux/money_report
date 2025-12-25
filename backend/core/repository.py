@@ -54,9 +54,12 @@ class LedgerRepository:
         account = self.get_account(account_id)
         if account:
             account.valuations.append(valuation)
-            # Update compatibility fields
-            account.evaluated_amount = valuation.evaluated_amount
-            account.last_valuation_date = valuation.evaluation_date[:10]
+            # Update compatibility fields using the new calculated value
+            account.evaluated_amount = account.calculated_evaluated_amount
+            if account.valuations:
+                latest = account.latest_valuation
+                if latest:
+                    account.last_valuation_date = latest.evaluation_date[:10]
             self.save_account(account)
             return True
         return False

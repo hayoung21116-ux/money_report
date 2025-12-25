@@ -90,6 +90,15 @@ const Button = styled.button`
       background-color: #545b62;
     }
   }
+  
+  &.danger {
+    background-color: #dc3545;
+    color: white;
+    
+    &:hover {
+      background-color: #c82333;
+    }
+  }
 `;
 
 function EditTransactionModal({ isOpen, onClose, transaction, accountId, onTransactionUpdated, accountType }) {
@@ -159,6 +168,20 @@ function EditTransactionModal({ isOpen, onClose, transaction, accountId, onTrans
     } catch (error) {
       console.error('Error updating transaction:', error);
       alert('거래 수정 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('정말로 이 거래를 삭제하시겠습니까?')) {
+      try {
+        await accountApi.deleteTransaction(accountId, transaction.id);
+        alert('거래가 성공적으로 삭제되었습니다!');
+        onClose();
+        onTransactionUpdated(); // Refresh the transaction list
+      } catch (error) {
+        console.error('Error deleting transaction:', error);
+        alert('거래 삭제 중 오류가 발생했습니다.');
+      }
     }
   };
 
@@ -237,6 +260,9 @@ function EditTransactionModal({ isOpen, onClose, transaction, accountId, onTrans
           <ButtonGroup>
             <Button type="button" className="secondary" onClick={onClose}>
               취소
+            </Button>
+            <Button type="button" className="danger" onClick={handleDelete}>
+              삭제
             </Button>
             <Button type="submit" className="primary">
               수정

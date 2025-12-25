@@ -77,7 +77,6 @@ class Account(BaseModel):
     valuations: List[ValuationRecord] = []
     # Fields for investment accounts
     purchase_amount: float = 0.0 # 총 매입금액
-    cash_holding: float = 0.0 # 보유 현금
     evaluated_amount: float = 0.0 # 현재 평가금액 (호환성 유지)
     last_valuation_date: str = "" # 마지막 평가 날짜 (YYYY-MM-DD) (호환성 유지)
 
@@ -117,13 +116,45 @@ class Account(BaseModel):
         return 0.0
 
     @property
+    def calculated_evaluated_amount(self) -> float:
+        """Calculate evaluated amount based on transaction types and dates.
+        For buy transactions, accumulate all buy amounts after the last sell.
+        For sell/valuation transactions, use the latest transaction amount."""
+        if not self.valuations:
+            return 0.0
+        
+        # Sort valuations by date
+        sorted_valuations = sorted(self.valuations, key=lambda v: v.evaluation_date)
+        latest_valuation = sorted_valuations[-1]
+        
+        # If the latest transaction is sell or valuation, use its amount directly
+        if latest_valuation.transaction_type in ["sell", "valuation"]:
+            return latest_valuation.evaluated_amount
+        
+        # If the latest transaction is buy, accumulate all buy amounts after the last sell
+        if latest_valuation.transaction_type == "buy":
+            # Find the last sell transaction index
+            last_sell_index = -1
+            for i, valuation in enumerate(sorted_valuations):
+                if valuation.transaction_type == "sell":
+                    last_sell_index = i
+            
+            # Sum all buy transactions after the last sell
+            total_amount = 0.0
+            for i in range(last_sell_index + 1, len(sorted_valuations)):
+                valuation = sorted_valuations[i]
+                if valuation.transaction_type == "buy":
+                    total_amount += valuation.evaluated_amount
+            
+            return total_amount
+        
+        return 0.0
+    
+    @property
     def asset_value(self) -> float:
         """Calculate total asset value for investment accounts, or balance for others."""
         if self.type == "투자":
-            current_value = self.evaluated_amount
-            if self.valuations:
-                current_value = self.latest_valuation.evaluated_amount
-            return current_value + self.cash_holding
+            return self.calculated_evaluated_amount
         return self.balance()
 
     def balance(self) -> float:

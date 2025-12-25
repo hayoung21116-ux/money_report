@@ -69,6 +69,15 @@ async def add_transaction(account_id: str, transaction_data: TransactionCreate, 
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@router.delete("/{account_id}/transactions/{transaction_id}")
+async def delete_transaction(account_id: str, transaction_id: str, service: LedgerService = Depends(get_ledger_service)):
+    """Delete a transaction from an account"""
+    try:
+        service.delete_transaction(account_id, transaction_id)
+        return {"message": "Transaction deleted successfully"}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 @router.put("/{account_id}/transactions/{transaction_id}", response_model=Transaction)
 async def update_transaction(account_id: str, transaction_id: str, transaction_data: TransactionUpdate, service: LedgerService = Depends(get_ledger_service)):
     """Update an existing transaction"""
@@ -101,7 +110,6 @@ class AccountUpdate(BaseModel):
     opening_balance: float = 0
     # For investment accounts
     purchase_amount: float = 0.0
-    cash_holding: float = 0.0
     evaluated_amount: float = 0.0
 
 @router.post("", response_model=Account)
@@ -137,9 +145,8 @@ async def update_account(account_id: str, account_data: AccountUpdate, service: 
         # Update type-specific fields
         if account_data.type == "투자":
             account.purchase_amount = account_data.purchase_amount
-            account.cash_holding = account_data.cash_holding
-            # Update evaluated_amount from form data
-            account.evaluated_amount = account_data.evaluated_amount
+            # Update evaluated_amount using the calculated value
+            account.evaluated_amount = account.calculated_evaluated_amount
             # Update compatibility field for last_valuation_date if there are valuations
             if account.valuations:
                 latest = account.latest_valuation

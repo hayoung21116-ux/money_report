@@ -211,24 +211,6 @@ const AccountDetailContainer = styled.div`
       font-weight: 600;
     }
     
-    // Set column widths
-    th:nth-child(1), td:nth-child(1) { // 타입
-      width: 5%;
-    }
-    th:nth-child(2), td:nth-child(2) { // 금액
-      width: 5%;
-    }
-    th:nth-child(3), td:nth-child(3) { // 메모
-      width: 40%;
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    th:nth-child(4), td:nth-child(4) { // 날짜
-      width: 10%;
-    }
-    
     tr:hover {
       background-color: #f5f5f5;
     }
@@ -258,6 +240,51 @@ const AccountDetailContainer = styled.div`
     .valuation-type {
       color: #0066cc;
       font-weight: 600;
+    }
+  }
+  
+  // Investment account table (4 columns)
+  .investment-transactions-table {
+    // Set column widths for 4 columns
+    th:nth-child(1), td:nth-child(1) { // 타입
+      width: 5%;
+    }
+    th:nth-child(2), td:nth-child(2) { // 금액
+      width: 5%;
+    }
+    th:nth-child(3), td:nth-child(3) { // 메모
+      width: 40%;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    th:nth-child(4), td:nth-child(4) { // 날짜
+      width: 10%;
+    }
+  }
+  
+  // Cash account table (5 columns)
+  .cash-transactions-table {
+    // Set column widths for 5 columns with memo column being the widest
+    th:nth-child(1), td:nth-child(1) { // 타입
+      width: 5%;
+    }
+    th:nth-child(2), td:nth-child(2) { // 금액
+      width: 10%;
+    }
+    th:nth-child(3), td:nth-child(3) { // 카테고리
+      width: 10%;
+    }
+    th:nth-child(4), td:nth-child(4) { // 메모
+      width: 40%;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    th:nth-child(5), td:nth-child(5) { // 날짜
+      width: 10%;
     }
   }
   
@@ -866,7 +893,7 @@ function AccountDetail() {
                   <button className="action-button" onClick={handleAddTransaction}>거래 추가</button>
                 </div>
                 {(transactions.length > 0 || valuations.length > 0) ? (
-                  <table>
+                  <table className="investment-transactions-table">
                     <thead>
                       <tr>
                         <th>타입</th>
@@ -1049,7 +1076,7 @@ function AccountDetail() {
             <button className="action-button" onClick={handleAddTransaction}>거래 추가</button>
           </div>
           {transactions.length > 0 ? (
-            <table>
+            <table className="cash-transactions-table">
               <thead>
                 <tr>
                   <th>타입</th>
@@ -1061,7 +1088,12 @@ function AccountDetail() {
               </thead>
               <tbody>
                 {transactions.map(transaction => (
-                  <tr key={transaction.id} className={transaction.category === '이동' ? 'transfer' : ''}>
+                  <tr 
+                    key={transaction.id} 
+                    className={transaction.category === '이동' ? 'transfer' : ''}
+                    onClick={() => handleTransactionClick(transaction)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <td className={transaction.type === 'income' ? 'income' : 'expense'}>
                       {transaction.type === 'income' ? '수입' : '지출'}
                     </td>

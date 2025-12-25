@@ -179,7 +179,7 @@ function AddAccountModal({ isOpen, onClose, onAccountAdded }) {
               value={formData.balance}
               onChange={handleChange}
               min="0"
-              step="1000"
+              step="1"
             />
           </FormGroup>
 

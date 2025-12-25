@@ -214,7 +214,8 @@ function Stats() {
       const colors = {
         "현금": "#4CAF50",
         "부동산": "#2196F3",
-        "비트코인": "#FF9800",
+        "코인": "#FF9800",
+        "연금": "#FF5722", // Distinct color for pension
         "주식": "#9C27B0",
         "기타": "#607D8B"
       };
@@ -547,9 +548,9 @@ function Stats() {
             <p style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '8px' }}>
               총 월급: {formatCurrency(totalSalary)}
               {minGuiTotal > haYoungTotal ? (
-                <> 👑(민규) {formatCurrency(minGuiTotal)} / (하영) {formatCurrency(haYoungTotal)}</>
+                <> ��(민규) {formatCurrency(minGuiTotal)} / (하영) {formatCurrency(haYoungTotal)}</>
               ) : haYoungTotal > minGuiTotal ? (
-                <> (민규) {formatCurrency(minGuiTotal)} / 👑(하영) {formatCurrency(haYoungTotal)}</>
+                <> (민규) {formatCurrency(minGuiTotal)} / ��(하영) {formatCurrency(haYoungTotal)}</>
               ) : (
                 <> (민규) {formatCurrency(minGuiTotal)} / (하영) {formatCurrency(haYoungTotal)}</>
               )}

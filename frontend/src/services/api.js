@@ -72,6 +72,10 @@ export const accountApi = {
   updateTransaction: (accountId, transactionId, transaction) =>
     api.put(`/accounts/${accountId}/transactions/${transactionId}`, transaction),
   
+  // Delete transaction
+  deleteTransaction: (accountId, transactionId) =>
+    api.delete(`/accounts/${accountId}/transactions/${transactionId}`),
+  
   // Get account valuations
   getValuations: (id) => api.get(`/accounts/${id}/valuations`),
   

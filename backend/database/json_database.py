@@ -62,7 +62,6 @@ class JSONDatabase:
                 opening_balance=acc_dict["opening_balance"],
                 image_path=acc_dict.get("image_path", ""),
                 purchase_amount=acc_dict.get("purchase_amount", 0.0),
-                cash_holding=acc_dict.get("cash_holding", 0.0),
                 evaluated_amount=acc_dict.get("evaluated_amount", 0.0),
                 last_valuation_date=acc_dict.get("last_valuation_date", ""),
                 transactions=transactions,

@@ -100,7 +100,6 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
     balance: 0,
     image_path: '',
     purchase_amount: 0,
-    cash_holding: 0,
     evaluated_amount: 0
   });
 
@@ -135,7 +134,6 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
         balance: account.type === '투자' ? account.asset_value : calculateBalance(account),
         image_path: account.image_path || '',
         purchase_amount: account.purchase_amount || 0,
-        cash_holding: account.cash_holding || 0,
         evaluated_amount: account.evaluated_amount || 0
       });
     }
@@ -143,7 +141,7 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const numericFields = ['balance', 'purchase_amount', 'cash_holding', 'evaluated_amount'];
+    const numericFields = ['balance', 'purchase_amount', 'evaluated_amount'];
     setFormData(prev => ({
       ...prev,
       [name]: numericFields.includes(name) ? parseFloat(value) || 0 : value
@@ -161,14 +159,12 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
         image_path: formData.image_path || '',
         opening_balance: 0,
         purchase_amount: 0,
-        cash_holding: 0,
         evaluated_amount: 0
       };
 
       if (formData.type === '투자') {
         // For investment accounts, use the investment-specific fields
         updateData.purchase_amount = formData.purchase_amount || 0;
-        updateData.cash_holding = formData.cash_holding || 0;
         updateData.evaluated_amount = formData.evaluated_amount || 0;
       } else {
         // For regular accounts, calculate opening_balance from current balance
@@ -244,19 +240,6 @@ function EditAccountModal({ isOpen, onClose, account, onAccountUpdated }) {
                   id="purchase_amount"
                   name="purchase_amount"
                   value={formData.purchase_amount || 0}
-                  onChange={handleChange}
-                  min="0"
-                  step="any"
-                />
-              </FormGroup>
-              
-              <FormGroup>
-                <label htmlFor="cash_holding">보유 현금</label>
-                <input
-                  type="number"
-                  id="cash_holding"
-                  name="cash_holding"
-                  value={formData.cash_holding || 0}
                   onChange={handleChange}
                   min="0"
                   step="any"

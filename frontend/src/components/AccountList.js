@@ -3,11 +3,22 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { accountApi, statsApi, formatCurrency, getTextColor } from '../services/api';
 
+const AccountSection = styled.div`
+  margin-bottom: 30px;
+`;
+
+const AccountTypeHeader = styled.h3`
+  margin: 0 0 15px 0;
+  padding: 0;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+`;
+
 const AccountGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px;
-  margin-bottom: 30px;
   
   @media (max-width: 768px) {
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
@@ -324,6 +335,52 @@ function AccountList() {
     return account.opening_balance + income - expense;
   };
 
+  // Separate active and dead accounts
+  const activeAccounts = accounts.filter(account => account.status !== "dead");
+  const deadAccounts = accounts.filter(account => account.status === "dead");
+  
+  // Categorize investment accounts
+  const categorizeInvestmentAccount = (account) => {
+    const name = account.name;
+    if (name.includes("연금")) return "연금";
+    if (name.includes("코인")) return "코인";
+    if (name.includes("주식") || name.includes("증권") || name.includes("나무") || 
+        name.includes("한국투자") || name.includes("IBK") || name.includes("OK저축은행")) {
+      return "주식";
+    }
+    return "기타";
+  };
+
+  // Group active accounts by type
+  const groupedActiveAccounts = activeAccounts.reduce((groups, account) => {
+    const type = account.type;
+    if (!groups[type]) {
+      groups[type] = [];
+    }
+    groups[type].push(account);
+    return groups;
+  }, {});
+
+  // Sort investment accounts by category
+  if (groupedActiveAccounts["투자"]) {
+    groupedActiveAccounts["투자"].sort((a, b) => {
+      const categoryA = categorizeInvestmentAccount(a);
+      const categoryB = categorizeInvestmentAccount(b);
+      
+      // Define category order
+      const categoryOrder = { "주식": 0, "연금": 1, "코인": 2, "기타": 3 };
+      const orderA = categoryOrder[categoryA] !== undefined ? categoryOrder[categoryA] : 4;
+      const orderB = categoryOrder[categoryB] !== undefined ? categoryOrder[categoryB] : 4;
+      
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      
+      // If same category, sort by name
+      return a.name.localeCompare(b.name);
+    });
+  }
+
   return (
     <div>
       <TotalAssets>
@@ -332,31 +389,66 @@ function AccountList() {
         </div>
       </TotalAssets>
 
-      <AccountGrid>
-        {accounts.map(account => {
-          const bgColor = account.status === "dead" ? "#808080" : account.color;
-          const textColor = getTextColor(bgColor);
-          console.log(`Account ${account.name}: bgColor=${bgColor}, textColor=${textColor}`); // Debug log
-          return (
-            <AccountCard
-              key={account.id}
-              color={bgColor}
-              textColor={textColor}
-              onClick={() => navigate(`/account/${account.id}`)}
-            >
-              <div className="account-icon">
-                {account.name.charAt(0)}
-              </div>
-              <div className="account-info">
-                <div className="account-name">{account.name}</div>
-                <div className="account-balance">
-                  {formatCurrency(calculateBalance(account))}
-                </div>
-              </div>
-            </AccountCard>
-          );
-        })}
-      </AccountGrid>
+      {Object.entries(groupedActiveAccounts).map(([type, accountsOfType]) => (
+        <AccountSection key={type}>
+          <AccountTypeHeader>{type} 계좌</AccountTypeHeader>
+          <AccountGrid>
+            {accountsOfType.map(account => {
+              const bgColor = account.color;
+              const textColor = getTextColor(bgColor);
+              console.log(`Account ${account.name}: bgColor=${bgColor}, textColor=${textColor}`); // Debug log
+              return (
+                <AccountCard
+                  key={account.id}
+                  color={bgColor}
+                  textColor={textColor}
+                  onClick={() => navigate(`/account/${account.id}`)}
+                >
+                  <div className="account-icon">
+                    {account.name.charAt(0)}
+                  </div>
+                  <div className="account-info">
+                    <div className="account-name">{account.name}</div>
+                    <div className="account-balance">
+                      {formatCurrency(calculateBalance(account))}
+                    </div>
+                  </div>
+                </AccountCard>
+              );
+            })}
+          </AccountGrid>
+        </AccountSection>
+      ))}
+
+      {deadAccounts.length > 0 && (
+        <AccountSection>
+          <AccountTypeHeader>비활성화된 계좌</AccountTypeHeader>
+          <AccountGrid>
+            {deadAccounts.map(account => {
+              const bgColor = "#808080";
+              const textColor = getTextColor(bgColor);
+              return (
+                <AccountCard
+                  key={account.id}
+                  color={bgColor}
+                  textColor={textColor}
+                  onClick={() => navigate(`/account/${account.id}`)}
+                >
+                  <div className="account-icon">
+                    {account.name.charAt(0)}
+                  </div>
+                  <div className="account-info">
+                    <div className="account-name">{account.name}</div>
+                    <div className="account-balance">
+                      {formatCurrency(calculateBalance(account))}
+                    </div>
+                  </div>
+                </AccountCard>
+              );
+            })}
+          </AccountGrid>
+        </AccountSection>
+      )}
 
       <AddAccountButton onClick={() => window.dispatchEvent(new CustomEvent('openAddAccountModal'))}>
         +
