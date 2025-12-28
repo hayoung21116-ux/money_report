@@ -1561,6 +1561,16 @@
           "memo": "",
           "date": "2025-11-30T00:00:00Z",
           "item": ""
+        },
+        {
+          "id": "ce1b0d73-bb78-46b7-8c1f-e268d869fbe1",
+          "account_id": "5ba03a67-65e7-4b13-8ef6-251df6dc6292",
+          "type": "income",
+          "amount": 3000000.0,
+          "category": "저축",
+          "memo": "",
+          "date": "2025-12-30",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -1568,7 +1578,7 @@
       "evaluated_amount": 0.0,
       "last_valuation_date": "",
       "return_rate": 0.0,
-      "asset_value": 30000000.0
+      "asset_value": 33000000.0
     },
     {
       "id": "06a5a1b2-035b-4e7b-a59d-54dc0d735085",
