@@ -513,6 +513,16 @@
           "memo": "",
           "date": "2025-12-21",
           "item": ""
+        },
+        {
+          "id": "e5b71bd1-4f0f-4a91-bcab-0a6fdc0177bb",
+          "account_id": "74dceaad-4555-41e7-976b-8291c6318bf5",
+          "type": "income",
+          "amount": 2498013.0,
+          "category": "저축",
+          "memo": "1월 월급 남은 돈",
+          "date": "2025-12-28T00:00:00Z",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -520,7 +530,7 @@
       "evaluated_amount": 0.0,
       "last_valuation_date": "",
       "return_rate": 0.0,
-      "asset_value": 1727465.0
+      "asset_value": 4225478.0
     },
     {
       "id": "5fe582a9-e405-4477-ac13-0d9ea117d127",
@@ -4561,6 +4571,16 @@
           "memo": "",
           "date": "2025-12-21",
           "item": ""
+        },
+        {
+          "id": "640c5db3-e554-4488-a6a3-8003543d5678",
+          "account_id": "0b65d4db-f1d8-457f-8508-a2bab1199a97",
+          "type": "income",
+          "amount": 2452339.0,
+          "category": "저축",
+          "memo": "1월 월급 남은돈",
+          "date": "2025-12-28T00:00:00Z",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -4568,7 +4588,7 @@
       "evaluated_amount": 0.0,
       "last_valuation_date": "",
       "return_rate": 0.0,
-      "asset_value": 1660776.0
+      "asset_value": 4113115.0
     },
     {
       "id": "4a21fe35-f326-40ec-b4bd-cb42d03629e1",
@@ -5394,7 +5414,20 @@
     {
       "amount": 4403040.0,
       "month": "2026-01",
-      "person": "하영"
+      "person": "하영",
+      "classification": "월급"
+    },
+    {
+      "amount": 1394720.0,
+      "month": "2025-12",
+      "person": "하영",
+      "classification": "보너스"
+    },
+    {
+      "amount": 5852106.0,
+      "month": "2026-01",
+      "person": "민규",
+      "classification": "월급"
     }
   ]
 }
