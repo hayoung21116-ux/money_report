@@ -4296,7 +4296,7 @@
       "id": "dc4134f0-cc87-48c8-a9af-4515fe4c79e5",
       "name": "알트코인(민규)",
       "type": "투자",
-      "color": "#5458e3",
+      "color": "#a354e3",
       "opening_balance": 0.0,
       "status": "active",
       "image_path": "images\\비트코인.png",
@@ -4309,13 +4309,21 @@
           "evaluation_date": "2025-12-21T00:00:00Z",
           "memo": "",
           "transaction_type": "buy"
+        },
+        {
+          "id": "19d27073-1d25-483a-a040-914ae7591d54",
+          "account_id": "dc4134f0-cc87-48c8-a9af-4515fe4c79e5",
+          "evaluated_amount": 43000000.0,
+          "evaluation_date": "2025-12-28T00:00:00Z",
+          "memo": "temp_delete_later",
+          "transaction_type": "sell"
         }
       ],
       "purchase_amount": 0.0,
-      "evaluated_amount": 60000000.0,
-      "last_valuation_date": "2025-12-21",
+      "evaluated_amount": 43000000.0,
+      "last_valuation_date": "2025-12-28",
       "return_rate": 0.0,
-      "asset_value": 60000000.0
+      "asset_value": 43000000.0
     },
     {
       "id": "29035363-8af7-4319-9af3-15b803d417b5",
@@ -4609,18 +4617,35 @@
       "status": "active",
       "image_path": "images\\한국투자증권.png",
       "transactions": [],
-      "valuations": [],
+      "valuations": [
+        {
+          "id": "cdb7d77d-3ca1-4fce-b17b-a165f26ff4b1",
+          "account_id": "4a21fe35-f326-40ec-b4bd-cb42d03629e1",
+          "evaluated_amount": 29198190.0,
+          "evaluation_date": "2025-12-27T00:00:00Z",
+          "memo": "",
+          "transaction_type": "buy"
+        },
+        {
+          "id": "7fd2b4e0-7393-40d1-8980-bbf8868f3142",
+          "account_id": "4a21fe35-f326-40ec-b4bd-cb42d03629e1",
+          "evaluated_amount": 32909490.0,
+          "evaluation_date": "2025-12-28T00:00:00Z",
+          "memo": "temp_delete_later",
+          "transaction_type": "sell"
+        }
+      ],
       "purchase_amount": 0.0,
-      "evaluated_amount": 0.0,
-      "last_valuation_date": "",
+      "evaluated_amount": 32909490.0,
+      "last_valuation_date": "2025-12-28",
       "return_rate": 0.0,
-      "asset_value": 0.0
+      "asset_value": 32909490.0
     },
     {
       "id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
       "name": "비트코인(하영)",
       "type": "투자",
-      "color": "#6f65fb",
+      "color": "#bf65fb",
       "opening_balance": 0.0,
       "status": "active",
       "image_path": "images\\비트코인.png",
@@ -5057,13 +5082,21 @@
           "evaluation_date": "2025-12-19T00:00:00Z",
           "memo": "",
           "transaction_type": "buy"
+        },
+        {
+          "id": "848a0996-0434-43ba-8725-5469cad58977",
+          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
+          "evaluated_amount": 11100000.0,
+          "evaluation_date": "2025-12-28T00:00:00Z",
+          "memo": "temp_delete_later",
+          "transaction_type": "sell"
         }
       ],
       "purchase_amount": 0.0,
-      "evaluated_amount": 11990000.0,
-      "last_valuation_date": "2025-12-19",
+      "evaluated_amount": 11100000.0,
+      "last_valuation_date": "2025-12-28",
       "return_rate": 0.0,
-      "asset_value": 20000.0
+      "asset_value": 11100000.0
     },
     {
       "id": "18576cbc-e2f7-4110-b6fb-42c5302f6405",
@@ -5202,6 +5235,105 @@
       "last_valuation_date": "",
       "return_rate": 0.0,
       "asset_value": 5005411.0
+    },
+    {
+      "id": "476b4750-61ab-40cf-b9f7-04c0acda6a99",
+      "name": "주식_하나(민규)",
+      "type": "투자",
+      "color": "#008e71",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "",
+      "transactions": [],
+      "valuations": [
+        {
+          "id": "4da69b98-485f-45a8-88a7-3b9120fd77a6",
+          "account_id": "476b4750-61ab-40cf-b9f7-04c0acda6a99",
+          "evaluated_amount": 5018730.0,
+          "evaluation_date": "2025-12-27T00:00:00Z",
+          "memo": "",
+          "transaction_type": "buy"
+        },
+        {
+          "id": "d0974a3e-4748-4028-8bf5-70a76e3836fd",
+          "account_id": "476b4750-61ab-40cf-b9f7-04c0acda6a99",
+          "evaluated_amount": 26200000.0,
+          "evaluation_date": "2025-12-28T00:00:00Z",
+          "memo": "",
+          "transaction_type": "sell"
+        }
+      ],
+      "purchase_amount": 0.0,
+      "evaluated_amount": 26200000.0,
+      "last_valuation_date": "2025-12-28",
+      "return_rate": 0.0,
+      "asset_value": 26200000.0
+    },
+    {
+      "id": "0cd6ef89-ecaa-4825-8d92-f2ad9cc4aeb6",
+      "name": "주식_신한_270-19(하영)",
+      "type": "투자",
+      "color": "#084bfd",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "",
+      "transactions": [],
+      "valuations": [
+        {
+          "id": "48f7d2a0-4f7c-49b0-b0d1-7d64a1633313",
+          "account_id": "0cd6ef89-ecaa-4825-8d92-f2ad9cc4aeb6",
+          "evaluated_amount": 1571000.0,
+          "evaluation_date": "2025-12-27T00:00:00Z",
+          "memo": "",
+          "transaction_type": "buy"
+        },
+        {
+          "id": "1110c948-80a5-48fc-849d-5279c7258218",
+          "account_id": "0cd6ef89-ecaa-4825-8d92-f2ad9cc4aeb6",
+          "evaluated_amount": 2000000.0,
+          "evaluation_date": "2025-12-28T00:00:00Z",
+          "memo": "temp_delete_later",
+          "transaction_type": "sell"
+        }
+      ],
+      "purchase_amount": 0.0,
+      "evaluated_amount": 2000000.0,
+      "last_valuation_date": "2025-12-28",
+      "return_rate": 0.0,
+      "asset_value": 2000000.0
+    },
+    {
+      "id": "b1484a5d-97ff-43f9-8841-44582bc232c4",
+      "name": "주식_신한_270-82(하영)",
+      "type": "투자",
+      "color": "#4667c8",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "",
+      "transactions": [],
+      "valuations": [
+        {
+          "id": "e3926964-6609-4106-9bf0-be3044b929d2",
+          "account_id": "b1484a5d-97ff-43f9-8841-44582bc232c4",
+          "evaluated_amount": 1094000.0,
+          "evaluation_date": "2025-12-27T00:00:00Z",
+          "memo": "",
+          "transaction_type": "buy"
+        },
+        {
+          "id": "cef2ce3d-4c29-4123-ab9f-e58526e3bbaa",
+          "account_id": "b1484a5d-97ff-43f9-8841-44582bc232c4",
+          "evaluated_amount": 2340000.0,
+          "evaluation_date": "2025-12-28T00:00:00Z",
+          "memo": "temp_delete_later",
+          "transaction_type": "sell"
+        }
+      ],
+      "purchase_amount": 0.0,
+      "evaluated_amount": 2340000.0,
+      "last_valuation_date": "2025-12-28",
+      "return_rate": 0.0,
+      "asset_value": 2340000.0
     }
   ],
   "salaries": [
