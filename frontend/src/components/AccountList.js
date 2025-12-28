@@ -221,96 +221,49 @@ function AccountList() {
       new Date(a.evaluation_date) - new Date(b.evaluation_date)
     );
 
-    // Build pairs와 unpaired buys (AccountDetail과 동일한 로직)
-    const pairs = [];
-    const unpairedBuys = [];
-    const unpairedBuyValuations = [];
+    // AccountDetail과 동일한 그룹화 로직 사용
+    const groups = [];
+    let currentGroup = { buys: [] };
 
     sortedValuations.forEach((valuation) => {
       if (valuation.transaction_type === 'buy') {
-        unpairedBuys.push({
-          buyDate: valuation.evaluation_date,
-          buyAmount: valuation.evaluated_amount,
-          buyValuation: valuation
+        currentGroup.buys.push({
+          date: new Date(valuation.evaluation_date),
+          amount: valuation.evaluated_amount,
+          valuation: valuation
         });
-        unpairedBuyValuations.push(valuation);
       } else if (valuation.transaction_type === 'sell') {
-        if (unpairedBuys.length > 0) {
-          const buy = unpairedBuys.shift();
-          const buyVal = unpairedBuyValuations.shift();
-          const sellAmount = valuation.evaluated_amount;
-          const returnRate = ((sellAmount - buy.buyAmount) / buy.buyAmount) * 100;
-          
-          pairs.push({
-            buyDate: buy.buyDate,
-            buyAmount: buy.buyAmount,
-            sellDate: valuation.evaluation_date,
-            sellAmount: sellAmount,
-            returnRate: returnRate,
-            buyValuations: [buyVal],
-            sellValuation: valuation
-          });
-        }
-      } else if (valuation.transaction_type === 'valuation') {
-        if (unpairedBuys.length > 0) {
-          const buy = unpairedBuys[0];
-          const buyVal = unpairedBuyValuations[0];
-          
-          let existingPairIndex = -1;
-          for (let i = 0; i < pairs.length; i++) {
-            if (pairs[i].buyValuations[0]?.id === buyVal.id) {
-              existingPairIndex = i;
-              break;
-            }
-          }
-          
-          if (existingPairIndex >= 0) {
-            pairs.splice(existingPairIndex, 1);
-          } else {
-            unpairedBuys.shift();
-            unpairedBuyValuations.shift();
-          }
-          
-          const sellAmount = valuation.evaluated_amount;
-          const returnRate = ((sellAmount - buy.buyAmount) / buy.buyAmount) * 100;
-          
-          pairs.push({
-            buyDate: buy.buyDate,
-            buyAmount: buy.buyAmount,
-            sellDate: valuation.evaluation_date,
-            sellAmount: sellAmount,
-            returnRate: returnRate,
-            buyValuations: [buyVal],
-            sellValuation: valuation
-          });
+        if (currentGroup.buys.length > 0) {
+          currentGroup.sell = {
+            date: new Date(valuation.evaluation_date),
+            amount: valuation.evaluated_amount,
+            valuation: valuation
+          };
+          groups.push(currentGroup);
+          currentGroup = { buys: [] };
         }
       }
     });
 
-    // 자산 계산: 누적 매수가 있으면 최신 누적 매수 값, 없으면 최신 valuation
-    if (unpairedBuys.length > 0) {
-      // 누적 매수가 있으면 모든 unpaired buys의 합계
-      const unpairedTotal = unpairedBuys.reduce((sum, buy) => sum + buy.buyAmount, 0);
-      console.log(`Unpaired buys total: ${unpairedTotal}`);
-      return unpairedTotal;
-    } else {
-      // 최신 valuation 찾기
-      const latestValuation = sortedValuations
-        .filter(v => v.transaction_type === 'valuation')
-        .sort((a, b) => new Date(b.evaluation_date) - new Date(a.evaluation_date))[0];
-      
-      if (latestValuation) {
-        console.log(`Latest valuation: ${latestValuation.evaluated_amount}`);
-        return latestValuation.evaluated_amount;
-      } else if (account.evaluated_amount > 0) {
-        console.log(`Using evaluated_amount: ${account.evaluated_amount}`);
-        return account.evaluated_amount;
-      }
+    if (currentGroup.buys.length > 0) {
+      groups.push(currentGroup);
     }
 
-    const finalValue = account.asset_value || 0;
-    console.log(`Final fallback: ${finalValue}`);
-    return finalValue;
+    // 누적 금액 계산 (AccountDetail과 동일한 로직)
+    let cumulativeAmount = 0;
+    groups.forEach((group) => {
+      if (group.sell) {
+        const totalBuyAmount = group.buys.reduce((sum, buy) => sum + buy.amount, 0);
+        const buyCumulativeAmount = cumulativeAmount + totalBuyAmount;
+        cumulativeAmount = buyCumulativeAmount - totalBuyAmount + group.sell.amount;
+      } else {
+        const totalBuyAmount = group.buys.reduce((sum, buy) => sum + buy.amount, 0);
+        cumulativeAmount += totalBuyAmount;
+      }
+    });
+
+    console.log(`Calculated cumulative amount: ${cumulativeAmount}`);
+    return cumulativeAmount;
   };
 
   const calculateBalance = (account) => {
