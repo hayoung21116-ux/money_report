@@ -221,49 +221,72 @@ function AccountList() {
       new Date(a.evaluation_date) - new Date(b.evaluation_date)
     );
 
-    // AccountDetail과 동일한 그룹화 로직 사용
-    const groups = [];
-    let currentGroup = { buys: [] };
+    // 매수-매도 pair 생성 (차트 로직과 동일)
+    const pairs = [];
+    const unpairedBuyValuations = [];
 
     sortedValuations.forEach((valuation) => {
       if (valuation.transaction_type === 'buy') {
-        currentGroup.buys.push({
-          date: new Date(valuation.evaluation_date),
-          amount: valuation.evaluated_amount,
-          valuation: valuation
-        });
+        unpairedBuyValuations.push(valuation);
       } else if (valuation.transaction_type === 'sell') {
-        if (currentGroup.buys.length > 0) {
-          currentGroup.sell = {
-            date: new Date(valuation.evaluation_date),
-            amount: valuation.evaluated_amount,
-            valuation: valuation
-          };
-          groups.push(currentGroup);
-          currentGroup = { buys: [] };
+        // sell 기록이면 가장 오래된 unpaired buy와 페어링
+        if (unpairedBuyValuations.length > 0) {
+          unpairedBuyValuations.shift();
+          // pair는 거래 완료로 간주하고 무시
+        }
+      } else if (valuation.transaction_type === 'valuation') {
+        // valuation 기록이면 가장 오래된 unpaired buy와 페어링
+        if (unpairedBuyValuations.length > 0) {
+          // 이미 이 buy와 페어링된 pair가 있는지 확인
+          const buyVal = unpairedBuyValuations[0];
+          let existingPairIndex = -1;
+          for (let i = 0; i < pairs.length; i++) {
+            if (pairs[i].buyValuation?.id === buyVal.id && pairs[i].sellValuation?.transaction_type === 'valuation') {
+              existingPairIndex = i;
+              break;
+            }
+          }
+          
+          if (existingPairIndex >= 0) {
+            pairs.splice(existingPairIndex, 1);
+          } else {
+            unpairedBuyValuations.shift();
+          }
         }
       }
     });
 
-    if (currentGroup.buys.length > 0) {
-      groups.push(currentGroup);
+    // 페어링되지 않은 매수 중 가장 최신 것을 찾기
+    if (unpairedBuyValuations.length > 0) {
+      // 날짜순으로 정렬하여 가장 최신 것 찾기
+      const latestUnpairedBuy = unpairedBuyValuations.sort((a, b) => 
+        new Date(b.evaluation_date) - new Date(a.evaluation_date)
+      )[0];
+      
+      const result = latestUnpairedBuy.evaluated_amount;
+      console.log(`Using latest unpaired buy: ${result}`);
+      return result;
     }
 
-    // 누적 금액 계산 (AccountDetail과 동일한 로직)
-    let cumulativeAmount = 0;
-    groups.forEach((group) => {
-      if (group.sell) {
-        const totalBuyAmount = group.buys.reduce((sum, buy) => sum + buy.amount, 0);
-        const buyCumulativeAmount = cumulativeAmount + totalBuyAmount;
-        cumulativeAmount = buyCumulativeAmount - totalBuyAmount + group.sell.amount;
-      } else {
-        const totalBuyAmount = group.buys.reduce((sum, buy) => sum + buy.amount, 0);
-        cumulativeAmount += totalBuyAmount;
-      }
-    });
+    // 페어링되지 않은 매수가 없으면 최신 매도 금액 반환
+    const sellOrValuationValuations = sortedValuations.filter(v => 
+      v.transaction_type === 'sell' || v.transaction_type === 'valuation'
+    );
+    
+    if (sellOrValuationValuations.length > 0) {
+      // 날짜순으로 정렬하여 가장 최신 것 찾기
+      const latestSellOrValuation = sellOrValuationValuations.sort((a, b) => 
+        new Date(b.evaluation_date) - new Date(a.evaluation_date)
+      )[0];
+      
+      const result = latestSellOrValuation.evaluated_amount;
+      console.log(`No unpaired buys, using latest sell/valuation: ${result}`);
+      return result;
+    }
 
-    console.log(`Calculated cumulative amount: ${cumulativeAmount}`);
-    return cumulativeAmount;
+    // 매도나 valuation도 없으면 0 반환
+    console.log(`No unpaired buys and no sell/valuation, returning 0`);
+    return 0;
   };
 
   const calculateBalance = (account) => {

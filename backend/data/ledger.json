@@ -1301,12 +1301,44 @@
           "memo": "비상금 추가",
           "date": "2025-12-21",
           "item": ""
+        },
+        {
+          "id": "da2ca5df-fd68-45a5-b9ac-608de4c9e4d3",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 50000.0,
+          "category": "이동",
+          "memo": "26년 비상금분",
+          "date": "2025-12-26T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "ec75c2c7-6d0a-4ca7-b14c-a0a5ddedfdb7",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 9950000.0,
+          "category": "이동",
+          "memo": "26년 비상금분",
+          "date": "2026-01-03T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "1bf2b0e6-4186-4d58-bae7-f32c4ff34543",
+          "account_id": "39c23038-f77f-4a5a-8e71-24b1aabbfc1d",
+          "type": "expense",
+          "amount": 2000000.0,
+          "category": "이동",
+          "memo": "비트코인",
+          "date": "2026-01-03T00:00:00Z",
+          "item": ""
         }
       ],
       "valuations": [],
       "purchase_amount": 0.0,
       "evaluated_amount": 0.0,
-      "last_valuation_date": ""
+      "last_valuation_date": "",
+      "return_rate": 0.0,
+      "asset_value": 3144200.0
     },
     {
       "id": "d3b27989-b8b1-46e9-b574-d4d35dbf2dad",
@@ -4283,6 +4315,36 @@
           "memo": "삿포로_호텔",
           "date": "2025-12-21T00:00:00Z",
           "item": ""
+        },
+        {
+          "id": "bb2f0003-6bb1-48de-9f53-9ba16af423c3",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 50000.0,
+          "category": "이동",
+          "memo": "26년 비상금분 (25년 총 1800만원 지출)",
+          "date": "2025-12-26",
+          "item": ""
+        },
+        {
+          "id": "86024c96-2214-4584-9454-836846168676",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "expense",
+          "amount": 100000.0,
+          "category": "지출",
+          "memo": "경조사-(하영)학섭님조의",
+          "date": "2025-12-26T00:00:00Z",
+          "item": ""
+        },
+        {
+          "id": "622aa8f5-2fa4-4acc-bcdc-2db0dd0cace8",
+          "account_id": "ed947e1c-7b61-464b-ae63-6fb02a754ba3",
+          "type": "income",
+          "amount": 9950000.0,
+          "category": "이동",
+          "memo": "26년 비상금분",
+          "date": "2026-01-03T00:00:00Z",
+          "item": ""
         }
       ],
       "valuations": [],
@@ -4290,7 +4352,7 @@
       "evaluated_amount": 0.0,
       "last_valuation_date": "",
       "return_rate": 0.0,
-      "asset_value": 56760.0
+      "asset_value": 9956760.0
     },
     {
       "id": "dc4134f0-cc87-48c8-a9af-4515fe4c79e5",
@@ -4336,27 +4398,27 @@
       "transactions": [],
       "valuations": [
         {
-          "id": "cbc4894c-43b8-4098-be4a-a8c120b6ead3",
+          "id": "9a5f6e67-fb20-4127-843c-7823415a2cc5",
           "account_id": "29035363-8af7-4319-9af3-15b803d417b5",
-          "evaluated_amount": 25487876.0,
-          "evaluation_date": "2025-12-22T00:00:00Z",
+          "evaluated_amount": 25574466.0,
+          "evaluation_date": "2026-01-03T00:00:00Z",
           "memo": "",
           "transaction_type": "buy"
         },
         {
-          "id": "40fd2d09-0f6a-4f89-95cc-773929be57bc",
+          "id": "9853ead8-975a-4455-9dad-6bd3a0d34e3d",
           "account_id": "29035363-8af7-4319-9af3-15b803d417b5",
-          "evaluated_amount": 28400000.0,
-          "evaluation_date": "2025-12-23T00:00:00Z",
+          "evaluated_amount": 27000000.0,
+          "evaluation_date": "2026-01-04T00:00:00Z",
           "memo": "temp_delete_later",
           "transaction_type": "sell"
         }
       ],
       "purchase_amount": 0.0,
-      "evaluated_amount": 28400000.0,
-      "last_valuation_date": "2025-12-23",
+      "evaluated_amount": 27000000.0,
+      "last_valuation_date": "2026-01-04",
       "return_rate": 0.0,
-      "asset_value": 28400000.0
+      "asset_value": 27000000.0
     },
     {
       "id": "cf7a78ca-252e-4feb-8fa3-2b965b86e339",
@@ -4377,19 +4439,19 @@
           "transaction_type": "buy"
         },
         {
-          "id": "207c8630-efe8-43e0-80de-34da76f521b7",
+          "id": "3f870251-8a61-492d-a283-d616b5f794c9",
           "account_id": "cf7a78ca-252e-4feb-8fa3-2b965b86e339",
-          "evaluated_amount": 16900000.0,
-          "evaluation_date": "2025-12-23T00:00:00Z",
+          "evaluated_amount": 16500000.0,
+          "evaluation_date": "2026-01-04T00:00:00Z",
           "memo": "temp_delete_later",
           "transaction_type": "sell"
         }
       ],
       "purchase_amount": 0.0,
-      "evaluated_amount": 16900000.0,
-      "last_valuation_date": "2025-12-23",
+      "evaluated_amount": 16500000.0,
+      "last_valuation_date": "2026-01-04",
       "return_rate": 0.0,
-      "asset_value": 16900000.0
+      "asset_value": 16500000.0
     },
     {
       "id": "0b65d4db-f1d8-457f-8508-a2bab1199a97",
@@ -4652,451 +4714,27 @@
       "transactions": [],
       "valuations": [
         {
-          "id": "6c65a2a8-3ada-459e-9342-efb9d72402db",
+          "id": "5acff3b2-6b28-491a-8262-98494fe385db",
           "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 258000.0,
-          "evaluation_date": "2025-03-07T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "5dd80850-055c-4def-a8e9-4ef8949e7c97",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-03-14T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "f34716d9-3981-4fec-89ab-330046215107",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-03-28T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "c2578276-1b57-415f-bd89-bfaaec95ea08",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 249000.0,
-          "evaluation_date": "2025-04-18T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "e1e03139-2947-4f1b-8870-d41205bbd113",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 251000.0,
-          "evaluation_date": "2025-04-25T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "ed6c7735-b918-4bbc-acca-08d02cd65632",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-05-02T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "ee907d19-aecd-4deb-b568-435d1cc44a10",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-05-09T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "007d069e-6bd5-4c59-a4a9-e7ff113f3e42",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-05-16T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "8afb0d6a-c27e-4939-8165-548f1cd2ec29",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-05-23T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "0ee81c53-3ca3-481e-a530-da0822138334",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-05-30T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "2e4f7a80-b2f0-4918-8a5f-5d90db044603",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-06-06T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "9d47827e-9a8d-4614-bf95-a799bdf07f92",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 251000.0,
-          "evaluation_date": "2025-06-13T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "9b9f595f-1c20-4fc5-a908-488758db0f89",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-06-20T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "d6224dd2-ee08-422f-a455-059b2bf4d9e1",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-06-27T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "b98bd69e-2f62-4e64-bb0e-db5da6dcf660",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-07-04T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "04b51f8a-dbb3-4e2f-a61e-43cb2fb94ed6",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-07-25T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "34277dee-92e8-4221-b5cd-d49154988c9a",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-08-01T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "e4954b4e-8cb9-4c51-a402-ac4431fa4582",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 100000.0,
-          "evaluation_date": "2025-08-05T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "e595e180-a5d1-4d01-bf06-866415247d66",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 178000.0,
-          "evaluation_date": "2025-08-08T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "aea1b6d7-cdae-4771-bf06-94d888d8d3b1",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-08-15T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "93d3598b-a6e5-4e77-b42b-c270a8e2348e",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-08-22T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "cd526e1f-09f9-45ee-9721-02b62fa407d9",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 251000.0,
-          "evaluation_date": "2025-08-29T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "c8d5ae23-873c-484c-98d5-2df68202d2d8",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-09-05T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "22e39411-eb19-4d10-8d10-6d05194c6916",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-09-12T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "e0d73049-9537-46c1-b2cf-4eadb6aa1253",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-09-19T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "71eee998-22d9-495d-8928-2eeee639a97a",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-09-26T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "1c83a6b8-3eb0-4d3b-bd6a-9443379e4146",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-10-03T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "bc4fb491-bb57-4666-b662-b4bac80a9f74",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-10-10T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "fb347374-8061-4773-9a66-c1e72e46ee5d",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-10-17T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "4fbc547b-b894-4ffd-8b38-f31f34f8069b",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 251000.0,
-          "evaluation_date": "2025-10-24T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "35cba454-4d85-463f-b5e1-1b664b5d6ed4",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-10-31T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "07b203d0-2f2a-4f91-b1dc-352e0a4344ef",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-11-07T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "1f0ab383-2f2c-4e70-bdc7-d742c44a34ae",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 40000.0,
-          "evaluation_date": "2025-11-12T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "e66e7694-02e2-4500-92a1-380925fe29f7",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 40000.0,
-          "evaluation_date": "2025-11-13T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "3f74a221-e604-447d-af3a-bcf7606cf79c",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 236000.0,
-          "evaluation_date": "2025-11-14T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "1deac1c7-7dac-4447-acad-53475d1cc32c",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 2000000.0,
-          "evaluation_date": "2025-11-18T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "8eccc53f-47d0-44f6-84a1-9b7ed07976b8",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 40000.0,
-          "evaluation_date": "2025-11-18T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "62a85123-30d0-4668-a25f-85336e07ff85",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 40000.0,
-          "evaluation_date": "2025-11-19T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "532f61f4-3100-4dd6-92c8-c0bb75b53cf3",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 100000.0,
-          "evaluation_date": "2025-11-20T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "d25925a8-bf52-4784-9509-d07b1c85efd8",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 100000.0,
-          "evaluation_date": "2025-11-20T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "3d10776b-d21f-45c9-bfc3-db5a785bffe5",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 85000.0,
-          "evaluation_date": "2025-11-21T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "71209289-8dc0-4a79-a7ca-bade358c5bc0",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 273000.0,
-          "evaluation_date": "2025-11-24T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "0a830847-e21a-4c25-9295-917ef6f5210e",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-11-28T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "afb7480d-9932-434d-a658-a9fb4cbc9f7a",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 30000.0,
-          "evaluation_date": "2025-12-01T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "77839dd2-e13d-4f55-ad85-c9f1c8f19196",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 40000.0,
-          "evaluation_date": "2025-12-04T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "66bd6743-1fa0-4a91-8773-976a1508b843",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 30000.0,
-          "evaluation_date": "2025-12-04T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "8723af74-71ac-4fe3-893b-2c001ee33152",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 30000.0,
-          "evaluation_date": "2025-12-04T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "d5dc1818-c1e7-4583-836a-515b4f55ba91",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 214000.0,
-          "evaluation_date": "2025-12-05T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "920acdbf-9f20-450e-8a34-41b6187e10d5",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 46000.0,
-          "evaluation_date": "2025-12-08T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "4cd9022f-a9d3-413d-b188-e81962cc3191",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 70000.0,
-          "evaluation_date": "2025-12-09T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "9f95a204-5670-4c58-b365-9d44957372c4",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 250000.0,
-          "evaluation_date": "2025-12-12T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "2b7c66b3-5f3d-49a1-a92c-0938b0ad93ea",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 10000.0,
-          "evaluation_date": "2025-12-16T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "64da3e19-1c32-42f6-894e-94414f92a10f",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 20000.0,
-          "evaluation_date": "2025-12-19T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "17b41653-2d75-4be2-ae0c-d1ce30b65af7",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 257000.0,
-          "evaluation_date": "2025-12-19T00:00:00Z",
-          "memo": "",
-          "transaction_type": "buy"
-        },
-        {
-          "id": "848a0996-0434-43ba-8725-5469cad58977",
-          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
-          "evaluated_amount": 11100000.0,
-          "evaluation_date": "2025-12-28T00:00:00Z",
+          "evaluated_amount": 10900000.0,
+          "evaluation_date": "2026-01-04T00:00:00Z",
           "memo": "temp_delete_later",
           "transaction_type": "sell"
+        },
+        {
+          "id": "1fdfa69d-0c3e-4710-8901-e935d3eb16e2",
+          "account_id": "b5edb0d2-a080-42b8-a8d9-bb904e072d55",
+          "evaluated_amount": 11850859.0,
+          "evaluation_date": "2026-01-03T00:00:00Z",
+          "memo": "",
+          "transaction_type": "buy"
         }
       ],
       "purchase_amount": 0.0,
-      "evaluated_amount": 11100000.0,
-      "last_valuation_date": "2025-12-28",
+      "evaluated_amount": 10900000.0,
+      "last_valuation_date": "2026-01-04",
       "return_rate": 0.0,
-      "asset_value": 11100000.0
+      "asset_value": 10900000.0
     },
     {
       "id": "18576cbc-e2f7-4110-b6fb-42c5302f6405",
@@ -5165,27 +4803,27 @@
       "transactions": [],
       "valuations": [
         {
-          "id": "be8ddfd2-18b1-422f-83b9-676d824b47ed",
+          "id": "1a9811a9-f269-4331-a15d-976056640c76",
           "account_id": "286e0dfa-37bf-440e-b992-7ccfee4b9483",
-          "evaluated_amount": 25106383.0,
+          "evaluated_amount": 45100000.0,
+          "evaluation_date": "2026-01-04T00:00:00Z",
+          "memo": "temp_delete_later",
+          "transaction_type": "sell"
+        },
+        {
+          "id": "5efbb5df-db40-4ac6-a106-58642d8abbd9",
+          "account_id": "286e0dfa-37bf-440e-b992-7ccfee4b9483",
+          "evaluated_amount": 26073978.0,
           "evaluation_date": "2025-12-22T00:00:00Z",
           "memo": "",
           "transaction_type": "buy"
-        },
-        {
-          "id": "fdd4745c-f01e-47ba-b5a7-8d74a57057df",
-          "account_id": "286e0dfa-37bf-440e-b992-7ccfee4b9483",
-          "evaluated_amount": 40900000.0,
-          "evaluation_date": "2025-12-23T00:00:00Z",
-          "memo": "temp_delete_later",
-          "transaction_type": "sell"
         }
       ],
       "purchase_amount": 0.0,
-      "evaluated_amount": 40900000.0,
-      "last_valuation_date": "2025-12-23",
+      "evaluated_amount": 45100000.0,
+      "last_valuation_date": "2026-01-04",
       "return_rate": 0.0,
-      "asset_value": 40900000.0
+      "asset_value": 45100000.0
     },
     {
       "id": "851719d8-c32e-4d8f-84b0-3476b6d33be4",
@@ -5198,27 +4836,27 @@
       "transactions": [],
       "valuations": [
         {
-          "id": "342263eb-555d-473e-bc6e-c8313efef957",
+          "id": "29b39d04-8985-4a99-a062-b2b617682b38",
           "account_id": "851719d8-c32e-4d8f-84b0-3476b6d33be4",
-          "evaluated_amount": 22919470.0,
-          "evaluation_date": "2025-12-22T00:00:00Z",
+          "evaluated_amount": 23611160.0,
+          "evaluation_date": "2026-01-03T00:00:00Z",
           "memo": "",
           "transaction_type": "buy"
         },
         {
-          "id": "c3a14d98-e262-418a-9be2-4d61efa654a9",
+          "id": "dcd334c5-31ae-4648-9970-7c17a95fa99b",
           "account_id": "851719d8-c32e-4d8f-84b0-3476b6d33be4",
-          "evaluated_amount": 39800000.0,
-          "evaluation_date": "2025-12-23T00:00:00Z",
+          "evaluated_amount": 39200000.0,
+          "evaluation_date": "2026-01-04T00:00:00Z",
           "memo": "temp_delete_later",
           "transaction_type": "sell"
         }
       ],
       "purchase_amount": 0.0,
-      "evaluated_amount": 39800000.0,
-      "last_valuation_date": "2025-12-23",
+      "evaluated_amount": 39200000.0,
+      "last_valuation_date": "2026-01-04",
       "return_rate": 0.0,
-      "asset_value": 39800000.0
+      "asset_value": 39200000.0
     },
     {
       "id": "f702dd14-10f1-4635-bbb5-9a863d2f741d",
@@ -5288,19 +4926,19 @@
           "transaction_type": "buy"
         },
         {
-          "id": "1110c948-80a5-48fc-849d-5279c7258218",
+          "id": "b901b10a-bfc1-4a60-ae77-1b655200efc1",
           "account_id": "0cd6ef89-ecaa-4825-8d92-f2ad9cc4aeb6",
-          "evaluated_amount": 2000000.0,
+          "evaluated_amount": 2200000.0,
           "evaluation_date": "2025-12-28T00:00:00Z",
           "memo": "temp_delete_later",
           "transaction_type": "sell"
         }
       ],
       "purchase_amount": 0.0,
-      "evaluated_amount": 2000000.0,
+      "evaluated_amount": 2200000.0,
       "last_valuation_date": "2025-12-28",
       "return_rate": 0.0,
-      "asset_value": 2000000.0
+      "asset_value": 2200000.0
     },
     {
       "id": "b1484a5d-97ff-43f9-8841-44582bc232c4",
@@ -5313,27 +4951,60 @@
       "transactions": [],
       "valuations": [
         {
-          "id": "e3926964-6609-4106-9bf0-be3044b929d2",
+          "id": "40c28af1-1cba-4bde-926a-05fbb737a7e0",
           "account_id": "b1484a5d-97ff-43f9-8841-44582bc232c4",
           "evaluated_amount": 1094000.0,
           "evaluation_date": "2025-12-27T00:00:00Z",
-          "memo": "",
+          "memo": "자사주",
           "transaction_type": "buy"
         },
         {
-          "id": "cef2ce3d-4c29-4123-ab9f-e58526e3bbaa",
+          "id": "47127fc3-fbfd-4704-a4db-06fab22bad74",
           "account_id": "b1484a5d-97ff-43f9-8841-44582bc232c4",
-          "evaluated_amount": 2340000.0,
+          "evaluated_amount": 2570000.0,
           "evaluation_date": "2025-12-28T00:00:00Z",
           "memo": "temp_delete_later",
           "transaction_type": "sell"
         }
       ],
       "purchase_amount": 0.0,
-      "evaluated_amount": 2340000.0,
+      "evaluated_amount": 2570000.0,
       "last_valuation_date": "2025-12-28",
       "return_rate": 0.0,
-      "asset_value": 2340000.0
+      "asset_value": 2570000.0
+    },
+    {
+      "id": "274c374a-9f79-40ed-a9e1-87421b1c8a80",
+      "name": "이더리움코인(하영)",
+      "type": "투자",
+      "color": "#e6c4fd",
+      "opening_balance": 0.0,
+      "status": "active",
+      "image_path": "",
+      "transactions": [],
+      "valuations": [
+        {
+          "id": "f4332b36-d028-4cb7-9cba-ee494dcab24d",
+          "account_id": "274c374a-9f79-40ed-a9e1-87421b1c8a80",
+          "evaluated_amount": 701858.0,
+          "evaluation_date": "2026-01-03T00:00:00Z",
+          "memo": "",
+          "transaction_type": "buy"
+        },
+        {
+          "id": "c8f5bc12-7de3-4622-8306-d183c1327d98",
+          "account_id": "274c374a-9f79-40ed-a9e1-87421b1c8a80",
+          "evaluated_amount": 709000.0,
+          "evaluation_date": "2026-01-04T00:00:00Z",
+          "memo": "temp_delete_later",
+          "transaction_type": "sell"
+        }
+      ],
+      "purchase_amount": 0.0,
+      "evaluated_amount": 709000.0,
+      "last_valuation_date": "2026-01-04",
+      "return_rate": 0.0,
+      "asset_value": 709000.0
     }
   ],
   "salaries": [

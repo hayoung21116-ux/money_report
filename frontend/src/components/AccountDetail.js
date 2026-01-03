@@ -483,52 +483,40 @@ function AccountDetail() {
       new Date(a.evaluation_date) - new Date(b.evaluation_date)
     );
 
-    // Build pairs: 백엔드 로직과 동일하게 구현
-    // - buy는 개별적으로 unpaired_buys에 추가
-    // - sell이나 valuation이 나오면 가장 오래된 buy와 pair 생성
-    // - valuation의 경우 기존 pair가 있으면 교체
+    // Build pairs: 매수-매도 pair만 생성
     const pairs = [];
-    const unpairedBuys = []; // 페어링되지 않은 buy 기록들 (개별적으로 관리)
-    const unpairedBuyValuations = []; // unpaired buys의 원본 valuation 저장
+    const unpairedBuyValuations = []; // 페어링되지 않은 buy 기록들
 
     sortedValuations.forEach((valuation) => {
       if (valuation.transaction_type === 'buy') {
         // buy 기록은 unpaired 목록에 추가
-        unpairedBuys.push({
-          buyDate: valuation.evaluation_date,
-          buyAmount: valuation.evaluated_amount,
-          buyValuation: valuation
-        });
         unpairedBuyValuations.push(valuation);
       } else if (valuation.transaction_type === 'sell') {
         // sell 기록이면 가장 오래된 unpaired buy와 페어링
-        if (unpairedBuys.length > 0) {
-          const buy = unpairedBuys.shift(); // 가장 오래된 buy
+        if (unpairedBuyValuations.length > 0) {
           const buyVal = unpairedBuyValuations.shift();
           const sellAmount = valuation.evaluated_amount;
-          const returnRate = ((sellAmount - buy.buyAmount) / buy.buyAmount) * 100;
+          const buyAmount = buyVal.evaluated_amount;
+          const returnRate = ((sellAmount - buyAmount) / buyAmount) * 100;
           
           pairs.push({
-            buyDate: buy.buyDate,
-            buyAmount: buy.buyAmount,
+            buyDate: buyVal.evaluation_date,
+            buyAmount: buyAmount,
             sellDate: valuation.evaluation_date,
             sellAmount: sellAmount,
             returnRate: returnRate,
-            buyValuations: [buyVal],
+            buyValuation: buyVal,
             sellValuation: valuation
           });
         }
       } else if (valuation.transaction_type === 'valuation') {
         // valuation 기록이면 가장 오래된 unpaired buy와 페어링
-        if (unpairedBuys.length > 0) {
-          // 이 buy가 이미 다른 valuation과 페어링되었는지 확인
-          const buy = unpairedBuys[0];
+        if (unpairedBuyValuations.length > 0) {
+          // 이미 이 buy와 페어링된 pair가 있는지 확인
           const buyVal = unpairedBuyValuations[0];
-          
-          // 이미 pairs에 이 buy가 포함된 pair가 있는지 확인
           let existingPairIndex = -1;
           for (let i = 0; i < pairs.length; i++) {
-            if (pairs[i].buyValuations[0]?.id === buyVal.id) {
+            if (pairs[i].buyValuation?.id === buyVal.id && pairs[i].sellValuation?.transaction_type === 'valuation') {
               existingPairIndex = i;
               break;
             }
@@ -539,232 +527,135 @@ function AccountDetail() {
             pairs.splice(existingPairIndex, 1);
           } else {
             // 새로운 pair를 만들기 위해 unpaired에서 제거
-            unpairedBuys.shift();
             unpairedBuyValuations.shift();
           }
           
           // 새로운 valuation과 페어링
           const sellAmount = valuation.evaluated_amount;
-          const returnRate = ((sellAmount - buy.buyAmount) / buy.buyAmount) * 100;
+          const buyAmount = buyVal.evaluated_amount;
+          const returnRate = ((sellAmount - buyAmount) / buyAmount) * 100;
           
           pairs.push({
-            buyDate: buy.buyDate,
-            buyAmount: buy.buyAmount,
+            buyDate: buyVal.evaluation_date,
+            buyAmount: buyAmount,
             sellDate: valuation.evaluation_date,
             sellAmount: sellAmount,
             returnRate: returnRate,
-            buyValuations: [buyVal],
+            buyValuation: buyVal,
             sellValuation: valuation
           });
         }
       }
     });
 
-    // 아직 pair를 이루지 못한 buy들이 있으면 unpairedBuys에 추가
-    // 현재 평가 금액을 기준으로 수익률 계산
-    unpairedBuys.forEach((buy) => {
-      let currentValue = buy.buyAmount;
-      const latestValuation = sortedValuations
-        .filter(v => v.transaction_type === 'valuation')
-        .sort((a, b) => new Date(b.evaluation_date) - new Date(a.evaluation_date))[0];
-      
-      if (latestValuation) {
-        currentValue = latestValuation.evaluated_amount;
-      } else if (account.evaluated_amount > 0) {
-        currentValue = account.evaluated_amount;
-      }
-      
-      const returnRate = ((currentValue - buy.buyAmount) / buy.buyAmount) * 100;
-      
-      // unpairedBuys 배열에 이미 있으므로 정보만 업데이트
-      buy.currentValue = currentValue;
-      buy.returnRate = returnRate;
-      // 차트에 표시할 금액은 buyAmount (매수 금액)를 사용
-      buy.displayAmount = buy.buyAmount;
-    });
-
-    if (pairs.length === 0 && unpairedBuys.length === 0) {
+    if (pairs.length === 0 && unpairedBuyValuations.length === 0) {
       return null;
     }
 
-    // 차트 데이터 생성: 매수들을 시간 순서대로 그룹화하고, 매도가 나오면 그 전의 모든 매수들과 매도를 하나의 쌍으로 묶기
-    // 각 쌍별로 선을 그리기
-    const groups = []; // 각 쌍 그룹 [{buys: [...], sell: {...}}, ...]
-    let currentGroup = { buys: [] };
-
-    sortedValuations.forEach((valuation) => {
-      if (valuation.transaction_type === 'buy') {
-        // 매수는 현재 그룹에 추가
-        currentGroup.buys.push({
-          date: new Date(valuation.evaluation_date),
-          amount: valuation.evaluated_amount,
-          valuation: valuation
-        });
-      } else if (valuation.transaction_type === 'sell') {
-        // 매도가 나오면 현재 그룹을 완성하고 새 그룹 시작
-        if (currentGroup.buys.length > 0) {
-          currentGroup.sell = {
-            date: new Date(valuation.evaluation_date),
-            amount: valuation.evaluated_amount,
-            valuation: valuation
-          };
-          groups.push(currentGroup);
-          currentGroup = { buys: [] };
-        }
-      }
-    });
-
-    // 마지막 그룹에 매도가 없으면 unpaired로 처리
-    if (currentGroup.buys.length > 0) {
-      groups.push(currentGroup);
-    }
-
-    if (groups.length === 0) {
-      return null;
-    }
-
-    // 각 쌍의 두 점(누적 매수 날짜, 매도 날짜)만 수집하여 labels 생성
+    // 모든 날짜 수집 (매수 날짜, 매도 날짜, 페어링되지 않은 매수 날짜)
     const allDatesSet = new Set();
-    groups.forEach((group) => {
-      if (group.sell) {
-        // 매도가 있는 쌍: 가장 최근 매수 날짜와 매도 날짜만 포함
-        if (group.buys.length > 0) {
-          const latestBuyDate = group.buys.reduce((latest, buy) => 
-            buy.date > latest ? buy.date : latest, group.buys[0].date);
-          allDatesSet.add(latestBuyDate.getTime());
-        }
-        allDatesSet.add(group.sell.date.getTime());
-      } else {
-        // 매도가 없는 쌍: 가장 최근 매수 날짜만 포함
-        if (group.buys.length > 0) {
-          const latestBuyDate = group.buys.reduce((latest, buy) => 
-            buy.date > latest ? buy.date : latest, group.buys[0].date);
-          allDatesSet.add(latestBuyDate.getTime());
-        }
-      }
+    pairs.forEach((pair) => {
+      allDatesSet.add(new Date(pair.buyDate).getTime());
+      allDatesSet.add(new Date(pair.sellDate).getTime());
+    });
+    unpairedBuyValuations.forEach((buyVal) => {
+      allDatesSet.add(new Date(buyVal.evaluation_date).getTime());
     });
     const allDates = Array.from(allDatesSet).map(time => new Date(time)).sort((a, b) => a - b);
     const allLabels = allDates.map(date => 
       date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })
     );
 
-    // 각 쌍별로 데이터셋 생성
-    const datasets = [];
-    let cumulativeAmount = 0; // 전체 누적 금액
+    // 각 pair별로 데이터셋 생성
+    const datasets = pairs.map((pair, pairIndex) => {
+      const buyDate = new Date(pair.buyDate);
+      const sellDate = new Date(pair.sellDate);
+      
+      // 각 날짜에 대한 데이터 포인트 생성 (해당 pair의 두 점에만 값, 나머지는 null)
+      const pairData = allDates.map((date) => {
+        if (date.getTime() === buyDate.getTime()) {
+          return pair.buyAmount;
+        } else if (date.getTime() === sellDate.getTime()) {
+          return pair.sellAmount;
+        }
+        return null;
+      });
 
-    groups.forEach((group, groupIndex) => {
-      if (group.sell) {
-        // 매도가 있는 쌍: 매도 전까지의 모든 매수를 합산해서 노란색 점, 매도 시점에 보라색 점
-        const totalBuyAmount = group.buys.reduce((sum, buy) => sum + buy.amount, 0);
-        // 매도 전까지의 가장 최근 매수 날짜 찾기 (group.buys에는 이미 매도 전까지의 모든 매수가 포함되어 있음)
-        const latestBuyDate = group.buys.length > 0
-          ? group.buys.reduce((latest, buy) => 
-              buy.date > latest ? buy.date : latest, group.buys[0].date)
-          : null;
-
-        // 매도 전까지의 누적 매수 금액
-        const buyCumulativeAmount = cumulativeAmount + totalBuyAmount;
-        // 누적 매수 금액과 매도 금액 사이의 수익률 계산
-        const returnRate = ((group.sell.amount - buyCumulativeAmount) / buyCumulativeAmount) * 100;
-        // 매도 후 누적 금액
-        cumulativeAmount = buyCumulativeAmount - totalBuyAmount + group.sell.amount;
-        
-        // 그룹에 수익률 저장
-        group.returnRate = returnRate;
-
-        // 각 날짜에 대한 데이터 포인트 생성 (해당 쌍의 두 점에만 값, 나머지는 null)
-        const groupData = allDates.map((date) => {
-          if (latestBuyDate && date.getTime() === latestBuyDate.getTime()) {
-            // 매도 전까지의 누적 매수 금액 (노란색 점) - 가장 최근 매수 날짜에 표시
-            return buyCumulativeAmount;
-          } else if (date.getTime() === group.sell.date.getTime()) {
-            // 매도 시점의 누적 금액 (보라색 점)
-            return cumulativeAmount;
+      return {
+        label: pairIndex === 0 ? '금액 (원)' : '',
+        data: pairData,
+        borderColor: account.color || '#007bff',
+        backgroundColor: `${account.color || '#007bff'}20`,
+        fill: false,
+        tension: 0.4,
+        spanGaps: true,
+        pointRadius: (ctx) => {
+          const date = allDates[ctx.dataIndex];
+          if (date && (date.getTime() === buyDate.getTime() || date.getTime() === sellDate.getTime())) {
+            return 6;
           }
-          return null;
-        });
-
-        datasets.push({
-          label: groupIndex === 0 ? '누적 금액 (원)' : '',
-          data: groupData,
-          borderColor: account.color || '#007bff',
-          backgroundColor: `${account.color || '#007bff'}20`,
-          fill: false,
-          tension: 0.4,
-          spanGaps: true, // null 값 사이의 선을 연결 (두 점 사이의 null을 건너뛰고 선 연결)
-          pointRadius: (ctx) => {
-            const date = allDates[ctx.dataIndex];
-            if (date && latestBuyDate && date.getTime() === latestBuyDate.getTime()) {
-              return 6; // 노란색 점
-            } else if (date && date.getTime() === group.sell.date.getTime()) {
-              return 6; // 보라색 점
-            }
-            return 0;
-          },
-          pointHoverRadius: 8,
-          pointBackgroundColor: (ctx) => {
-            const date = allDates[ctx.dataIndex];
-            if (date && latestBuyDate && date.getTime() === latestBuyDate.getTime()) {
-              return '#ffc107'; // 노란색
-            } else if (date && date.getTime() === group.sell.date.getTime()) {
-              return account.color || '#007bff'; // 보라색
-            }
-            return 'transparent';
-          },
-          pointBorderColor: (ctx) => {
-            const date = allDates[ctx.dataIndex];
-            if (date && latestBuyDate && date.getTime() === latestBuyDate.getTime()) {
-              return '#ffc107'; // 노란색
-            } else if (date && date.getTime() === group.sell.date.getTime()) {
-              return account.color || '#007bff'; // 보라색
-            }
-            return 'transparent';
-          },
-        });
-      } else {
-        // 매도가 없는 쌍: 모든 매수를 합산해서 노란색 점만 표시
-        const totalBuyAmount = group.buys.reduce((sum, buy) => sum + buy.amount, 0);
-        const latestBuyDate = group.buys.reduce((latest, buy) => 
-          buy.date > latest ? buy.date : latest, group.buys[0].date
-        );
-
-        // 누적 매수 금액
-        cumulativeAmount += totalBuyAmount;
-
-        const groupData = allDates.map((date) => {
-          if (date.getTime() === latestBuyDate.getTime()) {
-            return cumulativeAmount;
+          return 0;
+        },
+        pointHoverRadius: 8,
+        pointBackgroundColor: (ctx) => {
+          const date = allDates[ctx.dataIndex];
+          if (date && date.getTime() === buyDate.getTime()) {
+            return '#ffc107'; // 노란색 (매수)
+          } else if (date && date.getTime() === sellDate.getTime()) {
+            return account.color || '#007bff'; // 계좌 색상 (매도)
           }
-          return null;
-        });
+          return 'transparent';
+        },
+        pointBorderColor: (ctx) => {
+          const date = allDates[ctx.dataIndex];
+          if (date && date.getTime() === buyDate.getTime()) {
+            return '#ffc107'; // 노란색 (매수)
+          } else if (date && date.getTime() === sellDate.getTime()) {
+            return account.color || '#007bff'; // 계좌 색상 (매도)
+          }
+          return 'transparent';
+        },
+      };
+    });
 
-        datasets.push({
-          label: '미결제 매수',
-          data: groupData,
-          borderColor: '#ffc107',
-          backgroundColor: '#ffc107',
-          fill: false,
-          pointRadius: (ctx) => {
-            const date = allDates[ctx.dataIndex];
-            if (date && date.getTime() === latestBuyDate.getTime()) {
-              return 6;
-            }
-            return 0;
-          },
-          pointHoverRadius: 8,
-          pointStyle: 'circle',
-          showLine: false,
-        });
-      }
+    // 페어링되지 않은 매수 거래를 점으로 표시
+    unpairedBuyValuations.forEach((buyVal) => {
+      const buyDate = new Date(buyVal.evaluation_date);
+      const buyAmount = buyVal.evaluated_amount;
+      
+      const unpairedData = allDates.map((date) => {
+        if (date.getTime() === buyDate.getTime()) {
+          return buyAmount;
+        }
+        return null;
+      });
+
+      datasets.push({
+        label: '',
+        data: unpairedData,
+        borderColor: '#ffc107',
+        backgroundColor: '#ffc107',
+        fill: false,
+        showLine: false, // 선을 표시하지 않고 점만 표시
+        pointRadius: (ctx) => {
+          const date = allDates[ctx.dataIndex];
+          if (date && date.getTime() === buyDate.getTime()) {
+            return 6;
+          }
+          return 0;
+        },
+        pointHoverRadius: 8,
+        pointBackgroundColor: '#ffc107',
+        pointBorderColor: '#ffc107',
+      });
     });
 
     return {
       labels: allLabels,
       datasets: datasets,
       pairs: pairs, // 차트에 pair 정보 저장 (tooltip에서 사용)
-      unpairedBuys: unpairedBuys, // unpaired buys 정보 저장
-      groups: groups, // 쌍 그룹 정보 저장
-      cumulativeAmount: cumulativeAmount // 최종 누적 금액 저장
+      unpairedBuyValuations: unpairedBuyValuations, // 페어링되지 않은 매수 정보 저장 (tooltip에서 사용)
+      allDates: allDates // 날짜 배열 저장 (tooltip에서 사용)
     };
   };
 
@@ -847,42 +738,21 @@ function AccountDetail() {
       }
     });
 
-    // 자산 계산: 차트 데이터의 누적 금액 계산 로직과 동일하게 계산
-    // 차트 데이터에서 계산된 최종 누적 금액 사용
+    // 자산 계산: 최신 valuation 또는 account의 evaluated_amount 사용
     let asset = 0;
-    if (chartData && chartData.cumulativeAmount !== undefined) {
-      // 차트 데이터에서 계산된 최종 누적 금액 사용
-      asset = chartData.cumulativeAmount;
-    } else if (unpairedBuys.length > 0) {
-      // fallback: 누적 매수가 있으면 모든 unpaired buys의 합
-      asset = unpairedBuys.reduce((sum, buy) => sum + buy.buyAmount, 0);
-    } else {
-      // fallback: 최신 valuation 찾기
-      const latestValuation = sortedValuations
-        .filter(v => v.transaction_type === 'valuation')
-        .sort((a, b) => new Date(b.evaluation_date) - new Date(a.evaluation_date))[0];
-      
-      if (latestValuation) {
-        asset = latestValuation.evaluated_amount;
-      } else if (account.evaluated_amount > 0) {
-        asset = account.evaluated_amount;
-      }
+    const latestValuation = sortedValuations
+      .filter(v => v.transaction_type === 'valuation')
+      .sort((a, b) => new Date(b.evaluation_date) - new Date(a.evaluation_date))[0];
+    
+    if (latestValuation) {
+      asset = latestValuation.evaluated_amount;
+    } else if (account.evaluated_amount > 0) {
+      asset = account.evaluated_amount;
     }
 
-    // 수익률: 제일 최신의 그룹의 수익률 (누적 매수 금액과 매도 금액 사이의 수익률)
+    // 수익률: 가장 최신 pair의 수익률
     let returnRate = 0;
-    // chartData에서 groups 정보 사용
-    if (chartData && chartData.groups && chartData.groups.length > 0) {
-      // 매도가 있는 그룹 중 가장 최신 그룹 찾기
-      const groupsWithSell = chartData.groups.filter(g => g.sell && g.returnRate !== undefined);
-      if (groupsWithSell.length > 0) {
-        const latestGroup = groupsWithSell.sort((a, b) => 
-          new Date(b.sell.date) - new Date(a.sell.date)
-        )[0];
-        returnRate = latestGroup.returnRate;
-      }
-    } else if (pairs.length > 0) {
-      // fallback: 기존 pairs 로직 사용
+    if (pairs.length > 0) {
       const latestPair = pairs.sort((a, b) => 
         new Date(b.sellDate) - new Date(a.sellDate)
       )[0];
@@ -1047,13 +917,7 @@ function AccountDetail() {
                         },
                         datalabels: {
                           display: true,
-                          color: function(context) {
-                            // unpaired buys는 다른 색상
-                            if (context.datasetIndex === 1) {
-                              return '#ffc107';
-                            }
-                            return '#333';
-                          },
+                          color: '#333',
                           anchor: 'end',
                           align: 'top',
                           formatter: function(value) {
@@ -1071,45 +935,51 @@ function AccountDetail() {
                           callbacks: {
                             label: function(context) {
                               const pairs = chartData.pairs || [];
-                              const unpairedBuys = chartData.unpairedBuys || [];
-                              const pointIndex = context.dataIndex;
+                              const unpairedBuyValuations = chartData.unpairedBuyValuations || [];
+                              const allDates = chartData.allDates || [];
                               const datasetIndex = context.datasetIndex;
+                              const dataIndex = context.dataIndex;
                               
-                              // Unpaired buys 처리
-                              if (datasetIndex === 1) {
-                                // unpaired buys는 하나의 점으로 표시되므로 인덱스는 0
-                                if (pointIndex >= pairs.length * 2 && unpairedBuys.length > 0) {
-                                  // 모든 unpaired buys의 정보 표시
-                                  const totalAmount = unpairedBuys.reduce((sum, buy) => sum + buy.buyAmount, 0);
-                                  const buyCount = unpairedBuys.length;
+                              // Pair 데이터셋 처리
+                              if (datasetIndex < pairs.length && dataIndex < allDates.length) {
+                                const pair = pairs[datasetIndex];
+                                const date = allDates[dataIndex];
+                                const buyDate = new Date(pair.buyDate);
+                                const sellDate = new Date(pair.sellDate);
+                                
+                                if (date.getTime() === buyDate.getTime()) {
+                                  // 매수 시점
                                   return [
-                                    `누적 매수: ${context.parsed.y.toLocaleString()}원`,
-                                    `매수 건수: ${buyCount}건`,
-                                    `평균 매수: ${(totalAmount / buyCount).toLocaleString()}원`
+                                    `매수 금액: ${context.parsed.y.toLocaleString()}원`,
+                                    `매수일: ${buyDate.toLocaleDateString('ko-KR')}`
+                                  ];
+                                } else if (date.getTime() === sellDate.getTime()) {
+                                  // 매도 시점
+                                  return [
+                                    `매도 금액: ${context.parsed.y.toLocaleString()}원`,
+                                    `매수: ${pair.buyAmount.toLocaleString()}원`,
+                                    `매도: ${pair.sellAmount.toLocaleString()}원`,
+                                    `수익률: ${pair.returnRate.toFixed(1)}%`
                                   ];
                                 }
                               }
                               
-                              // Pairs 처리
-                              const pairIndex = Math.floor(pointIndex / 2);
-                              
-                              if (pairIndex < pairs.length && pointIndex % 2 === 1) {
-                                // Sell 시점
-                                const pair = pairs[pairIndex];
-                                return [
-                                  `누적 금액: ${context.parsed.y.toLocaleString()}원`,
-                                  `매수: ${pair.buyAmount.toLocaleString()}원`,
-                                  `매도: ${pair.sellAmount.toLocaleString()}원`,
-                                  `Pair 수익률: ${pair.returnRate.toFixed(1)}%`
-                                ];
-                              } else if (pairIndex < pairs.length && pointIndex % 2 === 0) {
-                                // Buy 시점
-                                const pair = pairs[pairIndex];
-                                return [
-                                  `누적 금액: ${context.parsed.y.toLocaleString()}원`,
-                                  `매수: ${pair.buyAmount.toLocaleString()}원`
-                                ];
+                              // 페어링되지 않은 매수 데이터셋 처리
+                              const unpairedStartIndex = pairs.length;
+                              if (datasetIndex >= unpairedStartIndex && datasetIndex < unpairedStartIndex + unpairedBuyValuations.length && dataIndex < allDates.length) {
+                                const buyVal = unpairedBuyValuations[datasetIndex - unpairedStartIndex];
+                                const date = allDates[dataIndex];
+                                const buyDate = new Date(buyVal.evaluation_date);
+                                
+                                if (date.getTime() === buyDate.getTime()) {
+                                  return [
+                                    `매수 금액: ${context.parsed.y.toLocaleString()}원`,
+                                    `매수일: ${buyDate.toLocaleDateString('ko-KR')}`,
+                                    `(미매도)`
+                                  ];
+                                }
                               }
+                              
                               return `금액: ${context.parsed.y.toLocaleString()}원`;
                             }
                           }
