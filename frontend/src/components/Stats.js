@@ -548,9 +548,9 @@ function Stats() {
             <p style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '8px' }}>
               총 월급: {formatCurrency(totalSalary)}
               {minGuiTotal > haYoungTotal ? (
-                <> ��(민규) {formatCurrency(minGuiTotal)} / (하영) {formatCurrency(haYoungTotal)}</>
+                <> 👑(민규) {formatCurrency(minGuiTotal)} / (하영) {formatCurrency(haYoungTotal)}</>
               ) : haYoungTotal > minGuiTotal ? (
-                <> (민규) {formatCurrency(minGuiTotal)} / ��(하영) {formatCurrency(haYoungTotal)}</>
+                <> (민규) {formatCurrency(minGuiTotal)} / 👑(하영) {formatCurrency(haYoungTotal)}</>
               ) : (
                 <> (민규) {formatCurrency(minGuiTotal)} / (하영) {formatCurrency(haYoungTotal)}</>
               )}
