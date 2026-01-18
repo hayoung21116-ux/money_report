@@ -196,3 +196,17 @@ async def delete_valuation(account_id: str, valuation_id: str, service: LedgerSe
         return {"message": "Valuation deleted successfully"}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/{account_id}/toggle-status", response_model=Account)
+async def toggle_account_status(account_id: str, service: LedgerService = Depends(get_ledger_service)):
+    """Toggle account status between active and dead"""
+    try:
+        account = service.get_account(account_id)
+        if not account:
+            raise HTTPException(status_code=404, detail="Account not found")
+        service.toggle_account_status(account_id)
+        # Return updated account
+        updated_account = service.get_account(account_id)
+        return updated_account.dict()
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

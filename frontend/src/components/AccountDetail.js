@@ -454,18 +454,9 @@ function AccountDetail() {
 
   const handleDeactivateAccountConfirm = async () => {
     try {
-      // In a real implementation, we would call the API to deactivate the account
-      // await accountApi.toggleAccountStatus(id);
-      // onClose();
-      // fetchAccountDetails(); // Refresh the account details
-
-      // For now, we'll just simulate the API call
-      console.log('Toggling account status with id:', id);
-      const action = account.status === 'dead' ? '활성화' : '비활성화';
-      alert(`계좌가 성공적으로 ${action}되었습니다!`);
+      await accountApi.toggleAccountStatus(id);
       setIsDeactivateAccountDialogOpen(false);
-      // In a real implementation, we would refresh the account details
-      // fetchAccountDetails();
+      fetchAccountDetails(); // Refresh the account details
     } catch (error) {
       console.error('Error toggling account status:', error);
       const action = account.status === 'dead' ? '활성화' : '비활성화';
