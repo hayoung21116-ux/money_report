@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./backend/data:/app/data
+    environment:
+      - DATA_FILE_PATH=/app/data/ledger.json
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_URL=https://hymg-moneyreport.cc/api
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
