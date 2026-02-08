@@ -5443,32 +5443,37 @@
       "amount": 5852106.0,
       "month": "2026-01",
       "person": "민규",
-      "classification": "월급"
+      "classification": "보너스"
     },
     {
       "amount": 4483360.0,
       "month": "2026-02",
-      "person": "하영"
+      "person": "하영",
+      "classification": "월급"
     },
     {
       "amount": 3923221.0,
       "month": "2026-01",
-      "person": "민규"
+      "person": "민규",
+      "classification": "월급"
     },
     {
       "amount": 19585140.0,
       "month": "2026-02",
-      "person": "하영"
+      "person": "하영",
+      "classification": "보너스"
     },
     {
       "amount": 56744920.0,
       "month": "2026-02",
-      "person": "민규"
+      "person": "민규",
+      "classification": "보너스"
     },
     {
       "amount": 3923221.0,
       "month": "2026-02",
-      "person": "민규"
+      "person": "민규",
+      "classification": "월급"
     }
   ]
 }

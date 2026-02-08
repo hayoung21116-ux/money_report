@@ -110,8 +110,8 @@ export const statsApi = {
   getMonthlySalaryTotals: (year, person) => api.get('/stats/salaries/monthly-totals', { params: { year, person } }),
   
   // Add salary
-  addSalary: (amount, month, person) => 
-    api.post('/stats/salaries', null, { params: { amount, month, person } }),
+  addSalary: (amount, month, person, classification) => 
+    api.post('/stats/salaries', null, { params: { amount, month, person, classification } }),
   
   // Update salary
   updateSalary: (index, amount, month, person, classification) => 
