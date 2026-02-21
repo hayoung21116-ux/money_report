@@ -335,74 +335,6 @@ function Stats() {
     );
   };
 
-  const renderNetIncomeTab = () => {
-    // Calculate summary statistics
-    let totalIncome = 0;
-    let totalExpense = 0;
-
-    Object.values(monthlyIncome).forEach(monthData => {
-      totalIncome += (monthData.savings || 0) + (monthData.interest || 0);
-      totalExpense += (monthData.expense || 0);
-    });
-
-    const netIncome = totalIncome - totalExpense;
-
-    return (
-      <div className="tab-content">
-        <div className="summary">
-          <div className="summary-text">
-            <p style={{ fontSize: '1.7rem', fontWeight: 'bold', marginBottom: '10px' }}>{selectedYear}년 순수익 요약</p>
-            {activeTab === 'net-income' && (
-              <div style={{ position: 'absolute', top: '20px', right: '20px' }}>
-                <select
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(e.target.value)}
-                  style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid #ddd', fontSize: '1rem' }}
-                >
-                  {years.map(year => (
-                    <option key={year} value={year}>{year}년</option>
-                  ))}
-                </select>
-              </div>
-            )}
-            <p>총 수입: {formatCurrency(totalIncome)}</p>
-            <p>총 지출: {formatCurrency(totalExpense)}</p>
-            <p>순수익: {formatCurrency(netIncome)}</p>
-          </div>
-        </div>
-
-        <div className="chart-container">
-          {Object.keys(monthlyIncome).length > 0 ? (
-            <div style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {/* In a real implementation, this would be a bar chart showing monthly income/expenses */}
-              <div className="chart-placeholder">
-                <p>순수익 추이 차트</p>
-                <p>(실제 구현에서는 여기에 차트가 표시됩니다)</p>
-                <div style={{ marginTop: '20px', textAlign: 'left', maxWidth: '500px' }}>
-                  {Object.entries(monthlyIncome).map(([month, data]) => {
-                    const income = (data.savings || 0) + (data.interest || 0);
-                    const expense = data.expense || 0;
-                    const net = income - expense;
-                    return (
-                      <div key={month} style={{ marginBottom: '10px' }}>
-                        <div><strong>{month}:</strong> 수입 {formatCurrency(income)}, 지출 {formatCurrency(expense)}, 순수익 {formatCurrency(net)}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="chart-placeholder">
-              <p>수입/지출 데이터가 없습니다.</p>
-              <p>계좌를 추가하고 거래를 등록해보세요.</p>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
   const renderSavingsTab = () => {
     // Calculate summary statistics
     let totalSavings = 0;
@@ -414,6 +346,31 @@ function Stats() {
     });
 
     const total = totalSavings + totalInterest;
+
+    // Sort months chronologically for chart
+    const sortedMonths = Object.keys(monthlyIncome).sort();
+
+    // Max value for chart scaling (savings + interest per month)
+    const maxTotal = Math.max(
+      ...Object.values(monthlyIncome).map((d) => (d.savings || 0) + (d.interest || 0)),
+      1
+    );
+
+    // Y-axis: round up to nearest 100,000, 5 grid lines
+    const roundedMax = Math.ceil(maxTotal / 100000) * 100000;
+    const gridInterval = roundedMax / 5;
+    const yAxisValues = [
+      roundedMax,
+      roundedMax - gridInterval,
+      roundedMax - 2 * gridInterval,
+      roundedMax - 3 * gridInterval,
+      roundedMax - 4 * gridInterval,
+      0
+    ];
+
+    const maxBarHeight = 250;
+    const SAVINGS_COLOR = '#4CAF50';   // green
+    const INTEREST_COLOR = '#FFC107'; // yellow
 
     return (
       <div className="tab-content">
@@ -440,18 +397,119 @@ function Stats() {
         </div>
 
         <div className="chart-container">
-          {Object.keys(monthlyIncome).length > 0 ? (
-            <div style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {/* In a real implementation, this would be a bar chart showing monthly savings/interest */}
-              <div className="chart-placeholder">
-                <p>저축+이자 추이 차트</p>
-                <p>(실제 구현에서는 여기에 차트가 표시됩니다)</p>
-                <div style={{ marginTop: '20px', textAlign: 'left', maxWidth: '500px' }}>
-                  {Object.entries(monthlyIncome).map(([month, data]) => (
-                    <div key={month} style={{ marginBottom: '10px' }}>
-                      <div><strong>{month}:</strong> 저축 {formatCurrency(data.savings || 0)}, 이자 {formatCurrency(data.interest || 0)}, 합계 {formatCurrency((data.savings || 0) + (data.interest || 0))}</div>
+          {sortedMonths.length > 0 ? (
+            <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ textAlign: 'center', marginBottom: '10px', fontSize: '18px', fontWeight: 'bold' }}>
+                저축+이자
+              </div>
+
+              <div style={{ display: 'flex', height: '300px', marginBottom: '10px' }}>
+                <div style={{ width: '55px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'flex-end', paddingRight: '10px', fontSize: '10px', color: '#666', lineHeight: '1', position: 'relative', zIndex: '1', boxSizing: 'border-box', height: 'calc(100% - 20px)' }}>
+                  <span>{(yAxisValues[0] / 10000).toLocaleString()}만원</span>
+                  <span>{(yAxisValues[1] / 10000).toLocaleString()}만원</span>
+                  <span>{(yAxisValues[2] / 10000).toLocaleString()}만원</span>
+                  <span>{(yAxisValues[3] / 10000).toLocaleString()}만원</span>
+                  <span>{(yAxisValues[4] / 10000).toLocaleString()}만원</span>
+                  <span>0-</span>
+                </div>
+
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                  <div
+                    style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: '2%', paddingBottom: '20px', borderBottom: '1px solid #ddd', position: 'relative', paddingLeft: '0.5%', paddingRight: '0.5%' }}
+                  >
+                    <div style={{ position: 'absolute', top: '0px', left: 0, right: 0, bottom: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', paddingTop: '0px', paddingBottom: '0px' }}>
+                      {Array.from({ length: 6 }).map((_, i) => (
+                        <div key={i} style={{ height: '1px', backgroundColor: '#eee', width: '100%', zIndex: '0' }}></div>
+                      ))}
                     </div>
-                  ))}
+                    {sortedMonths.map((month) => {
+                      const data = monthlyIncome[month];
+                      const savings = data.savings || 0;
+                      const interest = data.interest || 0;
+                      const monthTotal = savings + interest;
+                      const totalHeight = maxTotal > 0 ? (monthTotal / maxTotal) * maxBarHeight : 0;
+                      const savingsHeight = maxTotal > 0 ? (savings / maxTotal) * maxBarHeight : 0;
+                      const interestHeight = maxTotal > 0 ? (interest / maxTotal) * maxBarHeight : 0;
+                      const isHovered = hoveredBar === `savings-${month}`;
+
+                      return (
+                        <div key={month} style={{ display: 'flex', alignItems: 'flex-end', minWidth: '30px', flexGrow: 1, justifyContent: 'center' }}>
+                          <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <div
+                              style={{
+                                position: 'absolute',
+                                top: '-36px',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                color: 'white',
+                                padding: '4px 8px',
+                                borderRadius: '4px',
+                                fontSize: '12px',
+                                whiteSpace: 'nowrap',
+                                display: isHovered ? 'block' : 'none',
+                                zIndex: '1000',
+                                pointerEvents: 'none'
+                              }}
+                            >
+                              저축 {formatCurrency(savings)} / 이자 {formatCurrency(interest)}
+                            </div>
+                            <div
+                              style={{
+                                width: '24px',
+                                height: `${totalHeight}px`,
+                                display: 'flex',
+                                flexDirection: 'column-reverse',
+                                alignItems: 'center',
+                                transition: 'height 0.3s ease',
+                                cursor: 'pointer'
+                              }}
+                              onMouseEnter={() => setHoveredBar(`savings-${month}`)}
+                              onMouseLeave={() => setHoveredBar(null)}
+                            >
+                              <div
+                                style={{
+                                  width: '100%',
+                                  height: `${savingsHeight}px`,
+                                  backgroundColor: SAVINGS_COLOR,
+                                  minHeight: savingsHeight > 0 ? '2px' : 0,
+                                  transition: 'height 0.3s ease'
+                                }}
+                              />
+                              <div
+                                style={{
+                                  width: '100%',
+                                  height: `${interestHeight}px`,
+                                  backgroundColor: INTEREST_COLOR,
+                                  minHeight: interestHeight > 0 ? '2px' : 0,
+                                  transition: 'height 0.3s ease'
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '2%', justifyContent: 'center', paddingTop: '5px', paddingLeft: '0.5%', paddingRight: '0.5%' }}>
+                    {sortedMonths.map(month => (
+                      <div key={month} style={{ flexGrow: 1, minWidth: '30px', textAlign: 'center', fontSize: '12px', color: '#666' }}>
+                        {month.split('-')[1]}월
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginTop: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ width: '16px', height: '16px', backgroundColor: SAVINGS_COLOR, borderRadius: '2px' }}></div>
+                  <span style={{ fontSize: '14px' }}>저축</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ width: '16px', height: '16px', backgroundColor: INTEREST_COLOR, borderRadius: '2px' }}></div>
+                  <span style={{ fontSize: '14px' }}>이자</span>
                 </div>
               </div>
             </div>
@@ -1022,8 +1080,6 @@ function Stats() {
     switch (activeTab) {
       case 'portfolio':
         return renderPortfolioTab();
-      case 'net-income':
-        return renderNetIncomeTab();
       case 'savings':
         return renderSavingsTab();
       case 'salary':
@@ -1080,12 +1136,6 @@ function Stats() {
           onClick={() => setActiveTab('portfolio')}
         >
           포트폴리오
-        </div>
-        <div
-          className={`tab ${activeTab === 'net-income' ? 'active' : ''}`}
-          onClick={() => setActiveTab('net-income')}
-        >
-          순수익
         </div>
         <div
           className={`tab ${activeTab === 'savings' ? 'active' : ''}`}
