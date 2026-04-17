@@ -183,3 +183,6 @@ node_modules/
 
 # Backend node modules (if any)
 backend/node_modules/
+
+# md
+*.md

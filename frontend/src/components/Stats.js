@@ -143,6 +143,28 @@ function Stats() {
   const [hoveredBar, setHoveredBar] = useState(null);
   const [editingSalary, setEditingSalary] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [snapshots, setSnapshots] = useState([]);
+  const [growthData, setGrowthData] = useState(null);
+  const [baselineSnapshotId, setBaselineSnapshotId] = useState('');
+  const [newSnapshotLabel, setNewSnapshotLabel] = useState('');
+  const [growthError, setGrowthError] = useState(null);
+
+  const GROWTH_CATEGORY_ORDER = ['현금', '부동산', '코인', '주식', '연금', '기타'];
+
+  const formatReturnPct = (p) => {
+    if (p === null || p === undefined) return '—';
+    const sign = p >= 0 ? '+' : '';
+    return `${sign}${p.toFixed(2)}%`;
+  };
+
+  const formatSnapshotWhen = (iso) => {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleString('ko-KR', { dateStyle: 'medium', timeStyle: 'short' });
+    } catch {
+      return iso;
+    }
+  };
 
   // Debugging: Log hoveredBar state changes
   useEffect(() => {
@@ -187,6 +209,74 @@ function Stats() {
     fetchStats();
   }, [selectedYear]);
 
+  useEffect(() => {
+    if (activeTab !== 'growth') return undefined;
+    let cancelled = false;
+    (async () => {
+      try {
+        setGrowthError(null);
+        const snapRes = await statsApi.getAssetSnapshots();
+        if (cancelled) return;
+        setSnapshots(snapRes.data || []);
+        try {
+          const growthRes = await statsApi.getAssetGrowth(baselineSnapshotId || undefined);
+          if (!cancelled) {
+            setGrowthData(growthRes.data);
+          }
+        } catch (ge) {
+          if (!cancelled) {
+            setGrowthData(null);
+            setGrowthError(ge.response?.data?.detail || '증감 데이터를 불러오지 못했습니다.');
+          }
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setSnapshots([]);
+          setGrowthData(null);
+          setGrowthError(e.response?.data?.detail || '데이터를 불러오지 못했습니다.');
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [activeTab, baselineSnapshotId]);
+
+  const handleCreateAssetSnapshot = async () => {
+    try {
+      await statsApi.createAssetSnapshot(newSnapshotLabel.trim());
+      setNewSnapshotLabel('');
+      const snapRes = await statsApi.getAssetSnapshots();
+      setSnapshots(snapRes.data || []);
+      const growthRes = await statsApi.getAssetGrowth(baselineSnapshotId || undefined);
+      setGrowthData(growthRes.data);
+      setGrowthError(null);
+      alert('저장 지점이 추가되었습니다.');
+    } catch (e) {
+      alert(e.response?.data?.detail || '저장에 실패했습니다.');
+    }
+  };
+
+  const handleDeleteSnapshot = async (id) => {
+    if (!window.confirm('이 저장 지점을 삭제할까요?')) return;
+    try {
+      await statsApi.deleteAssetSnapshot(id);
+      const nextBaseline = baselineSnapshotId === id ? '' : baselineSnapshotId;
+      setBaselineSnapshotId(nextBaseline);
+      const snapRes = await statsApi.getAssetSnapshots();
+      setSnapshots(snapRes.data || []);
+      try {
+        const growthRes = await statsApi.getAssetGrowth(nextBaseline || undefined);
+        setGrowthData(growthRes.data);
+        setGrowthError(null);
+      } catch (ge) {
+        setGrowthData(null);
+        setGrowthError(ge.response?.data?.detail || '증감을 다시 불러오지 못했습니다.');
+      }
+    } catch (e) {
+      alert(e.response?.data?.detail || '삭제에 실패했습니다.');
+    }
+  };
 
   const renderPortfolioTab = () => {
     const legendMargin = {
@@ -328,6 +418,179 @@ function Stats() {
             <div className="chart-placeholder">
               <p>자산 데이터가 없습니다.</p>
               <p>계좌를 추가하고 거래를 등록해보세요.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderGrowthTab = () => {
+    const baseline = growthData?.baseline_snapshot;
+    const byCat = growthData?.by_category || {};
+    const totalRow = growthData?.total;
+
+    return (
+      <div className="tab-content">
+        <div className="summary">
+          <div className="summary-text">
+            <p style={{ fontSize: '1.7rem', fontWeight: 'bold', marginBottom: '12px' }}>자라나라 자산자산</p>
+            <p style={{ fontSize: '0.95rem', color: '#555', marginBottom: '16px' }}>
+            「지금 자산 저장」으로 현재 포트폴리오를 저장 지점으로 남기면, 이후 같은 방식으로 쌓인 시점과 비교해
+              카테고리별·총 수익률을 볼 수 있습니다.
+              <br />
+              비교 기준은 기본적으로 <strong>가장 최근 저장 지점</strong>이며, 아래에서 과거 저장 지점을 고를 수 있습니다.
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'flex-end', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <label htmlFor="baseline-snapshot">비교 기준 시점</label>
+                <select
+                  id="baseline-snapshot"
+                  value={baselineSnapshotId}
+                  onChange={(e) => setBaselineSnapshotId(e.target.value)}
+                  style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid #ddd', minWidth: '260px' }}
+                >
+                  <option value="">가장 최근 저장 지점 (기본)</option>
+                  {snapshots.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {formatSnapshotWhen(s.created_at)}
+                      {s.label ? ` — ${s.label}` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: '1 1 200px' }}>
+                <label htmlFor="snapshot-label">메모 (선택)</label>
+                <input
+                  id="snapshot-label"
+                  type="text"
+                  value={newSnapshotLabel}
+                  onChange={(e) => setNewSnapshotLabel(e.target.value)}
+                  placeholder="예: 연말 결산"
+                  style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid #ddd' }}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleCreateAssetSnapshot}
+                style={{
+                  padding: '10px 16px',
+                  background: '#007bff',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                }}
+              >
+                지금 자산 저장
+              </button>
+            </div>
+
+            {growthError && (
+              <p style={{ color: '#c62828', marginBottom: '12px' }}>{growthError}</p>
+            )}
+
+            {baseline && (
+              <p style={{ marginBottom: '8px', color: '#333' }}>
+                <strong>기준 시점</strong>: {formatSnapshotWhen(baseline.created_at)}
+                {baseline.label ? ` (${baseline.label})` : ''}
+                {' · '}
+                <strong>기준 총액</strong> {formatCurrency(baseline.total)}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="chart-container" style={{ minHeight: 'auto', display: 'block', padding: '16px' }}>
+          {growthData && totalRow && (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.95rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid #ddd', textAlign: 'left' }}>
+                    <th style={{ padding: '10px 8px' }}>구분</th>
+                    <th style={{ padding: '10px 8px' }}>기준 금액</th>
+                    <th style={{ padding: '10px 8px' }}>현재 금액</th>
+                    <th style={{ padding: '10px 8px' }}>증감</th>
+                    <th style={{ padding: '10px 8px' }}>수익률</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {GROWTH_CATEGORY_ORDER.map((key) => {
+                    const row = byCat[key];
+                    if (!row) return null;
+                    return (
+                      <tr key={key} style={{ borderBottom: '1px solid #eee' }}>
+                        <td style={{ padding: '10px 8px', fontWeight: 600 }}>{key}</td>
+                        <td style={{ padding: '10px 8px' }}>{formatCurrency(row.baseline)}</td>
+                        <td style={{ padding: '10px 8px' }}>{formatCurrency(row.current)}</td>
+                        <td style={{ padding: '10px 8px', color: row.delta >= 0 ? '#2e7d32' : '#c62828' }}>
+                          {row.delta >= 0 ? '+' : ''}
+                          {formatCurrency(row.delta)}
+                        </td>
+                        <td style={{ padding: '10px 8px' }}>{formatReturnPct(row.return_pct)}</td>
+                      </tr>
+                    );
+                  })}
+                  <tr style={{ borderTop: '2px solid #333', fontWeight: 700 }}>
+                    <td style={{ padding: '12px 8px' }}>총합</td>
+                    <td style={{ padding: '12px 8px' }}>{formatCurrency(totalRow.baseline)}</td>
+                    <td style={{ padding: '12px 8px' }}>{formatCurrency(totalRow.current)}</td>
+                    <td
+                      style={{
+                        padding: '12px 8px',
+                        color: totalRow.delta >= 0 ? '#2e7d32' : '#c62828',
+                      }}
+                    >
+                      {totalRow.delta >= 0 ? '+' : ''}
+                      {formatCurrency(totalRow.delta)}
+                    </td>
+                    <td style={{ padding: '12px 8px' }}>{formatReturnPct(totalRow.return_pct)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {snapshots.length > 0 && (
+            <div style={{ marginTop: '24px' }}>
+              <p style={{ fontWeight: 600, marginBottom: '8px' }}>저장 지점 목록</p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                {snapshots.map((s) => (
+                  <li
+                    key={s.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '8px 0',
+                      borderBottom: '1px solid #eee',
+                      gap: '12px',
+                    }}
+                  >
+                    <span>
+                      {formatSnapshotWhen(s.created_at)}
+                      {s.label ? ` — ${s.label}` : ''}
+                      {' · '}
+                      {formatCurrency(s.total)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteSnapshot(s.id)}
+                      style={{
+                        padding: '6px 10px',
+                        fontSize: '0.85rem',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        background: '#fff',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      삭제
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>
@@ -1080,6 +1343,8 @@ function Stats() {
     switch (activeTab) {
       case 'portfolio':
         return renderPortfolioTab();
+      case 'growth':
+        return renderGrowthTab();
       case 'savings':
         return renderSavingsTab();
       case 'salary':
@@ -1136,6 +1401,12 @@ function Stats() {
           onClick={() => setActiveTab('portfolio')}
         >
           포트폴리오
+        </div>
+        <div
+          className={`tab ${activeTab === 'growth' ? 'active' : ''}`}
+          onClick={() => setActiveTab('growth')}
+        >
+          🌱자라나라 자산자산
         </div>
         <div
           className={`tab ${activeTab === 'savings' ? 'active' : ''}`}

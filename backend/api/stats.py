@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
-from typing import List, Dict, Any, Optional
-from models.domain import Account
+from typing import Optional
+from pydantic import BaseModel
 from core.service import LedgerService
 from database.json_database import JSONDatabase
 from core.repository import LedgerRepository
@@ -13,6 +13,10 @@ def get_ledger_service():
     repository = LedgerRepository(database)
     service = LedgerService(repository)
     return service
+
+
+class SnapshotCreate(BaseModel):
+    label: Optional[str] = None
 
 @router.get("/total-assets")
 async def get_total_assets(service: LedgerService = Depends(get_ledger_service)):
@@ -82,49 +86,40 @@ async def get_monthly_salary_totals(year: Optional[str] = None, person: Optional
 @router.get("/asset-allocation")
 async def get_asset_allocation(service: LedgerService = Depends(get_ledger_service)):
     """Calculate the total value for each asset category"""
-    categories = {
-        "현금": 0.0,
-        "부동산": 0.0,
-        "코인": 0.0,
-        "주식": 0.0,
-        "연금": 0.0,
-        "기타": 0.0
-    }
-    accounts = service.list_accounts()
-    
-    for acc in accounts:
-        if acc.status == "dead":
-            continue
-        
-        if acc.type == "투자":
-            # For investment accounts, use the asset_value directly
-            # Handle case where asset_value might be undefined
-            investment_value = getattr(acc, 'asset_value', 0) or 0
-            
-            if investment_value > 0:
-                # Categorize investment accounts by name or image path
-                account_name = acc.name
-                account_name_lower = account_name.lower()
-                image_path_lower = acc.image_path.lower() if acc.image_path else ""
-                
-                # Check for pension accounts first
-                if "연금" in account_name:
-                    categories["연금"] += investment_value
-                elif "부동산" in account_name_lower or "부동산" in image_path_lower:
-                    categories["부동산"] += investment_value
-                elif "코인" in account_name:  # Include all accounts with "코인" in name
-                    categories["코인"] += investment_value
-                elif any(keyword in account_name_lower or keyword in image_path_lower for keyword in ["주식", "증권", "나무", "한국투자", "ibk", "ok저축은행"]):
-                    categories["주식"] += investment_value
-                else:
-                    categories["기타"] += investment_value
-        else:
-            # For non-investment accounts, add their balance to cash
-            # BUT only include "현금" type accounts, not "소비" type accounts
-            if acc.type == "현금":
-                balance = acc.balance()
-                if balance > 0:
-                    categories["현금"] += balance
-    
-    final_categories = {k: v for k, v in categories.items() if v > 0}
-    return final_categories
+    categories = service.get_asset_allocation_full()
+    return {k: v for k, v in categories.items() if v > 0}
+
+
+@router.get("/asset-snapshots")
+async def list_asset_snapshots(service: LedgerService = Depends(get_ledger_service)):
+    """저장 지점(saving-point) 목록 — 최신순."""
+    return service.list_asset_snapshots()
+
+
+@router.post("/asset-snapshots")
+async def create_asset_snapshot(
+    body: SnapshotCreate,
+    service: LedgerService = Depends(get_ledger_service),
+):
+    """현재 포트폴리오를 저장 지점으로 기록."""
+    return service.add_asset_snapshot(label=body.label)
+
+
+@router.delete("/asset-snapshots/{snapshot_id}")
+async def delete_asset_snapshot(snapshot_id: str, service: LedgerService = Depends(get_ledger_service)):
+    ok = service.delete_asset_snapshot(snapshot_id)
+    if not ok:
+        raise HTTPException(status_code=404, detail="저장 지점을 찾을 수 없습니다.")
+    return {"message": "deleted"}
+
+
+@router.get("/asset-growth")
+async def get_asset_growth(
+    baseline_id: Optional[str] = None,
+    service: LedgerService = Depends(get_ledger_service),
+):
+    """현재 자산 vs 저장 지점(미지정 시 가장 최근 저장 지점) 비교."""
+    try:
+        return service.get_asset_growth_comparison(baseline_snapshot_id=baseline_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from collections import defaultdict
 from models.domain import Account, Transaction, ValuationRecord, TradePair
 from core.repository import LedgerRepository
+from core.asset_allocation import ASSET_CATEGORY_KEYS, compute_asset_allocation_categories
 from core.salary_uniqueness import (
     assert_unique_salary_record,
     normalize_salary_month,
@@ -343,3 +344,86 @@ class LedgerService:
                     # 새로운 valuation과 페어링
                     pair = TradePair(buy_valuation=buy_val, sell_valuation=valuation)
                     pairs.append(pair)
+
+        return pairs
+
+    def get_asset_allocation_full(self) -> Dict[str, float]:
+        """포트폴리오와 동일 규칙의 카테고리별 금액 (0인 항목 포함)."""
+        return compute_asset_allocation_categories(self.list_accounts())
+
+    def list_asset_snapshots(self) -> List[Dict[str, Any]]:
+        return self.repo.get_asset_snapshots()
+
+    def add_asset_snapshot(self, label: Optional[str] = None) -> Dict[str, Any]:
+        """현재 자산 구성을 saving-point로 저장."""
+        cats = self.get_asset_allocation_full()
+        total = sum(cats.values())
+        snapshot = {
+            "id": gen_id(),
+            "created_at": today_iso(),
+            "label": (label or "").strip(),
+            "categories": {k: float(cats.get(k, 0) or 0) for k in ASSET_CATEGORY_KEYS},
+            "total": float(total),
+        }
+        self.repo.add_asset_snapshot(snapshot)
+        return snapshot
+
+    def delete_asset_snapshot(self, snapshot_id: str) -> bool:
+        return self.repo.delete_asset_snapshot(snapshot_id)
+
+    def get_asset_growth_comparison(self, baseline_snapshot_id: Optional[str] = None) -> Dict[str, Any]:
+        """현재 자산 vs 선택한(또는 가장 최근) 저장 지점 — 카테고리·총액 증감·수익률."""
+        snapshots = self.repo.get_asset_snapshots()
+        if not snapshots:
+            raise ValueError("비교할 저장 지점이 없습니다. 먼저 「지금 자산 저장」으로 저장 지점을 만드세요.")
+
+        if baseline_snapshot_id:
+            baseline_row = next((s for s in snapshots if s.get("id") == baseline_snapshot_id), None)
+            if not baseline_row:
+                raise ValueError("선택한 저장 지점을 찾을 수 없습니다.")
+        else:
+            baseline_row = max(snapshots, key=lambda s: s.get("created_at", ""))
+
+        current = self.get_asset_allocation_full()
+        current_total = sum(current.values())
+
+        baseline_cats = baseline_row.get("categories") or {}
+        baseline_total = float(baseline_row.get("total") or 0)
+        if baseline_total <= 0:
+            baseline_total = sum(float(baseline_cats.get(k, 0) or 0) for k in ASSET_CATEGORY_KEYS)
+
+        by_category: Dict[str, Dict[str, Any]] = {}
+        for k in ASSET_CATEGORY_KEYS:
+            b = float(baseline_cats.get(k, 0) or 0)
+            c = float(current.get(k, 0) or 0)
+            delta = c - b
+            ret_pct: Optional[float] = None if b <= 0 else (delta / b) * 100.0
+            by_category[k] = {
+                "baseline": b,
+                "current": c,
+                "delta": delta,
+                "return_pct": ret_pct,
+            }
+
+        delta_total = current_total - baseline_total
+        total_return_pct: Optional[float] = None if baseline_total <= 0 else (delta_total / baseline_total) * 100.0
+
+        return {
+            "baseline_snapshot": {
+                "id": baseline_row.get("id"),
+                "created_at": baseline_row.get("created_at"),
+                "label": baseline_row.get("label") or "",
+                "total": baseline_total,
+            },
+            "current": {
+                "categories": {k: float(current.get(k, 0) or 0) for k in ASSET_CATEGORY_KEYS},
+                "total": float(current_total),
+            },
+            "by_category": by_category,
+            "total": {
+                "baseline": baseline_total,
+                "current": float(current_total),
+                "delta": float(delta_total),
+                "return_pct": total_return_pct,
+            },
+        }

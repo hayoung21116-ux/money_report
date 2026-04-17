@@ -123,6 +123,16 @@ export const statsApi = {
   
   // Get asset allocation
   getAssetAllocation: () => api.get('/stats/asset-allocation'),
+
+  // Saving points & growth vs snapshot
+  getAssetSnapshots: () => api.get('/stats/asset-snapshots'),
+  createAssetSnapshot: (label) =>
+    api.post('/stats/asset-snapshots', { label: label || null }),
+  deleteAssetSnapshot: (snapshotId) => api.delete(`/stats/asset-snapshots/${snapshotId}`),
+  getAssetGrowth: (baselineId) =>
+    api.get('/stats/asset-growth', {
+      params: baselineId ? { baseline_id: baselineId } : {},
+    }),
 };
 
 // Utility function to format currency

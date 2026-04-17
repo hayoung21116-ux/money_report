@@ -21,16 +21,19 @@ class JSONDatabase:
         """Load data from JSON file"""
         if not self.filepath.exists():
             # Create default data structure
-            default_data = {"accounts": [], "salaries": []}
+            default_data = {"accounts": [], "salaries": [], "asset_snapshots": []}
             self._save_data(default_data)
             return default_data
         
         try:
             with open(self.filepath, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+            if "asset_snapshots" not in data:
+                data["asset_snapshots"] = []
+            return data
         except Exception as e:
             print(f"Warning: Failed to load data from {self.filepath}: {str(e)}")
-            return {"accounts": [], "salaries": []}
+            return {"accounts": [], "salaries": [], "asset_snapshots": []}
     
     def _save_data(self, data: Dict[str, Any]) -> None:
         """Save data to JSON file"""
@@ -145,4 +148,22 @@ class JSONDatabase:
             self.data["accounts"] = accounts
             self._save_data(self.data)
             return True
+        return False
+
+    def get_asset_snapshots(self) -> List[Dict[str, Any]]:
+        """저장 지점 목록 (최신 created_at 우선)."""
+        rows = list(self.data.get("asset_snapshots", []))
+        return sorted(rows, key=lambda s: s.get("created_at", ""), reverse=True)
+
+    def add_asset_snapshot(self, snapshot: Dict[str, Any]) -> None:
+        self.data.setdefault("asset_snapshots", []).append(snapshot)
+        self._save_data(self.data)
+
+    def delete_asset_snapshot(self, snapshot_id: str) -> bool:
+        snaps = self.data.get("asset_snapshots", [])
+        for i, s in enumerate(snaps):
+            if s.get("id") == snapshot_id:
+                snaps.pop(i)
+                self._save_data(self.data)
+                return True
         return False

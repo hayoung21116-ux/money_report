@@ -79,3 +79,12 @@ class LedgerRepository:
     def delete_salary(self, index: int) -> None:
         """Delete salary data by index"""
         self.db.delete_salary(index)
+
+    def get_asset_snapshots(self) -> List[Dict[str, Any]]:
+        return self.db.get_asset_snapshots()
+
+    def add_asset_snapshot(self, snapshot: Dict[str, Any]) -> None:
+        self.db.add_asset_snapshot(snapshot)
+
+    def delete_asset_snapshot(self, snapshot_id: str) -> bool:
+        return self.db.delete_asset_snapshot(snapshot_id)
