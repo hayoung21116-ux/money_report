@@ -18,6 +18,14 @@ def get_ledger_service():
 class SnapshotCreate(BaseModel):
     label: Optional[str] = None
 
+
+class StockEntryCreate(BaseModel):
+    person: str
+    category: str
+    market: str
+    name: str
+    amount: float
+
 @router.get("/total-assets")
 async def get_total_assets(service: LedgerService = Depends(get_ledger_service)):
     """Get total assets"""
@@ -123,3 +131,34 @@ async def get_asset_growth(
         return service.get_asset_growth_comparison(baseline_snapshot_id=baseline_id)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/stock-portfolio")
+async def get_stock_portfolio(service: LedgerService = Depends(get_ledger_service)):
+    """주식 포트폴리오(비중) 데이터."""
+    return service.get_stock_portfolio()
+
+
+@router.post("/stock-portfolio")
+async def add_stock_entry(body: StockEntryCreate, service: LedgerService = Depends(get_ledger_service)):
+    try:
+        return service.add_stock_entry(
+            person=body.person,
+            category=body.category,
+            market=body.market,
+            name=body.name,
+            amount=body.amount,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.delete("/stock-portfolio/{person}/{entry_id}")
+async def delete_stock_entry(person: str, entry_id: str, service: LedgerService = Depends(get_ledger_service)):
+    try:
+        ok = service.delete_stock_entry(person, entry_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    if not ok:
+        raise HTTPException(status_code=404, detail="항목을 찾을 수 없습니다.")
+    return {"message": "deleted"}

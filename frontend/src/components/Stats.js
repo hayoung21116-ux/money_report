@@ -148,8 +148,29 @@ function Stats() {
   const [baselineSnapshotId, setBaselineSnapshotId] = useState('');
   const [newSnapshotLabel, setNewSnapshotLabel] = useState('');
   const [growthError, setGrowthError] = useState(null);
+  const [stockPortfolio, setStockPortfolio] = useState({ 민규: [], 하영: [] });
+  const [stockError, setStockError] = useState(null);
+  const [showStockAdd, setShowStockAdd] = useState({ 민규: false, 하영: false });
+  const [stockForm, setStockForm] = useState({
+    민규: { category: '지수', market: '국장', name: '', amount: '' },
+    하영: { category: '지수', market: '국장', name: '', amount: '' },
+  });
 
   const GROWTH_CATEGORY_ORDER = ['현금', '부동산', '코인', '주식', '연금', '기타'];
+  const STOCK_CATEGORY_COLORS = {
+    '지수': '#1976D2',      // blue
+    '섹터 ETF': '#2E7D32',  // green
+    '종목': '#F57C00',      // orange
+  };
+
+  const rgbaFromHex = (hex, alpha) => {
+    const h = (hex || '').replace('#', '');
+    if (h.length !== 6) return hex;
+    const r = parseInt(h.slice(0, 2), 16);
+    const g = parseInt(h.slice(2, 4), 16);
+    const b = parseInt(h.slice(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
 
   const formatReturnPct = (p) => {
     if (p === null || p === undefined) return '—';
@@ -241,6 +262,54 @@ function Stats() {
       cancelled = true;
     };
   }, [activeTab, baselineSnapshotId]);
+
+  useEffect(() => {
+    if (activeTab !== 'stock') return undefined;
+    let cancelled = false;
+    (async () => {
+      try {
+        setStockError(null);
+        const res = await statsApi.getStockPortfolio();
+        if (!cancelled) {
+          setStockPortfolio(res.data || { 민규: [], 하영: [] });
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setStockPortfolio({ 민규: [], 하영: [] });
+          setStockError(e.response?.data?.detail || '주식 포폴 데이터를 불러오지 못했습니다.');
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [activeTab]);
+
+  const handleAddStockEntry = async (person) => {
+    try {
+      const f = stockForm[person];
+      const amountNum = typeof f.amount === 'string' ? parseFloat(f.amount) : f.amount;
+      await statsApi.addStockEntry(person, f.category, f.market, f.name, amountNum);
+      setStockForm((prev) => ({ ...prev, [person]: { ...prev[person], name: '', amount: '' } }));
+      const res = await statsApi.getStockPortfolio();
+      setStockPortfolio(res.data || { 민규: [], 하영: [] });
+      setStockError(null);
+    } catch (e) {
+      alert(e.response?.data?.detail || '추가에 실패했습니다.');
+    }
+  };
+
+  const handleDeleteStockEntry = async (person, entryId) => {
+    if (!window.confirm('이 항목을 삭제할까요?')) return;
+    try {
+      await statsApi.deleteStockEntry(person, entryId);
+      const res = await statsApi.getStockPortfolio();
+      setStockPortfolio(res.data || { 민규: [], 하영: [] });
+      setStockError(null);
+    } catch (e) {
+      alert(e.response?.data?.detail || '삭제에 실패했습니다.');
+    }
+  };
 
   const handleCreateAssetSnapshot = async () => {
     try {
@@ -593,6 +662,296 @@ function Stats() {
               </ul>
             </div>
           )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderStockPortfolioTab = () => {
+    const people = ['민규', '하영'];
+
+    const buildChart = (entries) => {
+      const amountOf = (e) => {
+        if (e == null) return 0;
+        const a = Number(e.amount);
+        if (!Number.isNaN(a) && a > 0) return a;
+        // Back-compat: if old data used weight field, treat it as amount to keep chart visible
+        const w = Number(e.weight);
+        if (!Number.isNaN(w) && w > 0) return w;
+        return 0;
+      };
+      const cleaned = (entries || []).filter((e) => e && e.name && amountOf(e) > 0);
+      const total = cleaned.reduce((sum, e) => sum + amountOf(e), 0) || 0;
+      const labels = cleaned.map((e) => `${e.name}`);
+      const data = cleaned.map((e) => amountOf(e));
+      const backgroundColor = cleaned.map((e) => {
+        const base = STOCK_CATEGORY_COLORS[e.category] || '#9E9E9E';
+        const alpha = e.market === '미장' ? 0.45 : 0.95; // market by transparency
+        return rgbaFromHex(base, alpha);
+      });
+      const borderColor = cleaned.map((e) => {
+        const base = STOCK_CATEGORY_COLORS[e.category] || '#9E9E9E';
+        return rgbaFromHex(base, 1);
+      });
+      return {
+        total,
+        chartData: {
+          labels,
+          datasets: [
+            {
+              data,
+              backgroundColor,
+              borderColor,
+              borderWidth: 1,
+            },
+          ],
+        },
+      };
+    };
+
+    const chartOptions = (personEntries) => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            boxWidth: 12,
+            font: { size: 12 },
+            generateLabels: (chart) => {
+              const ds = chart.data.datasets[0] || {};
+              return (chart.data.labels || []).map((label, i) => {
+                const e = (personEntries || [])[i];
+                const cat = e?.category || '';
+                const mk = e?.market || '';
+                return {
+                  text: `${label}${cat || mk ? ` (${cat}${cat && mk ? ', ' : ''}${mk})` : ''}`,
+                  fillStyle: ds.backgroundColor?.[i],
+                  strokeStyle: ds.borderColor?.[i],
+                  lineWidth: 1,
+                  hidden: chart.getDatasetMeta(0).data[i]?.hidden,
+                  index: i,
+                };
+              });
+            },
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const w = Number(ctx.parsed || 0);
+              const total = (ctx.dataset.data || []).reduce((s, v) => s + Number(v || 0), 0) || 1;
+              const pct = (w / total) * 100;
+              const e = (personEntries || [])[ctx.dataIndex];
+              const cat = e?.category || '';
+              const mk = e?.market || '';
+              return `${ctx.label}: ${w} (${pct.toFixed(1)}%)${cat || mk ? ` · ${cat}/${mk}` : ''}`;
+            },
+          },
+        },
+        datalabels: {
+          color: '#111',
+          formatter: (value, ctx) => {
+            const total = (ctx.chart.data.datasets[0].data || []).reduce((s, v) => s + Number(v || 0), 0) || 0;
+            if (!total) return '';
+            const pct = (Number(value) / total) * 100;
+            return pct >= 6 ? `${pct.toFixed(0)}%` : ''; // hide tiny labels
+          },
+        },
+      },
+    });
+
+    const renderPerson = (person) => {
+      const entries = stockPortfolio?.[person] || [];
+      const { total, chartData } = buildChart(entries);
+      return (
+        <div style={{ flex: 1, minWidth: '320px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '10px' }}>
+            <p style={{ fontSize: '1.3rem', fontWeight: 700, margin: 0 }}>{person}</p>
+            <span style={{ color: '#666', fontSize: '0.95rem' }}>총액: {formatCurrency(total)}</span>
+          </div>
+
+          <div style={{ height: '320px', background: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.08)', padding: '12px', marginBottom: '14px' }}>
+            {entries.length ? (
+              <Doughnut data={chartData} options={chartOptions(entries)} />
+            ) : (
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
+                아직 입력된 종목이 없습니다.
+              </div>
+            )}
+          </div>
+
+          <div style={{ background: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.08)', padding: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+              <p style={{ fontWeight: 700, marginTop: 0, marginBottom: 0 }}>보유 종목</p>
+              <button
+                type="button"
+                onClick={() => setShowStockAdd((prev) => ({ ...prev, [person]: !prev[person] }))}
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #ccc',
+                  borderRadius: '6px',
+                  background: '#fff',
+                  cursor: 'pointer',
+                  fontWeight: 700,
+                }}
+              >
+                {showStockAdd[person] ? '닫기' : '추가하기'}
+              </button>
+            </div>
+
+            {showStockAdd[person] && (
+              <div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <label style={{ fontSize: '0.9rem', color: '#444' }}>카테고리</label>
+                <select
+                  value={stockForm[person].category}
+                  onChange={(e) =>
+                    setStockForm((prev) => ({
+                      ...prev,
+                      [person]: { ...prev[person], category: e.target.value },
+                    }))
+                  }
+                  style={{ padding: '8px 10px', border: '1px solid #ddd', borderRadius: '4px' }}
+                >
+                  <option value="지수">지수</option>
+                  <option value="섹터 ETF">섹터 ETF</option>
+                  <option value="종목">종목</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <label style={{ fontSize: '0.9rem', color: '#444' }}>시장</label>
+                <select
+                  value={stockForm[person].market}
+                  onChange={(e) =>
+                    setStockForm((prev) => ({
+                      ...prev,
+                      [person]: { ...prev[person], market: e.target.value },
+                    }))
+                  }
+                  style={{ padding: '8px 10px', border: '1px solid #ddd', borderRadius: '4px' }}
+                >
+                  <option value="국장">국장</option>
+                  <option value="미장">미장</option>
+                </select>
+              </div>
+                </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '10px', marginBottom: '10px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <label style={{ fontSize: '0.9rem', color: '#444' }}>종목명</label>
+                <input
+                  value={stockForm[person].name}
+                  onChange={(e) =>
+                    setStockForm((prev) => ({
+                      ...prev,
+                      [person]: { ...prev[person], name: e.target.value },
+                    }))
+                  }
+                  placeholder="예: VOO / QQQ / 삼성전자"
+                  style={{ padding: '8px 10px', border: '1px solid #ddd', borderRadius: '4px' }}
+                />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <label style={{ fontSize: '0.9rem', color: '#444' }}>금액</label>
+                <input
+                  type="number"
+                  min="0"
+                  step="1000"
+                  value={stockForm[person].amount}
+                  onChange={(e) =>
+                    setStockForm((prev) => ({
+                      ...prev,
+                      [person]: { ...prev[person], amount: e.target.value },
+                    }))
+                  }
+                  placeholder="예: 1000000"
+                  style={{ padding: '8px 10px', border: '1px solid #ddd', borderRadius: '4px' }}
+                />
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => handleAddStockEntry(person)}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: 'none',
+                borderRadius: '6px',
+                background: '#111',
+                color: '#fff',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              추가
+            </button>
+              </div>
+            )}
+
+            {entries.length > 0 && (
+              <div style={{ marginTop: '14px' }}>
+                <p style={{ fontWeight: 700, marginBottom: '8px' }}>현재 목록</p>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {entries.map((e) => (
+                    <li
+                      key={e.id}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '8px 0',
+                        borderBottom: '1px solid #eee',
+                        gap: '10px',
+                      }}
+                    >
+                      <span style={{ fontSize: '0.95rem' }}>
+                        <strong>{e.name}</strong> — {formatCurrency(Number(e.amount || e.weight || 0))} ({e.category}/{e.market})
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteStockEntry(person, e.id)}
+                        style={{
+                          padding: '6px 10px',
+                          fontSize: '0.85rem',
+                          border: '1px solid #ccc',
+                          borderRadius: '4px',
+                          background: '#fff',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        삭제
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    return (
+      <div className="tab-content">
+        <div className="summary">
+          <div className="summary-text">
+            <p style={{ fontSize: '1.7rem', fontWeight: 'bold', marginBottom: '12px' }}>주식 포폴</p>
+            <p style={{ fontSize: '0.95rem', color: '#555', marginBottom: '0' }}>
+              각자 종목 비중을 입력하면 원그래프로 비율을 보여줍니다. 색상은 카테고리(지수/섹터 ETF/종목)별로 다르고,
+              투명도는 시장(국장/미장)으로 구분됩니다.
+            </p>
+            {stockError && <p style={{ color: '#c62828', marginTop: '10px' }}>{stockError}</p>}
+          </div>
+        </div>
+
+        <div className="chart-container" style={{ minHeight: 'auto', display: 'block', padding: '16px' }}>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+            {people.map((p) => renderPerson(p))}
+          </div>
         </div>
       </div>
     );
@@ -1345,6 +1704,8 @@ function Stats() {
         return renderPortfolioTab();
       case 'growth':
         return renderGrowthTab();
+      case 'stock':
+        return renderStockPortfolioTab();
       case 'savings':
         return renderSavingsTab();
       case 'salary':
@@ -1419,6 +1780,12 @@ function Stats() {
           onClick={() => setActiveTab('salary')}
         >
           월급
+        </div>
+        <div
+          className={`tab ${activeTab === 'stock' ? 'active' : ''}`}
+          onClick={() => setActiveTab('stock')}
+        >
+          📉주식 포폴
         </div>
       </div>
 

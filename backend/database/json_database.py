@@ -21,7 +21,12 @@ class JSONDatabase:
         """Load data from JSON file"""
         if not self.filepath.exists():
             # Create default data structure
-            default_data = {"accounts": [], "salaries": [], "asset_snapshots": []}
+            default_data = {
+                "accounts": [],
+                "salaries": [],
+                "asset_snapshots": [],
+                "stock_portfolio": {"민규": [], "하영": []},
+            }
             self._save_data(default_data)
             return default_data
         
@@ -30,10 +35,17 @@ class JSONDatabase:
                 data = json.load(f)
             if "asset_snapshots" not in data:
                 data["asset_snapshots"] = []
+            if "stock_portfolio" not in data:
+                data["stock_portfolio"] = {"민규": [], "하영": []}
             return data
         except Exception as e:
             print(f"Warning: Failed to load data from {self.filepath}: {str(e)}")
-            return {"accounts": [], "salaries": [], "asset_snapshots": []}
+            return {
+                "accounts": [],
+                "salaries": [],
+                "asset_snapshots": [],
+                "stock_portfolio": {"민규": [], "하영": []},
+            }
     
     def _save_data(self, data: Dict[str, Any]) -> None:
         """Save data to JSON file"""
@@ -164,6 +176,32 @@ class JSONDatabase:
         for i, s in enumerate(snaps):
             if s.get("id") == snapshot_id:
                 snaps.pop(i)
+                self._save_data(self.data)
+                return True
+        return False
+
+    def get_stock_portfolio(self) -> Dict[str, List[Dict[str, Any]]]:
+        """Return stock portfolio entries by person."""
+        raw = self.data.get("stock_portfolio", {"민규": [], "하영": []})
+        # Ensure keys exist
+        if "민규" not in raw:
+            raw["민규"] = []
+        if "하영" not in raw:
+            raw["하영"] = []
+        return raw
+
+    def add_stock_entry(self, person: str, entry: Dict[str, Any]) -> Dict[str, Any]:
+        portfolio = self.data.setdefault("stock_portfolio", {"민규": [], "하영": []})
+        portfolio.setdefault(person, []).append(entry)
+        self._save_data(self.data)
+        return entry
+
+    def delete_stock_entry(self, person: str, entry_id: str) -> bool:
+        portfolio = self.data.get("stock_portfolio", {})
+        entries = portfolio.get(person, [])
+        for i, e in enumerate(entries):
+            if e.get("id") == entry_id:
+                entries.pop(i)
                 self._save_data(self.data)
                 return True
         return False

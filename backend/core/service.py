@@ -11,6 +11,10 @@ from core.salary_uniqueness import (
     parse_classification_for_write,
 )
 
+STOCK_PERSONS = ("민규", "하영")
+STOCK_CATEGORIES = ("지수", "섹터 ETF", "종목")
+STOCK_MARKETS = ("국장", "미장")
+
 def gen_id() -> str:
     """Generate a unique ID using UUID v4"""
     import uuid
@@ -427,3 +431,47 @@ class LedgerService:
                 "return_pct": total_return_pct,
             },
         }
+
+    def get_stock_portfolio(self) -> Dict[str, List[Dict[str, Any]]]:
+        return self.repo.get_stock_portfolio()
+
+    def add_stock_entry(
+        self,
+        person: str,
+        category: str,
+        market: str,
+        name: str,
+        amount: float,
+    ) -> Dict[str, Any]:
+        person_n = (person or "").strip()
+        if person_n not in STOCK_PERSONS:
+            raise ValueError("person은 민규 또는 하영만 가능합니다.")
+        category_n = (category or "").strip()
+        if category_n not in STOCK_CATEGORIES:
+            raise ValueError("카테고리는 지수 / 섹터 ETF / 종목 중 하나여야 합니다.")
+        market_n = (market or "").strip()
+        if market_n not in STOCK_MARKETS:
+            raise ValueError("시장은 국장 또는 미장이어야 합니다.")
+        name_n = (name or "").strip()
+        if not name_n:
+            raise ValueError("종목명을 입력하세요.")
+        if amount <= 0:
+            raise ValueError("금액(amount)은 0보다 커야 합니다.")
+
+        entry = {
+            "id": gen_id(),
+            "person": person_n,
+            "category": category_n,
+            "market": market_n,
+            "name": name_n,
+            "amount": float(amount),
+            "created_at": today_iso(),
+        }
+        self.repo.add_stock_entry(person_n, entry)
+        return entry
+
+    def delete_stock_entry(self, person: str, entry_id: str) -> bool:
+        person_n = (person or "").strip()
+        if person_n not in STOCK_PERSONS:
+            raise ValueError("person은 민규 또는 하영만 가능합니다.")
+        return self.repo.delete_stock_entry(person_n, entry_id)

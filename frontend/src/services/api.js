@@ -133,6 +133,12 @@ export const statsApi = {
     api.get('/stats/asset-growth', {
       params: baselineId ? { baseline_id: baselineId } : {},
     }),
+
+  // Stock portfolio (weights)
+  getStockPortfolio: () => api.get('/stats/stock-portfolio'),
+  addStockEntry: (person, category, market, name, amount) =>
+    api.post('/stats/stock-portfolio', { person, category, market, name, amount }),
+  deleteStockEntry: (person, entryId) => api.delete(`/stats/stock-portfolio/${person}/${entryId}`),
 };
 
 // Utility function to format currency

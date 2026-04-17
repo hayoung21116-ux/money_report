@@ -88,3 +88,12 @@ class LedgerRepository:
 
     def delete_asset_snapshot(self, snapshot_id: str) -> bool:
         return self.db.delete_asset_snapshot(snapshot_id)
+
+    def get_stock_portfolio(self) -> Dict[str, List[Dict[str, Any]]]:
+        return self.db.get_stock_portfolio()
+
+    def add_stock_entry(self, person: str, entry: Dict[str, Any]) -> Dict[str, Any]:
+        return self.db.add_stock_entry(person, entry)
+
+    def delete_stock_entry(self, person: str, entry_id: str) -> bool:
+        return self.db.delete_stock_entry(person, entry_id)
