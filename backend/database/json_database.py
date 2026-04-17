@@ -2,6 +2,12 @@ import json
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 from models.domain import Account, Transaction, ValuationRecord, TradePair
+from core.salary_uniqueness import (
+    assert_unique_salary_record,
+    normalize_salary_month,
+    normalize_salary_person,
+    parse_classification_for_write,
+)
 
 class JSONDatabase:
     """JSON file-based database implementation"""
@@ -77,29 +83,31 @@ class JSONDatabase:
     
     def add_salary(self, amount: float, month: str, person: str, classification: Optional[str] = None) -> None:
         """Add salary data"""
-        salary = {
-            "amount": amount,
-            "month": month,
-            "person": person
-        }
-        # Only add classification if it's provided
-        if classification is not None:
-            salary["classification"] = classification
-        self.data.setdefault("salaries", []).append(salary)
+        month_n = normalize_salary_month(month)
+        person_n = normalize_salary_person(person)
+        cls_key = parse_classification_for_write(classification)
+        rows = self.data.setdefault("salaries", [])
+        assert_unique_salary_record(rows, month_n, person_n, cls_key, skip_index=None)
+        salary: Dict[str, Any] = {"amount": amount, "month": month_n, "person": person_n}
+        if cls_key == "보너스":
+            salary["classification"] = "보너스"
+        rows.append(salary)
         self._save_data(self.data)
     
     def update_salary(self, index: int, amount: float, month: str, person: str, classification: Optional[str] = None) -> None:
         """Update salary data by index"""
-        if 0 <= index < len(self.data.get("salaries", [])):
-            self.data["salaries"][index] = {
-                "amount": amount,
-                "month": month,
-                "person": person
-            }
-            # Only add classification if it's provided
-            if classification is not None:
-                self.data["salaries"][index]["classification"] = classification
-            self._save_data(self.data)
+        salaries = self.data.get("salaries", [])
+        if index < 0 or index >= len(salaries):
+            raise ValueError("존재하지 않는 월급 항목입니다.")
+        month_n = normalize_salary_month(month)
+        person_n = normalize_salary_person(person)
+        cls_key = parse_classification_for_write(classification)
+        assert_unique_salary_record(salaries, month_n, person_n, cls_key, skip_index=index)
+        row: Dict[str, Any] = {"amount": amount, "month": month_n, "person": person_n}
+        if cls_key == "보너스":
+            row["classification"] = "보너스"
+        self.data["salaries"][index] = row
+        self._save_data(self.data)
     
     def delete_salary(self, index: int) -> None:
         """Delete salary data by index"""

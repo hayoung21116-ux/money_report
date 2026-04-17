@@ -120,7 +120,14 @@ function AddSalaryModal({ isOpen, onClose, onSalaryAdded }) {
       onSalaryAdded();
     } catch (error) {
       console.error('Error adding salary:', error);
-      alert('월급 추가 중 오류가 발생했습니다.');
+      const detail = error.response?.data?.detail;
+      alert(
+        typeof detail === 'string'
+          ? detail
+          : Array.isArray(detail)
+            ? detail.map((d) => d.msg || d).join('\n')
+            : '월급 추가 중 오류가 발생했습니다.'
+      );
     }
   };
 

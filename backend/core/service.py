@@ -3,6 +3,12 @@ from datetime import datetime, timezone
 from collections import defaultdict
 from models.domain import Account, Transaction, ValuationRecord, TradePair
 from core.repository import LedgerRepository
+from core.salary_uniqueness import (
+    assert_unique_salary_record,
+    normalize_salary_month,
+    normalize_salary_person,
+    parse_classification_for_write,
+)
 
 def gen_id() -> str:
     """Generate a unique ID using UUID v4"""
@@ -16,18 +22,6 @@ def today_iso() -> str:
 def format_currency(amount: float) -> str:
     """Format amount as currency string"""
     return f"₩{amount:,.0f}"
-
-def _salary_classification_key(classification: Optional[str]) -> Literal["월급", "보너스"]:
-    """Align with stats UI: missing/empty → 월급; only 보너스 is distinct."""
-    return "보너스" if classification == "보너스" else "월급"
-
-def _parse_salary_classification_for_write(classification: Optional[str]) -> Literal["월급", "보너스"]:
-    """Reject unknown labels; None/empty defaults to 월급."""
-    if classification is None or classification == "":
-        return "월급"
-    if classification in ("월급", "보너스"):
-        return classification  # type: ignore[return-value]
-    raise ValueError('구분(classification)은 "월급" 또는 "보너스"만 사용할 수 있습니다.')
 
 class LedgerService:
     """Core service for managing accounts and transactions"""
@@ -169,36 +163,16 @@ class LedgerService:
         """Calculate total cash balance"""
         return sum(acc.balance() for acc in self.list_accounts() if acc.type == "현금")
 
-    def _assert_unique_salary_classification(
-        self,
-        month: str,
-        person: str,
-        classification_key: Literal["월급", "보너스"],
-        skip_index: Optional[int] = None,
-    ) -> None:
-        """At most one 월급 and one 보너스 per (month, person)."""
-        for i, row in enumerate(self.repo.get_salaries()):
-            if skip_index is not None and i == skip_index:
-                continue
-            if row.get("month") != month or row.get("person") != person:
-                continue
-            existing = _salary_classification_key(row.get("classification"))
-            if existing == classification_key:
-                label = "보너스" if classification_key == "보너스" else "월급"
-                raise ValueError(
-                    f'해당 월({month})에 {person}의 {label} 항목이 이미 있습니다. '
-                    "같은 달·같은 사람에 월급과 보너스는 각각 한 건만 등록할 수 있습니다."
-                )
-
     def add_salary(self, amount: float, month: str, person: str, classification: Optional[str] = None) -> None:
         """Add salary data"""
         if amount <= 0:
             raise ValueError("월급은 0보다 커야 합니다.")
-        cls_key = _parse_salary_classification_for_write(classification)
-        self._assert_unique_salary_classification(month, person, cls_key, skip_index=None)
-        # Persist original classification for 보너스 only; omit key for 월급 to match existing rows
+        month_n = normalize_salary_month(month)
+        person_n = normalize_salary_person(person)
+        cls_key = parse_classification_for_write(classification)
+        assert_unique_salary_record(self.repo.get_salaries(), month_n, person_n, cls_key, skip_index=None)
         stored: Optional[str] = "보너스" if cls_key == "보너스" else None
-        self.repo.add_salary(amount, month, person, stored)
+        self.repo.add_salary(amount, month_n, person_n, stored)
 
     def update_salary(self, index: int, amount: float, month: str, person: str, classification: Optional[str] = None) -> None:
         """Update salary data by index"""
@@ -207,10 +181,12 @@ class LedgerService:
         salaries = self.repo.get_salaries()
         if index < 0 or index >= len(salaries):
             raise ValueError("존재하지 않는 월급 항목입니다.")
-        cls_key = _parse_salary_classification_for_write(classification)
-        self._assert_unique_salary_classification(month, person, cls_key, skip_index=index)
+        month_n = normalize_salary_month(month)
+        person_n = normalize_salary_person(person)
+        cls_key = parse_classification_for_write(classification)
+        assert_unique_salary_record(salaries, month_n, person_n, cls_key, skip_index=index)
         stored: Optional[str] = "보너스" if cls_key == "보너스" else None
-        self.repo.update_salary(index, amount, month, person, stored)
+        self.repo.update_salary(index, amount, month_n, person_n, stored)
     
     def delete_salary(self, index: int) -> None:
         """Delete salary data by index"""
